@@ -143,6 +143,9 @@ export default function ProjectsManager() {
         fetchProjects();
         setIsFormOpen(false);
         setEditingProject(null);
+      } else {
+        const errData = await res.json();
+        alert(`Error: ${errData.error || "Failed to save project. Please check if all required fields are filled."}`);
       }
     } catch (err) {
       console.error(err);
@@ -292,7 +295,7 @@ export default function ProjectsManager() {
             </div>
 
             {/* Form Fields Scroll */}
-            <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-8 space-y-6">
+            <form id="project-form" onSubmit={handleSave} className="flex-1 overflow-y-auto p-8 space-y-6">
               {/* Basic Fields */}
               <div className="space-y-4">
                 <h4 className="font-mono text-[10px] text-[#aaff00] tracking-[0.14em] uppercase border-b border-white/5 pb-2">Basic Info</h4>
@@ -430,7 +433,7 @@ export default function ProjectsManager() {
               <button type="button" onClick={() => setIsFormOpen(false)} className="flex-1 p-3.5 rounded-xl border border-white/10 hover:border-white/20 text-[#888] hover:text-white font-sans text-sm font-bold transition-all">
                 Cancel
               </button>
-              <button type="button" onClick={handleSave} disabled={submitting} className="flex-1 p-3.5 rounded-xl bg-[#aaff00] text-[#111] font-sans text-sm font-bold shadow-[0_4px_20px_rgba(170,255,0,0.2)] hover:bg-[#88cc00] hover:shadow-[0_8px_30px_rgba(170,255,0,0.35)] transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+              <button type="submit" form="project-form" disabled={submitting} className="flex-1 p-3.5 rounded-xl bg-[#aaff00] text-[#111] font-sans text-sm font-bold shadow-[0_4px_20px_rgba(170,255,0,0.2)] hover:bg-[#88cc00] hover:shadow-[0_8px_30px_rgba(170,255,0,0.35)] transition-all flex items-center justify-center gap-2 disabled:opacity-50">
                 {submitting ? <Loader2 className="animate-spin" size={16} /> : <Check size={16} />}
                 <span>{editingProject._id ? "Update Project" : "Publish Project"}</span>
               </button>

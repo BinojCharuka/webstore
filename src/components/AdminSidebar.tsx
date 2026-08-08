@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, FolderKanban, ShieldCheck, Mail, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, FolderKanban, ShieldCheck, Mail, LogOut, ArrowLeft, User } from "lucide-react";
 
 export function AdminSidebar() {
   const pathname = usePathname();
@@ -13,6 +13,7 @@ export function AdminSidebar() {
   const links = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Projects", href: "/admin/projects", icon: FolderKanban },
+    { label: "Journey & Skills", href: "/admin/profile", icon: User },
     { label: "Store Packages", href: "/admin/packages", icon: ShieldCheck },
     { label: "Messages", href: "/admin/messages", icon: Mail },
   ];

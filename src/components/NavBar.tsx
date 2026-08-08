@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import GooeyNav from "./ui/GooeyNav";
+import SpecularButton from "./ui/SpecularButton";
 
 export function NavBar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-
-  if (pathname.startsWith("/admin")) {
-    return null;
-  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -19,6 +17,9 @@ export function NavBar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
   const links = [
     { label: "Home", href: "/" },
     { label: "Projects", href: "/projects" },
@@ -43,27 +44,29 @@ export function NavBar() {
         </Link>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-1">
-          {links.map((l) => {
-            const active = pathname === l.href;
-            return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={`px-4 py-2 rounded-lg text-[13.5px] font-medium font-sans transition-all duration-200 ${
-                  active ? "bg-white/10 text-white" : "bg-transparent text-[#777] hover:text-white"
-                }`}
-              >
-                {l.label}
-              </Link>
-            );
-          })}
-          <Link
+        <div className="hidden md:flex items-center gap-4">
+          <GooeyNav 
+            items={links} 
+            initialActiveIndex={Math.max(0, links.findIndex(l => l.href === pathname))}
+            particleCount={15}
+            particleDistances={[90, 10]}
+            particleR={100}
+            animationTime={600}
+            timeVariance={300}
+            colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+          />
+          <SpecularButton
             href="/store"
-            className="ml-3 px-[22px] py-2.5 rounded-xl text-[13.5px] font-bold font-sans bg-[#aaff00] text-[#111] hover:bg-[#88cc00] transition-all duration-200 hover:shadow-[0_8px_30px_rgba(170,255,0,0.35)] shadow-none"
+            size="md"
+            baseColor="#88cc00"
+            lineColor="#ffffff"
+            tint="#aaff00"
+            tintOpacity={1}
+            textColor="#111"
+            className="ml-3 font-sans font-bold"
           >
             Start a Project
-          </Link>
+          </SpecularButton>
         </div>
 
         {/* Mobile toggle */}
