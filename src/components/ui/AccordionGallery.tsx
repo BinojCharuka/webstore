@@ -226,7 +226,7 @@ const AccordionGallery = ({
         return (
           <Tag
             key={i}
-            ref={(el) => (panelRefs.current[i] = el)}
+            ref={(el: any) => (panelRefs.current[i] = el)}
             className={`ag-panel${isActive ? ' ag-panel--active' : ''}`}
             style={{ borderRadius: `${radius}px` }}
             href={item.link || undefined}
@@ -240,15 +240,15 @@ const AccordionGallery = ({
             aria-label={item.label}
           >
             <span className="ag-panel__frame">
-              <span className="ag-panel__media" ref={(el) => (mediaRefs.current[i] = el)}>
+              <span className="ag-panel__media" ref={(el: any) => (mediaRefs.current[i] = el)}>
                 <img src={item.image} alt={item.alt || item.label || ''} draggable="false" />
               </span>
               <span className="ag-panel__overlay" aria-hidden="true" />
             </span>
             {showLabels && (
               <span className="ag-panel__label" aria-hidden="true">
-                <span className="ag-panel__bar" ref={(el) => (barRefs.current[i] = el)} />
-                <span className="ag-panel__text" ref={(el) => (textRefs.current[i] = el)}>
+                <span className="ag-panel__bar" ref={(el: any) => (barRefs.current[i] = el)} />
+                <span className="ag-panel__text" ref={(el: any) => (textRefs.current[i] = el)}>
                   {item.label && <h3 className="ag-panel__title">{item.label}</h3>}
                   {item.description && <p className="ag-panel__desc">{item.description}</p>}
                 </span>
