@@ -29,14 +29,14 @@ export function NavBar() {
 
   return (
     <header
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-[1000px] transition-all duration-500 overflow-hidden transform-gpu isolate ${
+      className={`fixed left-1/2 -translate-x-1/2 z-50 overflow-hidden transform-gpu isolate transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${
         scrolled || open 
-          ? "bg-[#111111]/70 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] rounded-[24px]" 
-          : "bg-transparent border border-transparent rounded-[24px]"
+          ? "top-4 w-[calc(100%-2rem)] max-w-[1000px] bg-[#111111]/70 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] rounded-[24px]" 
+          : "top-4 md:top-0 w-[calc(100%-2rem)] md:w-full max-w-[1000px] md:max-w-full rounded-[24px] md:rounded-none bg-transparent border border-transparent md:border-b-white/5"
       }`}
-      style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
+      style={{ WebkitMaskImage: (scrolled || open) ? '-webkit-radial-gradient(white, black)' : 'none' }}
     >
-      <nav className="px-5 md:px-6 h-[68px] flex items-center justify-between w-full">
+      <nav className={`mx-auto max-w-[1280px] px-5 md:px-8 flex items-center justify-between w-full transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${scrolled ? "h-[68px]" : "h-[68px] md:h-[88px]"}`}>
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-[34px] h-[34px] rounded-lg bg-[#aaff00] flex items-center justify-center">
             <span className="font-mono text-[13px] font-bold text-[#111] tracking-tighter">C</span>
