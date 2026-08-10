@@ -68,9 +68,9 @@ export const MinimalistHero = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1 }}
-          className="z-20 order-2 md:order-1 text-center md:text-left text-white"
+          className="z-20 order-1 md:order-1 text-center md:text-left text-white"
         >
-          <div className="mx-auto max-w-[600px] md:mx-0 w-full text-center md:text-right h-[250px] md:h-[400px]">
+          <div className="mx-auto max-w-[600px] md:mx-0 w-full text-center md:text-right h-[180px] md:h-[400px]">
             <WarpText
               text={mainText}
               color="rgba(255, 255, 255, 0.8)"
@@ -92,7 +92,7 @@ export const MinimalistHero = ({
         </motion.div>
 
         {/* Center Image with Circle */}
-        <div className="relative order-1 md:order-2 flex justify-center items-center h-full">
+        <div className="relative order-2 md:order-2 flex justify-center items-center h-full">
             <style>{`
               @keyframes glitch-shake {
                 0%, 88% { transform: translate(0, 0) skew(0deg); filter: hue-rotate(0deg) saturate(1); }
@@ -134,7 +134,7 @@ export const MinimalistHero = ({
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 1.2 }}
-          className="z-0 order-3 flex items-center justify-center text-center md:justify-start w-full max-w-[600px] h-[250px] md:h-[400px] mx-auto md:mx-0"
+          className="z-0 order-3 flex items-center justify-center text-center md:justify-start w-full max-w-[600px] h-[180px] md:h-[400px] mx-auto md:mx-0"
         >
           <WarpText
             text={[overlayText.part1, overlayText.part2, overlayText.part3].filter(Boolean).join('\n')}
