@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Monitor, BookOpen, Code2, Star, TrendingUp, Award, ChevronDown, Sparkles, ChevronRight, Briefcase, GraduationCap } from "lucide-react";
 import { HoverButton } from "@/components/HoverButton";
 import { Reveal } from "@/components/Reveal";
@@ -64,20 +65,21 @@ export default function HomePage() {
     ]
   });
 
+  const [progress, setProgress] = useState(0);
+  const [showPreloader, setShowPreloader] = useState(true);
+
   useEffect(() => {
     Promise.all([
       fetch(`/api/projects?t=${Date.now()}`, { cache: "no-store" }).then((res) => res.json()),
       fetch(`/api/profile?t=${Date.now()}`, { cache: "no-store" }).then((res) => res.json())
     ])
       .then(([projectsData, profile]) => {
-        // Projects
         if (Array.isArray(projectsData) && projectsData.length > 0) {
           setProjectsList(projectsData);
         } else {
           setProjectsList(fallbackProjects);
         }
         
-        // Profile
         if (profile && (profile.skills?.length > 0 || profile.experience?.length > 0 || profile.education?.length > 0)) {
           setProfileData({
             skills: profile.skills || [],
@@ -92,6 +94,18 @@ export default function HomePage() {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setProgress(p => (p < 85 ? p + Math.random() * 12 : p));
+      }, 150);
+      return () => clearInterval(interval);
+    } else {
+      setProgress(100);
+      setTimeout(() => setShowPreloader(false), 500); // Wait for progress bar to hit 100%
+    }
+  }, [loading]);
 
 
 
@@ -123,7 +137,41 @@ export default function HomePage() {
   ];
 
   return (
-    <div>
+    <>
+      <AnimatePresence>
+        {showPreloader && (
+          <motion.div 
+            key="preloader"
+            initial={{ y: 0 }}
+            exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
+            className="fixed inset-0 z-[99999] bg-[#0c0c0c] flex flex-col items-center justify-center"
+          >
+            <div className="mb-8 overflow-hidden">
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+                className="font-sans font-black text-white text-[32px] tracking-[-0.04em]"
+              >
+                Charu<span className="text-[#aaff00]">.</span>
+              </motion.div>
+            </div>
+            
+            <div className="w-[200px] h-[3px] bg-white/10 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-[#88cc00] to-[#aaff00] rounded-full"
+                animate={{ width: `${progress}%` }}
+                transition={{ type: "spring", stiffness: 100, damping: 20 }}
+              />
+            </div>
+            <div className="mt-5 font-mono text-[10px] text-[#555] uppercase tracking-[0.2em]">
+              {Math.min(100, Math.round(progress))}% · Loading Experience
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div>
       {/* ── Hero ── */}
       <ScrollExpand
         title="Binoj Charuka"
@@ -347,11 +395,6 @@ export default function HomePage() {
             </Reveal>
           </div>
           <div className="w-full mt-6">
-            {loading ? (
-              <div className="flex items-center justify-center py-10">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#aaff00]"></div>
-              </div>
-            ) : (
               <AccordionGallery 
                 items={projectsList.slice(0, 5).map(p => ({
                   image: p.img,
@@ -365,7 +408,6 @@ export default function HomePage() {
                 expandRatio={0.4}
                 parallax={0.8}
               />
-            )}
           </div>
         </div>
       </section>
@@ -418,6 +460,6 @@ export default function HomePage() {
       </section>
         </div>
       </div>
-    </div>
+    </>
   );
 }
