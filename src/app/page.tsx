@@ -395,7 +395,7 @@ export default function HomePage() {
               </Link>
             </Reveal>
           </div>
-          <div className="w-full mt-8 md:mt-12 h-[500px] md:h-[650px] relative">
+          <div className="w-full mt-8 md:mt-12 h-[500px] md:h-[650px] relative overflow-hidden">
             <DepthCarousel 
               items={projectsList.slice(0, 5)}
               cardWidth={500}
