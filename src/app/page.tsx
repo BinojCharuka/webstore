@@ -395,25 +395,25 @@ export default function HomePage() {
               </Link>
             </Reveal>
           </div>
-          <div className="w-full mt-8 md:mt-12 h-[550px] relative">
+          <div className="w-full mt-8 md:mt-12 h-[500px] md:h-[650px] relative">
             <DepthCarousel 
               items={projectsList.slice(0, 5)}
-              cardWidth={340}
-              cardHeight={440}
-              depth={200}
-              spread={120}
-              tilt={15}
+              cardWidth={500}
+              cardHeight={480}
+              depth={250}
+              spread={160}
+              tilt={18}
               tiltDirection="left"
-              perspective={1400}
+              perspective={1100}
               visibleCards={4}
-              falloff={0.2}
-              blur={4}
+              falloff={0.4}
+              blur={12}
               autoplay={true}
               loop={true}
               showControls={false}
               onChange={() => {}}
               renderItem={(project: any, index: number) => (
-                <div className="w-[340px] pointer-events-auto h-[440px]">
+                <div className="w-[500px] pointer-events-auto h-full">
                   <ProjectCard project={project} index={index} />
                 </div>
               )}
