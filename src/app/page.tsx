@@ -227,7 +227,7 @@ export default function HomePage() {
       {/* ── Dynamic Background Wrapper ── */}
       <div className="relative bg-[#0c0c0c]">
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <div className="sticky top-0 h-screen w-full opacity-60 mix-blend-screen overflow-hidden">
+          <div className="sticky top-0 h-screen w-full opacity-60 overflow-hidden transform-gpu">
             <GradientWaves
               horizonColor="#000000"
               waveColor="#111111"
