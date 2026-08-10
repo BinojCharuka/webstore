@@ -29,11 +29,13 @@ export function NavBar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-400 ${
-        scrolled ? "bg-[#111111]/90 backdrop-blur-xl border-b border-white/5" : "bg-transparent border-b border-transparent"
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-[1000px] transition-all duration-500 overflow-hidden ${
+        scrolled || open 
+          ? "bg-[#111111]/70 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] rounded-[24px]" 
+          : "bg-transparent border border-transparent rounded-[24px]"
       }`}
     >
-      <nav className="max-w-[1280px] mx-auto px-4 md:px-8 h-[68px] flex items-center justify-between">
+      <nav className="px-5 md:px-6 h-[68px] flex items-center justify-between w-full">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-[34px] h-[34px] rounded-lg bg-[#aaff00] flex items-center justify-center">
             <span className="font-mono text-[13px] font-bold text-[#111] tracking-tighter">C</span>
@@ -76,7 +78,7 @@ export function NavBar() {
       </nav>
 
       {open && (
-        <div className="bg-[#161616] border-t border-white/5 px-6 py-3 pb-5">
+        <div className="bg-transparent border-t border-white/10 px-5 py-3 pb-5">
           {links.map((l) => {
             const active = pathname === l.href;
             return (
