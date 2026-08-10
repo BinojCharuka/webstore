@@ -16,6 +16,38 @@ import { ReviewSection } from "@/components/ui/review-scroller";
 import GradientWaves from "@/components/ui/GradientWaves";
 import AccordionGallery from "@/components/ui/AccordionGallery";
 
+const getSkillIconSlug = (skill: string) => {
+  const s = skill.toLowerCase();
+  if (s.includes('html')) return 'html5';
+  if (s.includes('css') && !s.includes('tailwind')) return 'css3';
+  if (s.includes('javascript') || s === 'js') return 'javascript';
+  if (s.includes('typescript') || s === 'ts') return 'typescript';
+  if (s.includes('python')) return 'python';
+  if (s.includes('php')) return 'php';
+  if (s.includes('sql') || s.includes('mysql')) return 'mysql';
+  if (s === 'c') return 'c';
+  if (s === 'c++') return 'cplusplus';
+  if (s === 'c#') return 'csharp';
+  if (s.includes('react')) return 'react';
+  if (s.includes('node')) return 'nodedotjs';
+  if (s.includes('express')) return 'express';
+  if (s.includes('mongo')) return 'mongodb';
+  if (s.includes('next')) return 'nextdotjs';
+  if (s.includes('tailwind')) return 'tailwindcss';
+  if (s.includes('gsap')) return 'greensock';
+  if (s.includes('framer')) return 'framer';
+  if (s.includes('figma')) return 'figma';
+  if (s.includes('ui/ux')) return 'figma'; 
+  if (s.includes('three')) return 'threedotjs';
+  if (s.includes('webgl')) return 'webgl';
+  if (s.includes('firebase')) return 'firebase';
+  if (s.includes('supabase')) return 'supabase';
+  if (s.includes('aws')) return 'amazonaws';
+  if (s.includes('docker')) return 'docker';
+  if (s.includes('git')) return 'git';
+  return null;
+};
+
 export default function HomePage() {
   const [projectsList, setProjectsList] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -268,13 +300,31 @@ export default function HomePage() {
               <h3 className="font-sans text-xl font-bold text-white mb-8 text-center">Core Arsenal</h3>
             </Reveal>
             <div className="flex flex-wrap justify-center gap-3 max-w-[900px] mx-auto">
-              {profileData.skills.map((skill, i) => (
-                <Reveal key={skill} delay={i * 50}>
-                  <div className="px-5 py-3 rounded-xl bg-[#111] border border-white/10 hover:border-[#aaff00]/50 hover:bg-[#aaff00]/10 text-[#bbb] hover:text-[#aaff00] font-sans text-[14px] font-medium transition-all duration-300 cursor-default shadow-sm hover:shadow-[0_0_15px_rgba(170,255,0,0.15)] hover:-translate-y-1">
-                    {skill}
-                  </div>
-                </Reveal>
-              ))}
+              {profileData.skills.map((skill, i) => {
+                const slug = getSkillIconSlug(skill);
+                return (
+                  <Reveal key={skill} delay={i * 50}>
+                    <div className="px-5 py-3 flex items-center gap-2.5 rounded-xl bg-[#111] border border-white/10 hover:border-[#aaff00]/50 hover:bg-[#aaff00]/10 text-[#bbb] hover:text-[#aaff00] font-sans text-[14px] font-medium transition-all duration-300 cursor-default shadow-sm hover:shadow-[0_0_15px_rgba(170,255,0,0.15)] hover:-translate-y-1">
+                      {slug && (
+                        <span 
+                          className="w-[18px] h-[18px] inline-block bg-current transition-colors duration-300" 
+                          style={{
+                            WebkitMaskImage: `url(https://cdn.simpleicons.org/${slug})`,
+                            WebkitMaskSize: 'contain',
+                            WebkitMaskRepeat: 'no-repeat',
+                            WebkitMaskPosition: 'center',
+                            maskImage: `url(https://cdn.simpleicons.org/${slug})`,
+                            maskSize: 'contain',
+                            maskRepeat: 'no-repeat',
+                            maskPosition: 'center',
+                          }} 
+                        />
+                      )}
+                      {skill}
+                    </div>
+                  </Reveal>
+                );
+              })}
             </div>
           </div>
         </div>
