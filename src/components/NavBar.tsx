@@ -29,11 +29,12 @@ export function NavBar() {
 
   return (
     <header
-      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-[1000px] transition-all duration-500 overflow-hidden ${
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-[1000px] transition-all duration-500 overflow-hidden transform-gpu isolate ${
         scrolled || open 
           ? "bg-[#111111]/70 backdrop-blur-2xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)] rounded-[24px]" 
           : "bg-transparent border border-transparent rounded-[24px]"
       }`}
+      style={{ WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}
     >
       <nav className="px-5 md:px-6 h-[68px] flex items-center justify-between w-full">
         <Link href="/" className="flex items-center gap-2.5">

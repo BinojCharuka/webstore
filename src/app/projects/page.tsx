@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { projects as fallbackProjects } from "@/data";
+import { motion } from "framer-motion";
 
 type ProjectFilter = "all" | "portfolio" | "lms" | "frontend";
 
@@ -64,20 +65,30 @@ export default function ProjectsPage() {
 
         <Reveal delay={100}>
           <div className="mb-10">
-            <div className="inline-flex gap-1 p-1.5 rounded-2xl bg-[#161616] border border-white/5 flex-wrap">
-              {filterTabs.map(tab => (
-                <button 
-                  key={tab.value} 
-                  onClick={() => handleFilter(tab.value)}
-                  className={`px-5 py-2.5 rounded-xl text-[13px] font-semibold font-sans whitespace-nowrap transition-all duration-250 ${
-                    filter === tab.value 
-                      ? "bg-[#aaff00] text-[#111] shadow-[0_4px_20px_rgba(170,255,0,0.3)]" 
-                      : "bg-transparent text-[#555] hover:text-[#ccc]"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
+            <div className="inline-flex gap-1 p-1.5 rounded-2xl bg-[#161616] border border-white/5 flex-wrap relative">
+              {filterTabs.map(tab => {
+                const isActive = filter === tab.value;
+                return (
+                  <button 
+                    key={tab.value} 
+                    onClick={() => handleFilter(tab.value)}
+                    className={`relative px-5 py-2.5 rounded-xl text-[13px] font-semibold font-sans whitespace-nowrap transition-colors duration-250 z-10 ${
+                      isActive 
+                        ? "text-[#111]" 
+                        : "text-[#555] hover:text-[#ccc]"
+                    }`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeTabPill"
+                        className="absolute inset-0 bg-[#aaff00] rounded-xl shadow-[0_4px_20px_rgba(170,255,0,0.3)] z-[-1]"
+                        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      />
+                    )}
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
             <p className="font-mono text-[11px] text-[#333] mt-3.5 tracking-[0.04em]">
               {filtered.length} project{filtered.length !== 1 ? "s" : ""} · {filter === "all" ? "all categories" : filterTabs.find(t => t.value === filter)?.label}
