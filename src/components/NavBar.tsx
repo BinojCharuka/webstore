@@ -33,7 +33,7 @@ export function NavBar() {
         scrolled ? "bg-[#111111]/90 backdrop-blur-xl border-b border-white/5" : "bg-transparent border-b border-transparent"
       }`}
     >
-      <nav className="max-w-[1280px] mx-auto px-8 h-[68px] flex items-center justify-between">
+      <nav className="max-w-[1280px] mx-auto px-4 md:px-8 h-[68px] flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-[34px] h-[34px] rounded-lg bg-[#aaff00] flex items-center justify-center">
             <span className="font-mono text-[13px] font-bold text-[#111] tracking-tighter">C</span>

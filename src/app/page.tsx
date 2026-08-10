@@ -165,9 +165,9 @@ export default function HomePage() {
 
         <div className="relative z-10">
           {/* ── Services ── */}
-          <section className="py-[120px] px-8 border-b border-white/5">
+          <section className="py-16 md:py-[120px] px-4 md:px-8 border-b border-white/5">
             <div className="max-w-[1280px] mx-auto">
-          <div className="flex justify-between items-end mb-16 flex-wrap gap-6">
+          <div className="flex justify-between items-end mb-10 md:mb-16 flex-wrap gap-4 md:gap-6">
             <Reveal>
               <div>
                 <p className="font-mono text-[10.5px] font-semibold text-[#aaff00] tracking-[0.14em] uppercase mb-3">Our Expertise</p>
@@ -211,16 +211,16 @@ export default function HomePage() {
       </section>
 
       {/* ── Journey & Skills ── */}
-      <section className="py-[120px] px-8 border-b border-white/5">
+      <section className="py-16 md:py-[120px] px-4 md:px-8 border-b border-white/5">
         <div className="max-w-[1280px] mx-auto">
           <Reveal>
-            <div className="mb-16">
+            <div className="mb-10 md:mb-16">
               <p className="font-mono text-[10.5px] font-semibold text-[#aaff00] tracking-[0.14em] uppercase mb-3">My Journey</p>
               <h2 className="font-sans text-[clamp(36px,4vw,56px)] font-black text-white m-0 leading-[1.05] tracking-[-0.03em]">Experience & Education</h2>
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16">
             {/* Experience */}
             <div>
               <h3 className="font-sans text-xl font-bold text-white mb-8 flex items-center gap-3">
@@ -263,7 +263,7 @@ export default function HomePage() {
           </div>
 
           {/* Skills */}
-          <div className="mt-24">
+          <div className="mt-16 md:mt-24">
             <Reveal>
               <h3 className="font-sans text-xl font-bold text-white mb-8 text-center">Core Arsenal</h3>
             </Reveal>
@@ -281,9 +281,9 @@ export default function HomePage() {
       </section>
 
       {/* ── Recent Work ── */}
-      <section className="py-[120px] px-8 border-b border-white/5">
+      <section className="py-16 md:py-[120px] px-4 md:px-8 border-b border-white/5">
         <div className="max-w-[1280px] mx-auto">
-          <div className="flex justify-between items-end mb-14 flex-wrap gap-6">
+          <div className="flex justify-between items-end mb-10 md:mb-14 flex-wrap gap-4 md:gap-6">
             <Reveal>
               <div>
                 <p className="font-mono text-[10.5px] font-semibold text-[#aaff00] tracking-[0.14em] uppercase mb-3">Selected Work</p>
@@ -321,10 +321,10 @@ export default function HomePage() {
       </section>
 
       {/* ── Testimonials ── */}
-      <section className="py-[120px] px-8 border-b border-white/5">
+      <section className="py-16 md:py-[120px] px-4 md:px-8 border-b border-white/5">
         <div className="max-w-[1280px] mx-auto">
           <Reveal>
-            <div className="text-center mb-16">
+            <div className="text-center mb-10 md:mb-16">
               <p className="font-mono text-[10.5px] font-semibold text-[#aaff00] tracking-[0.14em] uppercase mb-3">Social Proof</p>
               <h2 className="font-sans text-[clamp(36px,4vw,56px)] font-black text-white m-0 tracking-[-0.03em]">What clients say</h2>
             </div>
@@ -336,10 +336,10 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA Band ── */}
-      <section className="py-20 px-8">
+      <section className="py-10 md:py-20 px-4 md:px-8">
         <div className="max-w-[1280px] mx-auto">
           <Reveal>
-            <div className="relative rounded-[28px] bg-gradient-to-br from-[#88cc00] via-[#aaff00] to-[#99ee00] py-[72px] px-14 overflow-hidden text-center">
+            <div className="relative rounded-[28px] bg-gradient-to-br from-[#88cc00] via-[#aaff00] to-[#99ee00] py-12 md:py-[72px] px-6 md:px-14 overflow-hidden text-center">
               <div className="absolute inset-0 opacity-15" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
               <div className="relative z-10 flex flex-col items-center">
                 <Sparkles size={24} className="text-black/40 mb-4" />
