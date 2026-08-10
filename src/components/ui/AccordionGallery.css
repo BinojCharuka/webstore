@@ -148,14 +148,23 @@
 
 @media (max-width: 768px) {
   .accordion-gallery {
-    flex-direction: column;
-    perspective: none;
-    height: auto !important;
+    flex-direction: row !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    height: 400px !important;
     gap: 16px !important;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .accordion-gallery::-webkit-scrollbar {
+    display: none;
   }
   .ag-panel {
-    flex: none !important;
-    height: 200px !important;
+    flex: 0 0 280px !important;
+    height: 100% !important;
+    scroll-snap-align: center;
     transform: none !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
   }
