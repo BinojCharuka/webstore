@@ -15,7 +15,7 @@ import ScrollExpand from "@/components/ui/ScrollExpand";
 import { GradientCard } from "@/components/ui/gradient-card";
 import { ReviewSection } from "@/components/ui/review-scroller";
 import GradientWaves from "@/components/ui/GradientWaves";
-import AccordionGallery from "@/components/ui/AccordionGallery";
+
 
 const getSkillIconSlug = (skill: string) => {
   const s = skill.toLowerCase();
@@ -394,20 +394,12 @@ export default function HomePage() {
               </Link>
             </Reveal>
           </div>
-          <div className="w-full mt-6">
-              <AccordionGallery 
-                items={projectsList.slice(0, 5).map(p => ({
-                  image: p.img,
-                  label: p.title,
-                  description: p.desc,
-                  link: '#' // Replace with actual project links if needed
-                }))}
-                accentColor="#aaff00"
-                overlayColor="#111111"
-                height={500}
-                expandRatio={0.4}
-                parallax={0.8}
-              />
+          <div className="w-full mt-8 -mx-4 px-4 md:-mx-8 md:px-8 overflow-x-auto snap-x snap-mandatory flex gap-5 pb-8">
+            {projectsList.slice(0, 5).map((p, i) => (
+              <div key={p._id || p.id} className="snap-center shrink-0 w-[85vw] md:w-[420px]">
+                <ProjectCard project={p} index={i} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
