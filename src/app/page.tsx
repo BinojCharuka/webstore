@@ -15,6 +15,7 @@ import ScrollExpand from "@/components/ui/ScrollExpand";
 import { GradientCard } from "@/components/ui/gradient-card";
 import { ReviewSection } from "@/components/ui/review-scroller";
 import GradientWaves from "@/components/ui/GradientWaves";
+import DepthCarousel from "@/components/ui/DepthCarousel";
 
 
 const getSkillIconSlug = (skill: string) => {
@@ -394,12 +395,29 @@ export default function HomePage() {
               </Link>
             </Reveal>
           </div>
-          <div className="w-full mt-8 -mx-4 px-4 md:-mx-8 md:px-8 overflow-x-auto snap-x snap-mandatory flex gap-5 pb-8">
-            {projectsList.slice(0, 5).map((p, i) => (
-              <div key={p._id || p.id} className="snap-center shrink-0 w-[85vw] md:w-[420px]">
-                <ProjectCard project={p} index={i} />
-              </div>
-            ))}
+          <div className="w-full mt-8 md:mt-12 h-[550px] relative">
+            <DepthCarousel 
+              items={projectsList.slice(0, 5)}
+              cardWidth={340}
+              cardHeight={440}
+              depth={200}
+              spread={120}
+              tilt={15}
+              tiltDirection="left"
+              perspective={1400}
+              visibleCards={4}
+              falloff={0.2}
+              blur={4}
+              autoplay={true}
+              loop={true}
+              showControls={false}
+              onChange={() => {}}
+              renderItem={(project: any, index: number) => (
+                <div className="w-[340px] pointer-events-auto h-[440px]">
+                  <ProjectCard project={project} index={index} />
+                </div>
+              )}
+            />
           </div>
         </div>
       </section>
