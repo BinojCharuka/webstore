@@ -38,8 +38,8 @@ export function NavBar() {
     >
       <nav className={`mx-auto max-w-[1280px] px-5 md:px-8 flex items-center justify-between w-full transition-all duration-700 ease-[cubic-bezier(0.76,0,0.24,1)] ${scrolled ? "h-[68px]" : "h-[68px] md:h-[88px]"}`}>
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-[34px] h-[34px] rounded-lg bg-[#aaff00] flex items-center justify-center">
-            <span className="font-mono text-[13px] font-bold text-[#111] tracking-tighter">C</span>
+          <div className="w-[34px] h-[34px] rounded-lg overflow-hidden flex items-center justify-center bg-black">
+            <img src="/logo.jpg" alt="Charu Design Studio Logo" className="w-full h-full object-cover" />
           </div>
           <span className="font-sans text-sm font-semibold text-white tracking-tight">
             Charu Design Studio

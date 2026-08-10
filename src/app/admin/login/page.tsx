@@ -50,8 +50,8 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-[#111] px-6">
       <div className="w-full max-w-[420px] bg-[#161616] border border-white/5 rounded-3xl p-10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-[#aaff00] flex items-center justify-center mx-auto mb-4">
-            <span className="font-mono text-[16px] font-bold text-[#111]">C</span>
+          <div className="w-12 h-12 rounded-xl overflow-hidden flex items-center justify-center mx-auto mb-4 bg-black">
+            <img src="/logo.jpg" alt="Charu Design Studio Logo" className="w-full h-full object-cover" />
           </div>
           <h1 className="font-sans text-xl font-extrabold text-white tracking-tight">Studio Admin Panel</h1>
           <p className="font-sans text-[12.5px] text-[#555] mt-1">Sign in to manage website content</p>

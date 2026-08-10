@@ -14,8 +14,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-4 hover:opacity-80 transition-opacity w-max">
-              <div className="w-[34px] h-[34px] rounded-lg bg-[#aaff00] flex items-center justify-center">
-                <span className="font-mono text-[13px] font-bold text-[#111]">C</span>
+              <div className="w-[34px] h-[34px] rounded-lg overflow-hidden flex items-center justify-center bg-black">
+                <img src="/logo.jpg" alt="Charu Design Studio Logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-sans text-sm font-semibold text-white">Charu Design Studio</span>
             </Link>

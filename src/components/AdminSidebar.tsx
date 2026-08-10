@@ -23,8 +23,8 @@ export function AdminSidebar() {
       {/* Logo / Header */}
       <div className="p-6 border-b border-white/5 flex items-center justify-between">
         <Link href="/admin" className="flex items-center gap-2">
-          <div className="w-[30px] h-[30px] rounded-lg bg-[#aaff00] flex items-center justify-center">
-            <span className="font-mono text-xs font-bold text-[#111]">C</span>
+          <div className="w-[30px] h-[30px] rounded-lg overflow-hidden flex items-center justify-center bg-black">
+            <img src="/logo.jpg" alt="Studio Admin Logo" className="w-full h-full object-cover" />
           </div>
           <span className="font-sans text-xs font-bold text-white tracking-wider uppercase">Studio Admin</span>
         </Link>
