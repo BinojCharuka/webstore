@@ -1,7 +1,6 @@
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import WarpText from './WarpText';
 
 // Define the props interface for type safety and reusability
 interface MinimalistHeroProps {
@@ -52,24 +51,10 @@ export const MinimalistHero = ({
       <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-12 md:gap-0 mt-8 md:mt-0 md:grid-cols-3">
         {/* Left Text Content */}
         <div className="z-20 order-1 md:order-1 text-center md:text-left text-white">
-          <div className="mx-auto max-w-[600px] md:mx-0 w-full text-center md:text-right h-[180px] md:h-[400px]">
-            <WarpText
-              text={mainText}
-              color="rgba(255, 255, 255, 0.8)"
-              warpStrength={0.08}
-              warpScale={1.7}
-              speed={0.55}
-              pointerInfluence={0.42}
-              pointerStrength={0.38}
-              refraction={0.018}
-              ripple={true}
-              fontSize="clamp(3rem, 10vw, 9rem)"
-              fontWeight={800}
-              fontFamily="inherit"
-              letterSpacing="-0.03em"
-              lineHeight={0.9}
-              style={{ height: '100%', width: '100%' }}
-            />
+          <div className="mx-auto max-w-[600px] md:mx-0 w-full text-center md:text-right flex items-center justify-center md:justify-end h-[180px] md:h-[400px]">
+            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black leading-[0.9] tracking-tighter text-white/90">
+              Web &<br/>UI/UX<br/>Developer
+            </h1>
           </div>
         </div>
 
@@ -105,23 +90,9 @@ export const MinimalistHero = ({
 
         {/* Right Text */}
         <div className="z-0 order-3 flex items-center justify-center text-center md:justify-start w-full max-w-[600px] h-[180px] md:h-[400px] mx-auto md:mx-0">
-          <WarpText
-            text={[overlayText.part1, overlayText.part2, overlayText.part3].filter(Boolean).join('\n')}
-            color="#ffffff"
-            warpStrength={0.08}
-            warpScale={1.7}
-            speed={0.55}
-            pointerInfluence={0.42}
-            pointerStrength={0.38}
-            refraction={0.018}
-            ripple={true}
-            fontSize="clamp(3rem, 10vw, 9rem)"
-            fontWeight={800}
-            fontFamily="inherit"
-            letterSpacing="-0.03em"
-            lineHeight={0.9}
-            style={{ height: '100%', width: '100%' }}
-          />
+            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black leading-[0.9] tracking-tighter text-white/90">
+              I design.<br/>I build.<br/>I elevate.
+            </h1>
         </div>
       </div>
 
