@@ -109,7 +109,7 @@ const ScrollExpand: React.FC<ScrollExpandProps> = ({
     }
 
     if (overlayRef.current) {
-      const inn = smoothstep(0.68, 1, p);
+      const inn = smoothstep(0.4, 0.85, p);
       overlayRef.current.style.opacity = `${inn}`;
       overlayRef.current.style.transform = `translate3d(0, ${18 * (1 - inn)}px, 0)`;
       // Add pointer-events handling so it doesn't block clicks when invisible
