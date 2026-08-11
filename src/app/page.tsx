@@ -179,8 +179,8 @@ export default function HomePage() {
         title="Binoj Charuka"
         scrollHint="SCROLL TO DISCOVER"
         useWindowScroll
-        scrollDistance={2}
-        holdDistance={1.5}
+        scrollDistance={1.2}
+        holdDistance={0.5}
       >
         <MinimalistHero
           logoText="binoj."
