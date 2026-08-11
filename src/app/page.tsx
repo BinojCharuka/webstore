@@ -11,7 +11,7 @@ import { MinimalistHero } from "@/components/ui/minimalist-hero";
 import { Mail, Globe } from "lucide-react";
 import { Github, Linkedin, Youtube } from "@/components/Icons";
 import SpecularButton from "@/components/ui/SpecularButton";
-import ScrollExpand from "@/components/ui/ScrollExpand";
+
 import { GradientCard } from "@/components/ui/gradient-card";
 import { ReviewSection } from "@/components/ui/review-scroller";
 import GradientWaves from "@/components/ui/GradientWaves";
@@ -174,40 +174,32 @@ export default function HomePage() {
 
       <div>
       {/* ── Hero ── */}
-      <ScrollExpand
-        title="Binoj Charuka"
-        scrollHint="SCROLL TO DISCOVER"
-        useWindowScroll
-        scrollDistance={2}
-        holdDistance={1.5}
-      >
-        <MinimalistHero
-          logoText="binoj."
-          navLinks={[
-            { label: 'HOME', href: '#' },
-            { label: 'WORK', href: '#work' },
-            { label: 'SERVICES', href: '#services' },
-            { label: 'CONTACT', href: '/contact' },
-          ]}
-          mainText={"Web &\nUI/UX\nDeveloper"}
-          readMoreLink="/contact"
-          imageSrc="/profile.png"
-          imageAlt="Binoj Charuka portrait"
-          overlayText={{
-            part1: 'I design.',
-            part2: 'I build.',
-            part3: 'I elevate.',
-          }}
-          socialLinks={[
-            { icon: Github, href: '#' },
-            { icon: Linkedin, href: '#' },
-            { icon: Youtube, href: '#' },
-            { icon: Mail, href: '/contact' },
-          ]}
-          locationText="Sri Lanka"
-          className="mb-0"
-        />
-      </ScrollExpand>
+      <MinimalistHero
+        logoText="binoj."
+        navLinks={[
+          { label: 'HOME', href: '#' },
+          { label: 'WORK', href: '#work' },
+          { label: 'SERVICES', href: '#services' },
+          { label: 'CONTACT', href: '/contact' },
+        ]}
+        mainText={"Web &\nUI/UX\nDeveloper"}
+        readMoreLink="/contact"
+        imageSrc="/profile.png"
+        imageAlt="Binoj Charuka portrait"
+        overlayText={{
+          part1: 'I design.',
+          part2: 'I build.',
+          part3: 'I elevate.',
+        }}
+        socialLinks={[
+          { icon: Github, href: '#' },
+          { icon: Linkedin, href: '#' },
+          { icon: Youtube, href: '#' },
+          { icon: Mail, href: '/contact' },
+        ]}
+        locationText="Sri Lanka"
+        className="mb-0"
+      />
 
       {/* ── Marquee ── */}
       <div className="bg-[#0c0c0c] border-y border-white/5 py-4 overflow-hidden flex">
