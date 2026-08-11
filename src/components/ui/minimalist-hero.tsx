@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import WarpText from './WarpText';
@@ -21,16 +20,6 @@ interface MinimalistHeroProps {
   locationText: string;
   className?: string;
 }
-
-// Helper component for navigation links
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <a
-    href={href}
-    className="text-sm font-medium tracking-widest text-foreground/60 transition-colors hover:text-foreground"
-  >
-    {children}
-  </a>
-);
 
 // Helper component for social media icons
 const SocialIcon = ({ href, icon: Icon }: { href: string; icon: React.ElementType }) => (
@@ -59,15 +48,10 @@ export const MinimalistHero = ({
         className
       )}
     >
-
-
       {/* Main Content Area */}
       <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-12 md:gap-0 mt-8 md:mt-0 md:grid-cols-3">
         {/* Left Text Content */}
-        <motion.div
-          transition={{ duration: 0.6, delay: 1 }}
-          className="z-20 order-1 md:order-1 text-center md:text-left text-white"
-        >
+        <div className="z-20 order-1 md:order-1 text-center md:text-left text-white">
           <div className="mx-auto max-w-[600px] md:mx-0 w-full text-center md:text-right h-[180px] md:h-[400px]">
             <WarpText
               text={mainText}
@@ -87,7 +71,7 @@ export const MinimalistHero = ({
               style={{ height: '100%', width: '100%' }}
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* Center Image with Circle */}
         <div className="relative order-2 md:order-2 flex justify-center items-center h-full">
@@ -103,17 +87,13 @@ export const MinimalistHero = ({
                 animation: glitch-shake 6s infinite;
               }
             `}</style>
-            <motion.div
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-                className="absolute z-0 h-[250px] w-[250px] rounded-full bg-[#aaff00]/90 md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px]"
-            ></motion.div>
+            <div className="absolute z-0 h-[250px] w-[250px] rounded-full bg-[#aaff00]/90 md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px]"></div>
             
             <div className="glitch-wrapper relative z-10 flex justify-center items-center">
-              <motion.img
+              <img
                   src={imageSrc}
                   alt={imageAlt}
                   className="h-[350px] w-auto object-cover md:h-[600px] lg:h-[700px] scale-[1.2]"
-                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
                   onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.onerror = null;
@@ -124,10 +104,7 @@ export const MinimalistHero = ({
         </div>
 
         {/* Right Text */}
-        <motion.div
-          transition={{ duration: 0.6, delay: 1.2 }}
-          className="z-0 order-3 flex items-center justify-center text-center md:justify-start w-full max-w-[600px] h-[180px] md:h-[400px] mx-auto md:mx-0"
-        >
+        <div className="z-0 order-3 flex items-center justify-center text-center md:justify-start w-full max-w-[600px] h-[180px] md:h-[400px] mx-auto md:mx-0">
           <WarpText
             text={[overlayText.part1, overlayText.part2, overlayText.part3].filter(Boolean).join('\n')}
             color="#ffffff"
@@ -145,25 +122,19 @@ export const MinimalistHero = ({
             lineHeight={0.9}
             style={{ height: '100%', width: '100%' }}
           />
-        </motion.div>
+        </div>
       </div>
 
       {/* Footer Elements */}
       <footer className="z-30 flex w-full max-w-7xl flex-col md:flex-row gap-4 items-center justify-between text-white mt-12 md:mt-0">
-        <motion.div
-          transition={{ duration: 0.5, delay: 1.2 }}
-          className="flex items-center space-x-4"
-        >
+        <div className="flex items-center space-x-4">
           {socialLinks.map((link, index) => (
             <SocialIcon key={index} href={link.href} icon={link.icon} />
           ))}
-        </motion.div>
-        <motion.div
-          transition={{ duration: 0.5, delay: 1.3 }}
-          className="text-sm font-medium text-white/80"
-        >
+        </div>
+        <div className="text-sm font-medium text-white/80">
           {locationText}
-        </motion.div>
+        </div>
       </footer>
     </div>
   );
