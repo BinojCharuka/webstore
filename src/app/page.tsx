@@ -176,7 +176,6 @@ export default function HomePage() {
       <div>
       {/* ── Hero ── */}
       <ScrollExpand
-        src="/profile.png"
         title="Binoj Charuka"
         scrollHint="SCROLL TO DISCOVER"
         useWindowScroll
