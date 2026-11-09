@@ -1,7 +1,6 @@
 .scroll-expand {
   position: relative;
   width: 100%;
-  height: 100%;
 }
 
 .scroll-expand--scroller {
@@ -24,9 +23,18 @@
 .scroll-expand__stage {
   position: sticky;
   top: 0;
+  left: 0;
   width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 20;
   overflow: hidden;
   --se-title-size: 4rem;
+  background-color: var(--color-background, #ffffff);
+}
+
+:is(.dark) .scroll-expand__stage {
+  background-color: #000000;
 }
 
 .scroll-expand__frame {
@@ -34,6 +42,7 @@
   inset: 0;
   clip-path: inset(21% 29% 21% 29% round 24px);
   will-change: clip-path;
+  background-color: transparent !important;
 }
 
 .scroll-expand__media {
@@ -46,13 +55,19 @@
   transform-origin: center;
   user-select: none;
   -webkit-user-drag: none;
+  background-color: transparent;
 }
 
 .scroll-expand__scrim {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.1) 45%, rgba(0, 0, 0, 0.35));
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.75),
+    rgba(0, 0, 0, 0.1) 45%,
+    rgba(0, 0, 0, 0.35)
+  );
   opacity: 0;
 }
 
@@ -64,7 +79,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0; /* Changed from 6% to 0 to allow full bleed content like MinimalistHero */
+  padding: 0;
   opacity: 0;
   will-change: opacity, transform;
 }
@@ -79,26 +94,31 @@
   padding: 0 6%;
   text-align: center;
   font-size: var(--se-title-size);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-weight: 900;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em;
   line-height: 1;
-  color: #fff;
-  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.8);
+  color: var(--color-foreground);
   pointer-events: none;
   will-change: opacity, transform;
+}
+
+:is(.dark) .scroll-expand__title {
+  color: #ffffff;
+  text-shadow: 0 4px 32px rgba(0, 0, 0, 0.7);
 }
 
 .scroll-expand__hint {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 1.25rem;
+  bottom: 1.75rem;
   text-align: center;
-  font-size: 0.8125rem;
-  letter-spacing: 0.05em;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--color-muted-foreground, rgba(255, 255, 255, 0.7));
   pointer-events: none;
   will-change: opacity, transform;
 }

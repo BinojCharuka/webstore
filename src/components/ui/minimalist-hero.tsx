@@ -1,112 +1,193 @@
-import React from 'react';
-import { LucideIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { ArrowDown, ArrowUpRight, Github, Globe, Linkedin, Mail } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-// Define the props interface for type safety and reusability
-interface MinimalistHeroProps {
-  logoText: string;
-  navLinks: { label: string; href: string }[];
-  mainText: string;
-  readMoreLink: string;
+export interface MinimalistHeroProps {
+  headlineLeft?: { line1: string; line2: string; line3: string };
+  headlineRight?: { line1: string; line2: string; line3: string };
   imageSrc: string;
-  imageAlt: string;
-  overlayText: {
-    part1: string;
-    part2: string;
-    part3?: string;
-  };
-  socialLinks: { icon: React.ElementType; href: string }[];
-  locationText: string;
+  imageAlt?: string;
+  socialLinks?: { icon: React.ElementType; href: string; label: string }[];
+  locationText?: string;
+  availability?: string;
   className?: string;
 }
 
-// Helper component for social media icons
-const SocialIcon = ({ href, icon: Icon }: { href: string; icon: React.ElementType }) => (
-  <a href={href} target="_blank" rel="noopener noreferrer" className="text-foreground/60 transition-colors hover:text-foreground">
-    <Icon className="h-5 w-5" />
-  </a>
-);
-
-// The main reusable Hero Section component
-export const MinimalistHero = ({
-  logoText,
-  navLinks,
-  mainText,
-  readMoreLink,
+export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
+  headlineLeft = { line1: "Web &", line2: "UI/UX", line3: "Developer" },
+  headlineRight = { line1: "I design.", line2: "I build.", line3: "I elevate." },
   imageSrc,
-  imageAlt,
-  overlayText,
-  socialLinks,
-  locationText,
+  imageAlt = "Binoj Charuka portrait",
+  socialLinks = [],
+  locationText = "Sri Lanka",
+  availability = "Open to collaborations",
   className,
-}: MinimalistHeroProps) => {
+}) => {
   return (
     <div
       className={cn(
-        'relative flex min-h-screen md:h-screen w-full flex-col items-center justify-between overflow-hidden bg-[#111111] p-6 py-20 font-sans md:p-12',
-        className
+        "relative flex h-full w-full flex-col items-center justify-between overflow-hidden bg-background dark:bg-black p-6 pt-6 pb-6 font-sans md:px-12 md:pt-8 md:pb-8",
+        className,
       )}
     >
-      {/* Main Content Area */}
-      <div className="relative grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-12 md:gap-0 mt-8 md:mt-0 md:grid-cols-3">
-        {/* Left Text Content */}
-        <div className="z-20 order-1 md:order-1 text-center md:text-left text-white">
-          <div className="mx-auto max-w-[600px] md:mx-0 w-full text-center md:text-right flex items-center justify-center md:justify-end h-[180px] md:h-[400px]">
-            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black leading-[0.9] tracking-tighter text-white/90">
-              Web &<br/>UI/UX<br/>Developer
+      <style>{`
+        @keyframes glitch-shake {
+          0%, 88% { transform: translate(0, 0) skew(0deg); filter: hue-rotate(0deg) saturate(1); }
+          89% { transform: translate(-6px, 3px) skew(3deg); filter: hue-rotate(90deg) saturate(2.5); }
+          91% { transform: translate(6px, -3px) skew(-3deg); filter: hue-rotate(-90deg) saturate(2.5); }
+          93% { transform: translate(-3px, 0px) skew(1.5deg); filter: hue-rotate(45deg) saturate(1.8); }
+          95%, 100% { transform: translate(0, 0) skew(0deg); filter: hue-rotate(0deg) saturate(1); }
+        }
+        .hero-glitch-wrapper {
+          animation: glitch-shake 7s infinite ease-in-out;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-glitch-wrapper {
+            animation: none !important;
+          }
+        }
+      `}</style>
+
+      {/* Top Header Bar */}
+      <header className="z-30 flex w-full max-w-7xl items-center justify-between border-b border-border/40 pb-4 text-xs font-mono text-muted-foreground">
+        <div className="flex items-center gap-2.5">
+          <span
+            aria-hidden="true"
+            className="inline-block animate-spin text-primary [animation-duration:9s] text-sm"
+          >
+            ✳
+          </span>
+          <span className="font-serif text-base font-semibold tracking-tight text-foreground">
+            Binoj Charuka
+          </span>
+          <span className="text-muted-foreground/40 hidden sm:inline">/</span>
+          <span className="text-muted-foreground text-xs hidden sm:inline">Portfolio</span>
+        </div>
+
+        <div className="flex items-center gap-3 sm:gap-4">
+          <span className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/60 px-3 py-1 text-xs">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-foreground/90">{availability}</span>
+          </span>
+          <span className="text-muted-foreground/40 hidden md:inline">✦</span>
+          <span className="hidden md:inline text-xs text-muted-foreground">{locationText}</span>
+        </div>
+      </header>
+
+      {/* Decorative Pill Badge */}
+      <div className="z-20 mt-3 mb-1 flex items-center justify-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-4 py-1 text-xs font-mono text-primary backdrop-blur-xs">
+          <span>Creative Engineering & UI/UX</span>
+          <span className="text-primary/40">•</span>
+          <span>Electronics Undergraduate</span>
+        </span>
+      </div>
+
+      {/* Main 3-column Hero Grid */}
+      <div className="relative my-auto grid w-full max-w-7xl flex-grow grid-cols-1 items-center gap-6 py-2 md:grid-cols-3 md:gap-0">
+        {/* Left Column: Title */}
+        <div className="z-20 order-1 text-center md:text-right flex items-center justify-center md:justify-end">
+          <div className="max-w-[500px] w-full">
+            <h1 className="font-sans font-black text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] leading-[0.88] tracking-[-0.05em] text-foreground">
+              {headlineLeft.line1}
+              <br />
+              <span className="text-primary">{headlineLeft.line2}</span>
+              <br />
+              {headlineLeft.line3}
             </h1>
           </div>
         </div>
 
-        {/* Center Image with Circle */}
-        <div className="relative order-2 md:order-2 flex justify-center items-center h-full">
-            <style>{`
-              @keyframes glitch-shake {
-                0%, 88% { transform: translate(0, 0) skew(0deg); filter: hue-rotate(0deg) saturate(1); }
-                89% { transform: translate(-8px, 4px) skew(4deg); filter: hue-rotate(90deg) saturate(3) invert(0.1); }
-                91% { transform: translate(8px, -4px) skew(-4deg); filter: hue-rotate(-90deg) saturate(3) invert(0.1); }
-                93% { transform: translate(-4px, 0px) skew(2deg); filter: hue-rotate(45deg) saturate(2); }
-                95%, 100% { transform: translate(0, 0) skew(0deg); filter: hue-rotate(0deg) saturate(1); }
-              }
-              .glitch-wrapper {
-                animation: glitch-shake 6s infinite;
-              }
-            `}</style>
-            <div className="absolute z-0 h-[250px] w-[250px] rounded-full bg-[#aaff00]/90 md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px]"></div>
-            
-            <div className="glitch-wrapper relative z-10 flex justify-center items-center">
-              <img
+        {/* Center Column: Portrait Cropped Cleanly Inside Glowing Circular Frame */}
+        <div className="relative order-2 flex items-center justify-center py-2 sm:py-4">
+          <div className="relative flex items-center justify-center">
+            {/* Outer Glowing Halo Orbs */}
+            <div
+              className="pointer-events-none absolute -inset-3 sm:-inset-6 rounded-full bg-primary/45 blur-2xl dark:bg-primary/55 transition-all duration-700"
+              aria-hidden="true"
+            />
+            <div
+              className="pointer-events-none absolute -inset-1 sm:-inset-3 rounded-full bg-primary/30 blur-lg"
+              aria-hidden="true"
+            />
+
+            {/* Circular Crop Frame with rich emerald radial gradient */}
+            <div className="relative h-[260px] w-[260px] sm:h-[330px] sm:w-[330px] md:h-[390px] md:w-[390px] lg:h-[440px] lg:w-[440px] rounded-full overflow-hidden flex items-start justify-center shadow-[0_20px_50px_rgba(0,0,0,0.35)] border-2 border-primary/40 dark:border-primary/50 bg-[radial-gradient(circle_at_50%_35%,#2ce5ad_0%,#159771_50%,#094e39_100%)]">
+              {/* Portrait inside the circle */}
+              <div className="hero-glitch-wrapper relative z-10 flex h-full w-full items-start justify-center">
+                <img
                   src={imageSrc}
                   alt={imageAlt}
-                  className="h-[350px] w-auto object-cover md:h-[600px] lg:h-[700px] scale-[1.2]"
+                  className="h-[132%] w-auto max-w-none object-contain object-top mt-[5%] transition-transform duration-500 hover:scale-105 drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)]"
                   onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = `https://placehold.co/400x600/eab308/ffffff?text=Image+Not+Found`;
+                    const target = e.currentTarget;
+                    if (!target.src.endsWith("/profile.png")) {
+                      target.src = "/profile.png";
+                    }
                   }}
+                />
+              </div>
+
+              {/* Bottom inner vignette matching circle curvature */}
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 rounded-b-full bg-gradient-to-t from-black/45 via-black/15 to-transparent z-20"
+                aria-hidden="true"
               />
             </div>
+          </div>
         </div>
 
-        {/* Right Text */}
-        <div className="z-0 order-3 flex items-center justify-center text-center md:justify-start w-full max-w-[600px] h-[180px] md:h-[400px] mx-auto md:mx-0">
-            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-black leading-[0.9] tracking-tighter text-white/90">
-              I design.<br/>I build.<br/>I elevate.
-            </h1>
+        {/* Right Column: Statement */}
+        <div className="z-20 order-3 text-center md:text-left flex items-center justify-center md:justify-start">
+          <div className="max-w-[500px] w-full">
+            <h2 className="font-sans font-black text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.5rem] leading-[0.88] tracking-[-0.05em] text-foreground">
+              {headlineRight.line1}
+              <br />
+              <span className="text-foreground/80">{headlineRight.line2}</span>
+              <br />
+              <span className="text-primary">{headlineRight.line3}</span>
+            </h2>
+          </div>
         </div>
       </div>
 
-      {/* Footer Elements */}
-      <footer className="z-30 flex w-full max-w-7xl flex-col md:flex-row gap-4 items-center justify-between text-white mt-12 md:mt-0">
-        <div className="flex items-center space-x-4">
-          {socialLinks.map((link, index) => (
-            <SocialIcon key={index} href={link.href} icon={link.icon} />
+      {/* Bottom Footer Bar */}
+      <footer className="z-30 flex w-full max-w-7xl flex-col items-center justify-between gap-4 border-t border-border/40 pt-4 text-muted-foreground sm:flex-row">
+        <div className="flex items-center space-x-5">
+          {socialLinks.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              className="flex items-center gap-1.5 text-xs font-mono transition-colors hover:text-primary"
+            >
+              <link.icon className="h-4 w-4" />
+              <span className="hidden md:inline">{link.label}</span>
+            </a>
           ))}
         </div>
-        <div className="text-sm font-medium text-white/80">
-          {locationText}
+
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono">
+          <span className="text-muted-foreground hidden sm:inline">Crafted with curiosity</span>
+          <span className="text-primary hidden sm:inline">✦</span>
+          <a
+            href="#about"
+            onClick={(e) => {
+              e.preventDefault();
+              const el = document.getElementById("about");
+              el?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="inline-flex items-center gap-1 text-primary hover:underline"
+          >
+            <span>Scroll to explore</span>
+            <ArrowDown size={13} className="animate-bounce" />
+          </a>
         </div>
       </footer>
     </div>
   );
 };
+
+export default MinimalistHero;
