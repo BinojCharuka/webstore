@@ -38,7 +38,14 @@ export const Route = createFileRoute("/admin")({
 });
 
 type Collection =
-  "projects" | "events" | "creative" | "certificates" | "skills" | "roles" | "journey";
+  | "education"
+  | "projects"
+  | "events"
+  | "creative"
+  | "certificates"
+  | "skills"
+  | "roles"
+  | "journey";
 type View = "profile" | Collection;
 type Field = {
   key: string;
@@ -47,6 +54,7 @@ type Field = {
 };
 const sections: { value: View; label: string }[] = [
   { value: "profile", label: "Profile" },
+  { value: "education", label: "Education" },
   { value: "projects", label: "Projects" },
   { value: "events", label: "Events" },
   { value: "creative", label: "Creative works" },
@@ -56,6 +64,14 @@ const sections: { value: View; label: string }[] = [
   { value: "journey", label: "Journey" },
 ];
 const fields: Record<Collection, Field[]> = {
+  education: [
+    { key: "institution", label: "Institution / University" },
+    { key: "degree", label: "Degree / Program" },
+    { key: "field", label: "Department / Field of study" },
+    { key: "period", label: "Period (e.g. 2023 – Present)" },
+    { key: "description", label: "Description / Overview", type: "textarea" },
+    { key: "highlights", label: "Highlights / Focus areas (comma separated)", type: "array" },
+  ],
   projects: [
     { key: "slug", label: "URL slug" },
     { key: "name", label: "Project name" },
@@ -111,6 +127,14 @@ const fields: Record<Collection, Field[]> = {
   ],
 };
 const emptyRows: Record<Collection, Record<string, unknown>> = {
+  education: {
+    institution: "Wayamba University of Sri Lanka",
+    degree: "B.Sc. (Hons) Undergraduate",
+    field: "Department of Electronics, Faculty of Applied Sciences",
+    period: "2023 – Present",
+    description: "",
+    highlights: [],
+  },
   projects: {
     slug: "new-project",
     name: "",
@@ -403,7 +427,8 @@ function Admin() {
 
   const editRow = (collection: Collection, index: number, key: string, value: unknown) => {
     setDraft((prev) => {
-      const list = prev[collection].map((row, i) => (i === index ? { ...row, [key]: value } : row));
+      const current = ((prev[collection] as unknown as Record<string, unknown>[]) ?? []);
+      const list = current.map((row, i) => (i === index ? { ...row, [key]: value } : row));
       return { ...prev, [collection]: list } as PortfolioContent;
     });
     setMessage("Unsaved changes");
@@ -411,22 +436,26 @@ function Admin() {
 
   const addRow = (collection: Collection) => {
     setDraft(
-      (prev) =>
-        ({
+      (prev) => {
+        const current = ((prev[collection] as unknown as Record<string, unknown>[]) ?? []);
+        return {
           ...prev,
-          [collection]: [...prev[collection], { ...emptyRows[collection] }],
-        }) as PortfolioContent,
+          [collection]: [...current, { ...emptyRows[collection] }],
+        } as PortfolioContent;
+      },
     );
     setMessage("Unsaved changes");
   };
 
   const removeRow = (collection: Collection, index: number) => {
     setDraft(
-      (prev) =>
-        ({
+      (prev) => {
+        const current = ((prev[collection] as unknown as Record<string, unknown>[]) ?? []);
+        return {
           ...prev,
-          [collection]: prev[collection].filter((_, i) => i !== index),
-        }) as PortfolioContent,
+          [collection]: current.filter((_, i) => i !== index),
+        } as PortfolioContent;
+      },
     );
     setMessage("Unsaved changes");
   };
@@ -687,11 +716,12 @@ function CollectionEditor({
   onAdd,
 }: {
   name: Collection;
-  items: PortfolioContent[Collection];
+  items?: PortfolioContent[Collection];
   onChange: (name: Collection, index: number, key: string, value: unknown) => void;
   onRemove: (name: Collection, index: number) => void;
   onAdd: (name: Collection) => void;
 }) {
+  const safeItems = (items as unknown as Record<string, unknown>[]) ?? [];
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -700,7 +730,7 @@ function CollectionEditor({
             {name === "creative" ? "Creative works" : name}
           </h2>
           <p className="mt-2 font-mono text-xs text-muted-foreground">
-            {items.length} entries · Edit below
+            {safeItems.length} entries · Edit below
           </p>
         </div>
         <button
@@ -712,17 +742,19 @@ function CollectionEditor({
         </button>
       </div>
 
-      {!items.length && (
+      {!safeItems.length && (
         <p className="mb-5 rounded-2xl border border-dashed p-7 text-sm text-muted-foreground">
           No entries yet. Use Add entry to create your first one.
         </p>
       )}
 
       <div className="grid gap-5">
-        {items.map((row, i) => {
+        {safeItems.map((row, i) => {
           const record = row as unknown as Record<string, unknown>;
           const title = String(
-            record["name"] ||
+            record["institution"] ||
+              record["degree"] ||
+              record["name"] ||
               record["title"] ||
               record["what"] ||
               record["group"] ||

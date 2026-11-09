@@ -9,6 +9,7 @@ import { usePortfolio } from "@/data/use-portfolio";
 
 export const siteNav = [
   { label: "About", href: "/#about" },
+  { label: "Education", href: "/#education" },
   { label: "Projects", href: "/#projects" },
   { label: "Leadership", href: "/#leadership" },
   { label: "Events", href: "/#events" },
@@ -40,7 +41,15 @@ export function SiteHeader({ hasHero = false }: { hasHero?: boolean }) {
       return;
     }
 
-    const sections = ["about", "projects", "leadership", "events", "creative", "contact"];
+    const sections = [
+      "about",
+      "education",
+      "projects",
+      "leadership",
+      "events",
+      "creative",
+      "contact",
+    ];
     const handleScroll = () => {
       const scrollPos = window.scrollY + 200;
       let current = "";

@@ -40,6 +40,14 @@ export type Certificate = {
   url?: string;
   image?: string;
 };
+export type EducationEntry = {
+  institution: string;
+  degree: string;
+  field?: string;
+  period: string;
+  description?: string;
+  highlights?: string[];
+};
 export type Milestone = { when: string; what: string; where: string; detail?: string };
 export type PortfolioContent = {
   profile: {
@@ -58,6 +66,7 @@ export type PortfolioContent = {
     website: string;
     portrait: string; // Replace with /my-photo.jpg after putting it in public/.
   };
+  education?: EducationEntry[];
   skills: { group: string; items: string[] }[];
   projects: Project[];
   roles: { title: string; group: string; description: string; year: string }[];
@@ -85,6 +94,21 @@ export const defaultPortfolio: PortfolioContent = {
     website: "https://charudesignstudio.us",
     portrait: "/portrait-placeholder.svg",
   },
+  education: [
+    {
+      institution: "Wayamba University of Sri Lanka",
+      degree: "B.Sc. (Hons) Undergraduate",
+      field: "Department of Electronics, Faculty of Applied Sciences",
+      period: "2023 – Present",
+      description:
+        "Undergraduate studies focused on electronics engineering, embedded systems, software development, and modern web technologies.",
+      highlights: [
+        "Department of Electronics, Faculty of Applied Sciences",
+        "Active student member in IEEE Student Branch WUSL",
+        "Publicity and creative design lead for university initiatives",
+      ],
+    },
+  ],
   skills: [
     {
       group: "Development",
@@ -407,6 +431,14 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
   )
     return false;
   return (
+    (value["education"] === undefined ||
+      arrayOf(
+        value["education"],
+        (v) =>
+          strings(v, ["institution", "degree", "period"]) &&
+          optionalStrings(v, ["field", "description"]) &&
+          (v["highlights"] === undefined || listOfStrings(v["highlights"])),
+      )) &&
     arrayOf(
       value["projects"],
       (v) =>

@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowUpRight,
+  Calendar,
+  CheckCircle2,
   Code2,
   Github,
   Globe,
@@ -23,6 +25,7 @@ import { useScrollProgress } from "@/hooks/use-scroll-progress";
 import { varStyle } from "@/lib/anim";
 import { cn } from "@/lib/utils";
 import { usePortfolio } from "@/data/use-portfolio";
+import { defaultPortfolio } from "@/data/portfolio";
 import { CreativeAccordion } from "@/components/portfolio/CreativeAccordion";
 import { ProjectCard } from "@/components/portfolio/ProjectCard";
 import { ExternalAction, SectionTitle, SiteLayout, Tag } from "@/components/portfolio/SiteLayout";
@@ -127,6 +130,7 @@ function Index() {
         </div>
         <About />
         <Skills />
+        <Education />
         <Work />
         <Leadership />
         <Events />
@@ -335,13 +339,83 @@ function Skills() {
   );
 }
 
+function Education() {
+  const { education } = usePortfolio();
+  const list = education && education.length > 0 ? education : defaultPortfolio.education ?? [];
+  if (!list.length) return null;
+
+  return (
+    <section id="education" className="py-16 scroll-mt-24">
+      <SectionTitle
+        n="03"
+        title="Education"
+        caption="Academic background, degree programs and university coursework."
+      />
+      <div className="grid gap-6">
+        {list.map((item, idx) => (
+          <Reveal key={`${item.institution}-${idx}`} delay={idx * 120} variant="blur">
+            <SpotlightCard className="p-6 sm:p-8">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="space-y-2">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs text-primary">
+                      <GraduationCap size={13} />
+                      {item.institution}
+                    </span>
+                    {item.field && (
+                      <span className="rounded-full border px-2.5 py-0.5 font-mono text-[11px] text-muted-foreground">
+                        {item.field}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="font-serif text-2xl sm:text-3xl text-foreground">
+                    {item.degree}
+                  </h3>
+                </div>
+                <div className="shrink-0">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-muted-foreground">
+                    <Calendar size={13} />
+                    {item.period}
+                  </span>
+                </div>
+              </div>
+
+              {item.description && (
+                <p className="mt-4 text-sm sm:text-base leading-relaxed text-muted-foreground max-w-3xl">
+                  {item.description}
+                </p>
+              )}
+
+              {item.highlights && item.highlights.length > 0 && (
+                <div className="mt-6 border-t border-border/50 pt-5">
+                  <p className="font-mono text-xs uppercase tracking-wider text-primary mb-3">
+                    Highlights & Focus Areas
+                  </p>
+                  <ul className="grid gap-2.5 sm:grid-cols-2">
+                    {item.highlights.map((h, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-muted-foreground">
+                        <CheckCircle2 size={15} className="text-primary shrink-0 mt-0.5" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </SpotlightCard>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Work() {
   const { projects } = usePortfolio();
   return (
     <section id="projects" className="py-16 scroll-mt-24">
       <div id="work" className="sr-only" />
       <SectionTitle
-        n="03"
+        n="04"
         title="Selected work"
         caption="Web applications and projects shaped by real student needs."
         action={{ label: "All projects", href: "/projects" }}
@@ -363,7 +437,7 @@ function Leadership() {
   return (
     <section id="leadership" className="py-16 scroll-mt-24">
       <SectionTitle
-        n="04"
+        n="05"
         title="Leadership & volunteering"
         caption="Building communities, supporting teams and making things happen together."
       />
@@ -394,7 +468,7 @@ function Events() {
   return (
     <section id="events" className="py-16 scroll-mt-24">
       <SectionTitle
-        n="05"
+        n="06"
         title="Events & contributions"
         caption="Selected experiences across IEEE, student activities and community projects."
         action={{ label: "All events", href: "/events" }}
@@ -439,7 +513,7 @@ function Creative() {
   return (
     <section id="creative" className="py-16 scroll-mt-24">
       <SectionTitle
-        n="06"
+        n="07"
         title="Creative works"
         caption="Where visual storytelling meets engineering and student events."
         action={{ label: "Explore creative work", href: "/creative-works" }}
@@ -458,7 +532,7 @@ function Journey() {
   return (
     <section id="journey" className="py-16">
       <SectionTitle
-        n="07"
+        n="08"
         title="My journey"
         caption="The work, communities and learning experiences shaping what comes next."
       />
@@ -498,7 +572,7 @@ function Certificates() {
   return (
     <section id="certificates" className="py-16">
       <SectionTitle
-        n="08"
+        n="09"
         title="Certificates & achievements"
         caption="A growing collection of verified learning milestones."
         action={{ label: "Certificates page", href: "/certificates" }}
@@ -556,7 +630,7 @@ function Contact() {
               "radial-gradient(60% 80% at 20% 0%, color-mix(in oklab, var(--primary) 22%, transparent), transparent 70%), radial-gradient(50% 70% at 90% 100%, color-mix(in oklab, var(--primary-glow) 18%, transparent), transparent 70%)",
           })}
         />
-        <p className="relative font-mono text-sm text-primary">09 — contact</p>
+        <p className="relative font-mono text-sm text-primary">10 — contact</p>
         <h2 className="relative mt-4 font-serif text-4xl md:text-5xl">
           <ScrambleText text="Let's build something together." speed={18} />
         </h2>
