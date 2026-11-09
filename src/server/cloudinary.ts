@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 function ensureEnvLoaded() {
-  if (process.env.CLOUDINARY_API_KEY && process.env.DATABASE_URL) {
+  if (process.env["CLOUDINARY_API_KEY"] && process.env["DATABASE_URL"]) {
     return;
   }
   if (typeof process.loadEnvFile === "function") {
@@ -45,7 +45,7 @@ function ensureEnvLoaded() {
 function parseCloudinaryUrl(url: string) {
   try {
     const match = url.match(/^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/);
-    if (match) {
+    if (match && match[1] && match[2] && match[3]) {
       return {
         api_key: match[1].replace(/[<>]/g, "").trim(),
         api_secret: match[2].replace(/[<>]/g, "").trim(),
@@ -66,12 +66,12 @@ export function getCloudinaryConfig(): {
 } | null {
   ensureEnvLoaded();
 
-  let cloud_name = process.env.CLOUDINARY_CLOUD_NAME?.replace(/[<>]/g, "").trim();
-  let api_key = process.env.CLOUDINARY_API_KEY?.replace(/[<>]/g, "").trim();
-  let api_secret = process.env.CLOUDINARY_API_SECRET?.replace(/[<>]/g, "").trim();
+  let cloud_name = process.env["CLOUDINARY_CLOUD_NAME"]?.replace(/[<>]/g, "").trim();
+  let api_key = process.env["CLOUDINARY_API_KEY"]?.replace(/[<>]/g, "").trim();
+  let api_secret = process.env["CLOUDINARY_API_SECRET"]?.replace(/[<>]/g, "").trim();
 
-  if ((!cloud_name || !api_key || !api_secret) && process.env.CLOUDINARY_URL) {
-    const parsed = parseCloudinaryUrl(process.env.CLOUDINARY_URL);
+  if ((!cloud_name || !api_key || !api_secret) && process.env["CLOUDINARY_URL"]) {
+    const parsed = parseCloudinaryUrl(process.env["CLOUDINARY_URL"]);
     if (parsed) {
       cloud_name = cloud_name || parsed.cloud_name;
       api_key = api_key || parsed.api_key;
@@ -116,12 +116,15 @@ export async function uploadImageToCloudinary(
   }
 
   try {
-    const result = await cloudinary.uploader.upload(fileDataUriOrBase64, {
+    const uploadOptions: Record<string, unknown> = {
       folder: options?.folder || "student-work-atlas",
-      public_id: options?.publicId,
       resource_type: "auto",
       overwrite: true,
-    });
+    };
+    if (options?.publicId) {
+      uploadOptions["public_id"] = options.publicId;
+    }
+    const result = await cloudinary.uploader.upload(fileDataUriOrBase64, uploadOptions as any);
 
     return {
       success: true,

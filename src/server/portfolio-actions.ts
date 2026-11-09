@@ -39,11 +39,14 @@ export const uploadImageFn = createServerFn({ method: "POST" })
         : undefined;
     return {
       image: (data as { image: string }).image,
-      folder,
+      ...(folder ? { folder } : {}),
     };
   })
   .handler(async ({ data }) => {
-    const result = await uploadImageToCloudinary(data.image, { folder: data.folder });
+    const result = await uploadImageToCloudinary(
+      data.image,
+      data.folder ? { folder: data.folder } : undefined,
+    );
     return result;
   });
 

@@ -78,7 +78,10 @@ export default {
             { status: 400 },
           );
         }
-        const result = await uploadImageToCloudinary(body.image, { folder: body.folder });
+        const result = await uploadImageToCloudinary(
+          body.image,
+          body.folder ? { folder: body.folder } : undefined,
+        );
         return Response.json(result, { status: result.success ? 200 : 400 });
       }
 

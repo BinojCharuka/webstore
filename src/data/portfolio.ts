@@ -385,8 +385,8 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
     Array.isArray(v) && v.every((x) => typeof x === "string");
   const arrayOf = (v: unknown, check: (x: Record<string, unknown>) => boolean) =>
     Array.isArray(v) && v.every((item) => record(item) && check(item));
-  if (!record(value) || !record(value.profile)) return false;
-  const p = value.profile;
+  if (!record(value) || !record(value["profile"])) return false;
+  const p = value["profile"];
   if (
     !strings(p, [
       "name",
@@ -408,35 +408,35 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
     return false;
   return (
     arrayOf(
-      value.projects,
+      value["projects"],
       (v) =>
         strings(v, ["slug", "name", "tagline", "description", "year", "status"]) &&
-        ["Live", "In progress", "Concept"].includes(String(v.status)) &&
-        listOfStrings(v.categories) &&
-        listOfStrings(v.highlights) &&
+        ["Live", "In progress", "Concept"].includes(String(v["status"])) &&
+        listOfStrings(v["categories"]) &&
+        listOfStrings(v["highlights"]) &&
         optionalStrings(v, ["liveUrl", "sourceUrl"]) &&
-        (v.featured === undefined || typeof v.featured === "boolean"),
+        (v["featured"] === undefined || typeof v["featured"] === "boolean"),
     ) &&
     arrayOf(
-      value.events,
+      value["events"],
       (v) =>
         strings(v, ["slug", "title", "group", "role", "year", "summary"]) &&
-        listOfStrings(v.highlights),
+        listOfStrings(v["highlights"]),
     ) &&
     arrayOf(
-      value.creative,
+      value["creative"],
       (v) =>
         strings(v, ["slug", "title", "category", "context", "year"]) &&
         optionalStrings(v, ["image"]),
     ) &&
     arrayOf(
-      value.certificates,
+      value["certificates"],
       (v) => strings(v, ["title", "issuer", "year"]) && optionalStrings(v, ["url", "image"]),
     ) &&
-    arrayOf(value.skills, (v) => strings(v, ["group"]) && listOfStrings(v.items)) &&
-    arrayOf(value.roles, (v) => strings(v, ["title", "group", "description", "year"])) &&
+    arrayOf(value["skills"], (v) => strings(v, ["group"]) && listOfStrings(v["items"])) &&
+    arrayOf(value["roles"], (v) => strings(v, ["title", "group", "description", "year"])) &&
     arrayOf(
-      value.journey,
+      value["journey"],
       (v) => strings(v, ["when", "what", "where"]) && optionalStrings(v, ["detail"]),
     )
   );

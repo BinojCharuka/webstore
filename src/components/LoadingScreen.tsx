@@ -40,9 +40,14 @@ export function LoadingScreen({ imageSrc, children }: { imageSrc: string; childr
 
       // If page just loaded fresh and has an old leftover hash, clear it and start at top
       if (!alreadyLoaded) {
-        const targetSection = sessionStorage.getItem("nav_target_section");
+        let targetSection: string | null = null;
+        try {
+          targetSection = sessionStorage.getItem("nav_target_section");
+        } catch {}
         if (!targetSection && window.location.hash) {
-          window.history.replaceState(null, "", window.location.pathname);
+          try {
+            window.history.replaceState(null, "", window.location.pathname);
+          } catch {}
         }
         window.scrollTo(0, 0);
       }

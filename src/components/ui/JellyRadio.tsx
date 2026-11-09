@@ -242,7 +242,8 @@ export function JellyRadio({
     let j = i;
     for (let tries = 0; tries < n; tries++) {
       j = (j + dir + n) % n;
-      if (!list[j].disabled) return j;
+      const item = list[j];
+      if (item && !item.disabled) return j;
     }
     return i;
   };

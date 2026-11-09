@@ -98,27 +98,32 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
           </div>
         </div>
 
-        {/* Center Column: Portrait Cropped Cleanly Inside Glowing Circular Frame */}
+        {/* Center Column: Portrait with Circular Glowing Aura Behind and Soft Gradient Fade at Bottom */}
         <div className="relative order-2 flex items-center justify-center py-2 sm:py-4">
           <div className="relative flex items-center justify-center">
-            {/* Outer Glowing Halo Orbs */}
+            {/* Soft Ambient Glow Halos Behind the Circle */}
             <div
-              className="pointer-events-none absolute -inset-3 sm:-inset-6 rounded-full bg-primary/45 blur-2xl dark:bg-primary/55 transition-all duration-700"
+              className="pointer-events-none absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 h-[260px] w-[260px] sm:h-[320px] sm:w-[320px] md:h-[380px] md:w-[380px] lg:h-[420px] lg:w-[420px] rounded-full bg-primary/25 blur-3xl dark:bg-primary/35 transition-all duration-700"
               aria-hidden="true"
             />
             <div
-              className="pointer-events-none absolute -inset-1 sm:-inset-3 rounded-full bg-primary/30 blur-lg"
+              className="pointer-events-none absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 h-[220px] w-[220px] sm:h-[280px] sm:w-[280px] md:h-[340px] md:w-[340px] lg:h-[380px] lg:w-[380px] rounded-full bg-primary/20 blur-xl dark:bg-primary/30"
               aria-hidden="true"
             />
 
-            {/* Circular Crop Frame with rich emerald radial gradient */}
-            <div className="relative h-[260px] w-[260px] sm:h-[330px] sm:w-[330px] md:h-[390px] md:w-[390px] lg:h-[440px] lg:w-[440px] rounded-full overflow-hidden flex items-start justify-center shadow-[0_20px_50px_rgba(0,0,0,0.35)] border-2 border-primary/40 dark:border-primary/50 bg-[radial-gradient(circle_at_50%_35%,#2ce5ad_0%,#159771_50%,#094e39_100%)]">
-              {/* Portrait inside the circle */}
-              <div className="hero-glitch-wrapper relative z-10 flex h-full w-full items-start justify-center">
+            {/* Glowing Emerald Circular Disc / Spotlight Aura Behind Subject */}
+            <div
+              className="pointer-events-none absolute left-1/2 top-[46%] -translate-x-1/2 -translate-y-1/2 h-[230px] w-[230px] sm:h-[290px] sm:w-[290px] md:h-[350px] md:w-[350px] lg:h-[390px] lg:w-[390px] rounded-full bg-[radial-gradient(circle_at_50%_45%,#1c8764_0%,#157153_55%,rgba(21,113,83,0)_74%)] dark:bg-[radial-gradient(circle_at_50%_45%,#24dca5_0%,#168e69_55%,rgba(22,142,105,0)_74%)]"
+              aria-hidden="true"
+            />
+
+            {/* Portrait Image (Natural proportions, sits in front of circle, bottom fades seamlessly) */}
+            <div className="relative z-10 flex flex-col items-center justify-end">
+              <div className="hero-glitch-wrapper relative flex items-center justify-center [mask-image:linear-gradient(to_bottom,black_62%,transparent_98%)] [-webkit-mask-image:linear-gradient(to_bottom,black_62%,transparent_98%)]">
                 <img
                   src={imageSrc}
                   alt={imageAlt}
-                  className="h-[132%] w-auto max-w-none object-contain object-top mt-[5%] transition-transform duration-500 hover:scale-105 drop-shadow-[0_12px_28px_rgba(0,0,0,0.45)]"
+                  className="h-[280px] sm:h-[350px] md:h-[420px] lg:h-[470px] w-auto max-w-none object-contain object-top drop-shadow-[0_16px_36px_rgba(0,0,0,0.3)] transition-transform duration-500 hover:scale-[1.02]"
                   onError={(e) => {
                     const target = e.currentTarget;
                     if (!target.src.endsWith("/profile.png")) {
@@ -128,9 +133,9 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
                 />
               </div>
 
-              {/* Bottom inner vignette matching circle curvature */}
+              {/* Bottom Soft Vignette to guarantee seamless fade into page background */}
               <div
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-1/4 rounded-b-full bg-gradient-to-t from-black/45 via-black/15 to-transparent z-20"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-16 sm:h-20 bg-gradient-to-t from-background via-background/60 to-transparent z-20"
                 aria-hidden="true"
               />
             </div>
@@ -169,9 +174,14 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
           ))}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono">
-          <span className="text-muted-foreground hidden sm:inline">Crafted with curiosity</span>
-          <span className="text-primary hidden sm:inline">✦</span>
+        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs font-mono">
+          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            <span className="text-foreground/90">{availability}</span>
+          </span>
+          <span className="text-muted-foreground/40">+</span>
+          <span className="text-muted-foreground">{locationText}</span>
+          <span className="text-muted-foreground/40">+</span>
           <a
             href="#about"
             onClick={(e) => {

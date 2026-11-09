@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 function ensureEnvLoaded() {
-  if (process.env.DATABASE_URL) return;
+  if (process.env["DATABASE_URL"]) return;
   if (typeof process.loadEnvFile === "function") {
     try {
       process.loadEnvFile(".env");
@@ -43,7 +43,7 @@ function ensureEnvLoaded() {
 
 function getDatabaseUrl(): string | undefined {
   ensureEnvLoaded();
-  return process.env.DATABASE_URL;
+  return process.env["DATABASE_URL"];
 }
 
 export function isDbConfigured(): boolean {
@@ -90,8 +90,9 @@ export async function getPortfolioFromDb(): Promise<PortfolioContent> {
     const rows = await sql`
       SELECT data FROM portfolio_data WHERE id = 'main' LIMIT 1;
     `;
-    if (rows.length > 0 && isPortfolioContent(rows[0].data)) {
-      return rows[0].data;
+    const firstRow = rows[0];
+    if (firstRow && isPortfolioContent(firstRow["data"])) {
+      return firstRow["data"];
     }
 
     // Seed default portfolio if empty
