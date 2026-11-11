@@ -193,10 +193,14 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
               const el = document.getElementById("about");
               el?.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
-            className="inline-flex items-center gap-1 text-primary hover:underline"
+            className="group inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 font-mono text-xs font-medium text-primary shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-primary hover:bg-primary/20 hover:shadow-sm active:scale-95"
+            aria-label="Scroll to explore portfolio sections"
           >
+            <span className="relative flex h-3.5 w-2 items-start justify-center rounded-full border border-primary/70 p-0.5">
+              <span className="h-1 w-1 rounded-full bg-primary animate-bob" />
+            </span>
             <span>Scroll to explore</span>
-            <ArrowDown size={13} className="animate-bounce" />
+            <ArrowDown size={12} className="transition-transform duration-300 group-hover:translate-y-0.5" />
           </a>
         </div>
       </footer>

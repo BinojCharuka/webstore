@@ -4,6 +4,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { Reveal } from "@/components/Reveal";
 import { useScrollY } from "@/hooks/use-scroll-progress";
+import { varStyle } from "@/lib/anim";
 import { cn } from "@/lib/utils";
 import { usePortfolio } from "@/data/use-portfolio";
 
@@ -309,7 +310,32 @@ export function SiteFooter() {
 }
 
 function BackToTop() {
+  const [scrollRatio, setScrollRatio] = useState(0);
   const show = useScrollY() > 480;
+
+  useEffect(() => {
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollRatio(max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  const circumference = 2 * Math.PI * 19;
+  const offset = circumference * (1 - scrollRatio);
+
   return (
     <a
       href="#top"
@@ -326,12 +352,63 @@ function BackToTop() {
         }
       }}
       className={cn(
-        "fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full border bg-card text-foreground shadow-lg transition-all duration-500",
+        "fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-background/90 text-foreground shadow-lg backdrop-blur-md transition-all duration-500 hover:scale-105 hover:border-primary/60 hover:text-primary active:scale-95",
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-5 opacity-0",
       )}
     >
+      <svg
+        className="pointer-events-none absolute -inset-[2px] h-[52px] w-[52px] -rotate-90"
+        viewBox="0 0 44 44"
+        aria-hidden="true"
+      >
+        <circle
+          cx="22"
+          cy="22"
+          r="19"
+          className="text-border/30"
+          stroke="currentColor"
+          strokeWidth="2"
+          fill="transparent"
+        />
+        <circle
+          cx="22"
+          cy="22"
+          r="19"
+          className="text-primary transition-[stroke-dashoffset] duration-150 ease-out"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          fill="transparent"
+        />
+      </svg>
       <ChevronUp size={18} />
     </a>
+  );
+}
+
+/** Subtle ambient parallax glow layer (0.2x speed) for spatial storytelling depth. */
+export function AmbientParallaxBackground() {
+  const y = useScrollY();
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+    >
+      <div
+        className="absolute -top-[10%] left-[12%] h-[520px] w-[520px] rounded-full bg-primary/6 blur-[110px] transition-transform duration-300 ease-out dark:bg-primary/10 will-change-transform"
+        style={varStyle({
+          transform: `translate3d(0, ${y * -0.07}px, 0)`,
+        })}
+      />
+      <div
+        className="absolute top-[48%] right-[8%] h-[460px] w-[460px] rounded-full bg-primary-glow/5 blur-[100px] transition-transform duration-300 ease-out dark:bg-primary-glow/8 will-change-transform"
+        style={varStyle({
+          transform: `translate3d(0, ${y * -0.05}px, 0)`,
+        })}
+      />
+    </div>
   );
 }
 
@@ -343,7 +420,8 @@ export function SiteLayout({
   fullWidthTop?: ReactNode;
 }) {
   return (
-    <div id="top" className="min-h-screen">
+    <div id="top" className="relative min-h-screen">
+      <AmbientParallaxBackground />
       {/* Accessible skip link for keyboard navigation */}
       <a
         href="#main-content"
@@ -383,12 +461,13 @@ export function SectionTitle({
     <Reveal variant="none" className="mb-9 flex flex-wrap items-end justify-between gap-4">
       <div>
         <div className="flex items-center gap-3">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-          <span className="font-mono text-xs text-primary">{n}</span>
+          <span className="inline-flex items-center justify-center rounded-full border border-primary/25 bg-primary/10 px-2.5 py-0.5 font-mono text-xs font-semibold text-primary">
+            {n}
+          </span>
           <h2 className="font-serif text-3xl md:text-4xl">{title}</h2>
         </div>
         {caption && (
-          <p className="ml-8 mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+          <p className="ml-10 mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
             {caption}
           </p>
         )}

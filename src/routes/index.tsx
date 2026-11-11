@@ -533,38 +533,76 @@ function Journey() {
   const { journey } = usePortfolio();
   const { ref, progress } = useScrollProgress<HTMLOListElement>(0.65);
   return (
-    <section id="journey" className="py-16">
+    <section id="journey" className="py-16 scroll-mt-24">
       <SectionTitle
         n="08"
         title="My journey"
         caption="The work, communities and learning experiences shaping what comes next."
       />
-      <ol ref={ref} className="relative border-l pl-8">
+      <ol ref={ref} className="relative border-l border-border/60 pl-8 space-y-6">
         <span
           aria-hidden="true"
-          className="absolute -left-px top-0 h-full w-[2px] origin-top bg-gradient-to-b from-primary to-primary-glow"
+          className="absolute -left-px top-0 h-full w-[2px] origin-top bg-gradient-to-b from-primary via-primary-glow to-primary shadow-[0_0_8px_var(--color-primary-glow)] transition-transform duration-100 ease-out"
           style={varStyle({ transform: `scaleY(${progress})` })}
         />
-        {journey.map((item, i) => (
-          <Reveal
-            as="li"
-            key={`${item.when}-${item.what}`}
-            delay={i * 90}
-            variant="right"
-            className="relative pb-10 last:pb-0"
-          >
-            <span
-              className={cn(
-                "absolute -left-[37px] top-2 h-2.5 w-2.5 rounded-full bg-primary",
-                progress > i / journey.length && "animate-pulse-ring",
-              )}
-            />
-            <span className="font-mono text-xs text-muted-foreground">{item.when}</span>
-            <h3 className="mt-1 font-serif text-xl">{item.what}</h3>
-            <p className="text-muted-foreground">{item.where}</p>
-            {item.detail && <p className="mt-2 text-sm text-muted-foreground">{item.detail}</p>}
-          </Reveal>
-        ))}
+        {journey.map((item, i) => {
+          const isReached = progress >= i / Math.max(1, journey.length - 1);
+          return (
+            <Reveal
+              as="li"
+              key={`${item.when}-${item.what}`}
+              delay={i * 80}
+              variant="right"
+              className="relative list-none group"
+            >
+              {/* Timeline marker node */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "absolute -left-[41px] top-4.5 h-4 w-4 rounded-full border-2 transition-all duration-500",
+                  isReached
+                    ? "border-primary bg-primary shadow-[0_0_12px_2px_var(--color-primary)] ring-4 ring-primary/20 scale-110"
+                    : "border-border/80 bg-background scale-90",
+                )}
+              />
+              <div
+                className={cn(
+                  "rounded-2xl border p-5 sm:p-6 transition-all duration-500",
+                  isReached
+                    ? "border-primary/40 bg-card/90 shadow-[0_4px_24px_-8px_rgba(20,184,166,0.15)]"
+                    : "border-border/40 bg-card/40 opacity-85 hover:border-primary/30 hover:opacity-100",
+                )}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span
+                    className={cn(
+                      "inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-xs transition-colors",
+                      isReached
+                        ? "bg-primary/15 text-primary font-semibold"
+                        : "bg-muted/60 text-muted-foreground",
+                    )}
+                  >
+                    {item.when}
+                  </span>
+                  <span className="font-mono text-[11px] text-muted-foreground">
+                    Milestone {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3 className="mt-2.5 font-serif text-xl sm:text-2xl text-foreground">
+                  {item.what}
+                </h3>
+                <p className="mt-1 font-sans text-sm font-medium text-muted-foreground">
+                  {item.where}
+                </p>
+                {item.detail && (
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground/90 border-t border-border/40 pt-3">
+                    {item.detail}
+                  </p>
+                )}
+              </div>
+            </Reveal>
+          );
+        })}
       </ol>
     </section>
   );
