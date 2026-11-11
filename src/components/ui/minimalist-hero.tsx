@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowDown, ArrowUpRight, Github, Globe, Linkedin, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InteractiveConstellation } from "./InteractiveConstellation";
 
 export interface MinimalistHeroProps {
   headlineLeft?: { line1: string; line2: string; line3: string };
@@ -47,6 +48,9 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
           }
         }
       `}</style>
+
+      {/* Algorithmic Electronics Constellation Background */}
+      <InteractiveConstellation className="opacity-55 dark:opacity-75" />
 
       {/* Top Header Bar */}
       <header className="z-30 flex w-full max-w-7xl items-center justify-between border-b border-border/40 pb-4 text-xs font-mono text-muted-foreground">

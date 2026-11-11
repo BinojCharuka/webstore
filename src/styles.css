@@ -287,12 +287,13 @@
   animation-delay: var(--reveal-delay, 0ms);
 }
 
-/* pointer-tracking glow + lift */
+/* pointer-tracking glow + lift with 3D perspective */
 @utility spotlight {
   position: relative;
   overflow: hidden;
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   transition:
-    transform 0.55s var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo),
     box-shadow 0.55s var(--ease-out-expo),
     border-color 0.55s var(--ease-out-expo);
   &::before {
@@ -301,7 +302,7 @@
     inset: 0;
     background: radial-gradient(
       340px circle at var(--mx, 50%) var(--my, 0%),
-      color-mix(in oklab, var(--primary) 16%, transparent),
+      color-mix(in oklab, var(--primary) 18%, transparent),
       transparent 68%
     );
     opacity: 0;
@@ -309,7 +310,7 @@
     pointer-events: none;
   }
   &:hover {
-    transform: translateY(-6px);
+    transform: perspective(1000px) translateY(-6px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
     box-shadow: var(--shadow-lift);
     border-color: color-mix(in oklab, var(--primary) 45%, var(--border));
   }

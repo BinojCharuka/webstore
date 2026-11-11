@@ -344,12 +344,21 @@ export function SiteLayout({
 }) {
   return (
     <div id="top" className="min-h-screen">
+      {/* Accessible skip link for keyboard navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-5 focus:py-2.5 focus:text-xs focus:font-mono focus:font-semibold focus:text-primary-foreground focus:shadow-xl focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+      >
+        Skip to main content
+      </a>
       <ScrollProgress />
       {fullWidthTop}
       <div id="hero-end-marker" className="h-0 w-full" />
       <SiteHeader hasHero={!!fullWidthTop} />
       <main
-        className={cn("mx-auto min-h-[60vh] max-w-5xl px-6", !fullWidthTop && "pt-24 sm:pt-28")}
+        id="main-content"
+        tabIndex={-1}
+        className={cn("mx-auto min-h-[60vh] max-w-5xl px-6 outline-none", !fullWidthTop && "pt-24 sm:pt-28")}
       >
         {children}
       </main>

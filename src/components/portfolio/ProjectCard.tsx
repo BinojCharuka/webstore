@@ -28,7 +28,8 @@ export function ProjectCard({ project, index = 0 }: { project: Project; index?: 
         <div className="relative mt-auto flex items-center justify-between gap-4 pt-7">
           <a
             href={`/projects/${encodeURIComponent(project.slug)}`}
-            className="group inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+            aria-label={`Explore project ${project.name}`}
+            className="group inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-sm"
           >
             Explore project
             <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-1" />

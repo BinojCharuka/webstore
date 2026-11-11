@@ -1,10 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   ArrowDown,
   ArrowUpRight,
   Calendar,
+  Check,
   CheckCircle2,
   Code2,
+  Copy,
   Github,
   Globe,
   GraduationCap,
@@ -616,6 +619,17 @@ function Certificates() {
 
 function Contact() {
   const { profile } = usePortfolio();
+  const [copied, setCopied] = useState(false);
+  const emailToCopy = profile.email || "charudesignstudio@gmail.com";
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(emailToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    } catch {}
+  };
+
   return (
     <section id="contact" className="py-16 scroll-mt-24">
       <Reveal
@@ -637,12 +651,30 @@ function Contact() {
         <p className="relative mt-4 max-w-lg opacity-70">
           Happy to connect over technology, collaborative projects, design and student initiatives.
         </p>
-        <div className="relative mt-8 flex flex-wrap gap-3">
+        <div className="relative mt-8 flex flex-wrap items-center gap-3">
           {profile.email && (
             <ExternalAction href={`mailto:${profile.email}`} primary>
               Email me
             </ExternalAction>
           )}
+          <button
+            type="button"
+            onClick={handleCopyEmail}
+            className="inline-flex items-center gap-2 rounded-full border border-ink-foreground/20 bg-ink-foreground/5 px-5 py-3 font-mono text-xs text-ink-foreground transition-all duration-300 hover:border-primary hover:text-primary active:scale-95"
+            aria-label={copied ? "Email address copied to clipboard" : "Copy email address to clipboard"}
+          >
+            {copied ? (
+              <>
+                <Check size={14} className="text-primary animate-bounce" />
+                <span className="text-primary font-semibold">Email copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy size={14} />
+                <span>Copy email</span>
+              </>
+            )}
+          </button>
           {profile.github && (
             <ExternalAction href={profile.github} primary={!profile.email}>
               GitHub
