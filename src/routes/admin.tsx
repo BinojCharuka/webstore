@@ -74,6 +74,7 @@ const fields: Record<Collection, Field[]> = {
     { key: "degree", label: "Degree / Program" },
     { key: "field", label: "Department / Field of study" },
     { key: "period", label: "Period (e.g. 2023 – Present)" },
+    { key: "logo", label: "Institution logo (Cloudinary upload or image URL)", type: "image" },
     { key: "description", label: "Description / Overview", type: "textarea" },
     { key: "highlights", label: "Highlights / Focus areas (comma separated)", type: "array" },
   ],
@@ -143,6 +144,7 @@ const emptyRows: Record<Collection, Record<string, unknown>> = {
     period: "2023 – Present",
     description: "",
     highlights: [],
+    logo: "",
   },
   projects: {
     slug: "new-project",

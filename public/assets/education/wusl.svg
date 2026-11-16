@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="wusl-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d77f"/>
+      <stop offset="100%" stop-color="#c59b27"/>
+    </linearGradient>
+    <linearGradient id="wusl-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0e3a6c"/>
+      <stop offset="100%" stop-color="#071d38"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="56" fill="url(#wusl-blue)" stroke="url(#wusl-gold)" stroke-width="3"/>
+  <circle cx="60" cy="60" r="50" fill="none" stroke="url(#wusl-gold)" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Shield -->
+  <path d="M40 32 L80 32 L80 62 C80 78 60 90 60 90 C60 90 40 78 40 62 Z" fill="#0b2b52" stroke="url(#wusl-gold)" stroke-width="2"/>
+
+  <!-- Sun Rays / Torch -->
+  <circle cx="60" cy="46" r="6" fill="url(#wusl-gold)"/>
+  <path d="M60 38 L60 42 M54 41 L57 44 M66 41 L63 44" stroke="url(#wusl-gold)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Open Book -->
+  <path d="M48 64 C54 60 60 62 60 62 C60 62 66 60 72 64 L72 73 C66 69 60 71 60 71 C60 71 54 69 48 73 Z" fill="url(#wusl-gold)"/>
+  <line x1="60" y1="62" x2="60" y2="71" stroke="#0b2b52" stroke-width="1"/>
+
+  <!-- Text Arc / WUSL -->
+  <text x="60" y="103" text-anchor="middle" font-family="'DM Sans', system-ui, sans-serif" font-weight="900" font-size="11" fill="url(#wusl-gold)" letter-spacing="1">WUSL</text>
+</svg>

@@ -51,6 +51,7 @@ export type EducationEntry = {
   period: string;
   description?: string;
   highlights?: string[];
+  logo?: string; // Institution logo (Cloudinary URL or /path)
 };
 export type Milestone = { when: string; what: string; where: string; detail?: string };
 export type PortfolioContent = {
@@ -440,7 +441,7 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
         value["education"],
         (v) =>
           strings(v, ["institution", "degree", "period"]) &&
-          optionalStrings(v, ["field", "description"]) &&
+          optionalStrings(v, ["field", "description", "logo"]) &&
           (v["highlights"] === undefined || listOfStrings(v["highlights"])),
       )) &&
     arrayOf(

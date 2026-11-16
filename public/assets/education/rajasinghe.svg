@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="rajasinghe-green" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1b5e3a"/>
+      <stop offset="100%" stop-color="#0b331e"/>
+    </linearGradient>
+    <linearGradient id="rajasinghe-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fae08c"/>
+      <stop offset="100%" stop-color="#c59b27"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Outer Base -->
+  <circle cx="60" cy="60" r="56" fill="url(#rajasinghe-green)" stroke="url(#rajasinghe-gold)" stroke-width="3"/>
+  <circle cx="60" cy="60" r="50" fill="none" stroke="url(#rajasinghe-gold)" stroke-width="1.2"/>
+
+  <!-- Shield -->
+  <path d="M42 32 L78 32 L78 60 C78 76 60 88 60 88 C60 88 42 76 42 60 Z" fill="#13472b" stroke="url(#rajasinghe-gold)" stroke-width="2"/>
+
+  <!-- Flaming Torch of Knowledge -->
+  <path d="M57 44 Q60 36 62 44 Q65 41 61 34 Q57 41 57 44 Z" fill="#ffb703"/>
+  <path d="M56 46 L64 46 L62 56 L58 56 Z" fill="url(#rajasinghe-gold)"/>
+
+  <!-- Open Book of Wisdom -->
+  <path d="M48 64 C54 60 60 62 60 62 C60 62 66 60 72 64 L72 73 C66 69 60 71 60 71 C60 71 54 69 48 73 Z" fill="url(#rajasinghe-gold)"/>
+  <line x1="60" y1="62" x2="60" y2="71" stroke="#13472b" stroke-width="1"/>
+
+  <!-- Bottom RCC Monogram -->
+  <text x="60" y="103" text-anchor="middle" font-family="'DM Sans', system-ui, sans-serif" font-weight="900" font-size="11" fill="url(#rajasinghe-gold)" letter-spacing="1">RCC</text>
+</svg>

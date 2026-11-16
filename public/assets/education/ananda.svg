@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ananda-maroon" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b1523"/>
+      <stop offset="100%" stop-color="#540a12"/>
+    </linearGradient>
+    <linearGradient id="ananda-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe082"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circular Base -->
+  <circle cx="60" cy="60" r="56" fill="url(#ananda-maroon)" stroke="url(#ananda-gold)" stroke-width="3"/>
+  <circle cx="60" cy="60" r="50" fill="none" stroke="url(#ananda-gold)" stroke-width="1.2"/>
+
+  <!-- Ananda Shield Shape -->
+  <path d="M42 32 L78 32 L78 60 C78 76 60 88 60 88 C60 88 42 76 42 60 Z" fill="#690d17" stroke="url(#ananda-gold)" stroke-width="2"/>
+
+  <!-- Radiant Rising Sun -->
+  <path d="M50 48 A10 10 0 0 1 70 48 Z" fill="url(#ananda-gold)"/>
+  <path d="M60 36 L60 40 M52 39 L54 42 M68 39 L66 42 M46 45 L49 46 M74 45 L71 46" stroke="url(#ananda-gold)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Lotus Flower Petals -->
+  <path d="M60 62 C57 56 52 58 50 64 C55 65 59 64 60 62 Z" fill="url(#ananda-gold)"/>
+  <path d="M60 62 C63 56 68 58 70 64 C65 65 61 64 60 62 Z" fill="url(#ananda-gold)"/>
+  <path d="M60 55 C57 58 58 64 60 65 C62 64 63 58 60 55 Z" fill="#fff9db"/>
+
+  <!-- Motto Banner -->
+  <path d="M44 72 L76 72 L72 78 L48 78 Z" fill="url(#ananda-gold)"/>
+  <text x="60" y="77" text-anchor="middle" font-family="'DM Sans', system-ui, sans-serif" font-weight="900" font-size="5" fill="#540a12">ANANDA</text>
+
+  <!-- Bottom AC Monogram -->
+  <text x="60" y="103" text-anchor="middle" font-family="'DM Sans', system-ui, sans-serif" font-weight="900" font-size="11" fill="url(#ananda-gold)" letter-spacing="1">AC</text>
+</svg>
