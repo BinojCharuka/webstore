@@ -36,6 +36,7 @@ import { ScrollExpand } from "@/components/ui/ScrollExpand";
 import { MinimalistHero } from "@/components/ui/minimalist-hero";
 import RefineFrame from "@/components/ui/RefineFrame";
 import TechText from "@/components/ui/TechText";
+import ScrollStack, { ScrollStackItem } from "@/components/ui/ScrollStack";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -459,6 +460,8 @@ function Education() {
 
 function Work() {
   const { projects } = usePortfolio();
+  const featured = projects.filter((project) => project.featured).slice(0, 4);
+
   return (
     <section id="projects" className="py-16 scroll-mt-24">
       <div id="work" className="sr-only" />
@@ -468,13 +471,28 @@ function Work() {
         caption="Web applications and projects shaped by real student needs."
         action={{ label: "All projects", href: "/projects" }}
       />
-      <div className="grid gap-5 md:grid-cols-2">
-        {projects
-          .filter((project) => project.featured)
-          .slice(0, 4)
-          .map((p, i) => (
-            <ProjectCard key={p.slug} project={p} index={i} />
+      <div className="w-full">
+        <ScrollStack
+          useWindowScroll
+          itemDistance={90}
+          itemStackDistance={24}
+          stackPosition="12%"
+          itemScale={0.04}
+          baseScale={0.88}
+          dimAmount={0.2}
+          tiltAmount={1.5}
+          holdDistance={180}
+          className="w-full"
+        >
+          {featured.map((p, i) => (
+            <ScrollStackItem
+              key={p.slug}
+              className="rounded-2xl overflow-hidden border-0 bg-transparent shadow-2xl !p-0"
+            >
+              <ProjectCard project={p} index={i} stacked />
+            </ScrollStackItem>
           ))}
+        </ScrollStack>
       </div>
     </section>
   );
