@@ -8,12 +8,14 @@ import {
   Download,
   ExternalLink,
   FileJson,
+  GraduationCap,
   Image as ImageIcon,
   Loader2,
   Plus,
   RotateCcw,
   Save,
   ShieldAlert,
+  Sparkles,
   Star,
   Trash2,
   Upload,
@@ -21,6 +23,7 @@ import {
 } from "lucide-react";
 import { SiteLayout } from "@/components/portfolio/SiteLayout";
 import { defaultPortfolio, isPortfolioContent, getPortfolioValidationErrors, type PortfolioContent } from "@/data/portfolio";
+import { getEducationLogo } from "@/lib/education";
 import { JellyRadio } from "@/components/ui/JellyRadio";
 import {
   loadPortfolio,
@@ -30,6 +33,7 @@ import {
   uploadImageToCloudinaryStorage,
   getBackendStatus,
   syncPortfolioFromRemote,
+  fileToDataUri,
 } from "@/data/use-portfolio";
 
 export const Route = createFileRoute("/admin")({
@@ -55,7 +59,7 @@ type View = "profile" | Collection;
 type Field = {
   key: string;
   label: string;
-  type?: "textarea" | "array" | "checkbox" | "status" | "image" | "gallery";
+  type?: "textarea" | "array" | "checkbox" | "status" | "image" | "gallery" | "logo";
 };
 const sections: { value: View; label: string }[] = [
   { value: "profile", label: "Profile" },
@@ -74,7 +78,7 @@ const fields: Record<Collection, Field[]> = {
     { key: "degree", label: "Degree / Program" },
     { key: "field", label: "Department / Field of study" },
     { key: "period", label: "Period (e.g. 2023 – Present)" },
-    { key: "logo", label: "Institution logo (Cloudinary upload or image URL)", type: "image" },
+    { key: "logo", label: "Institution crest & watermark logo", type: "logo" },
     { key: "description", label: "Description / Overview", type: "textarea" },
     { key: "highlights", label: "Highlights / Focus areas (comma separated)", type: "array" },
   ],
@@ -563,16 +567,281 @@ function GalleryUploadField({
   );
 }
 
+const PRESET_LOGOS = [
+  {
+    id: "wusl",
+    name: "Wayamba University (WUSL)",
+    short: "WUSL",
+    path: "/assets/education/wusl.svg",
+    desc: "Navy & Gold crest",
+  },
+  {
+    id: "ananda",
+    name: "Ananda College",
+    short: "Ananda",
+    path: "/assets/education/ananda.svg",
+    desc: "Maroon & Gold crest",
+  },
+  {
+    id: "rajasinghe",
+    name: "Rajasinghe Central College",
+    short: "Rajasinghe",
+    path: "/assets/education/rajasinghe.svg",
+    desc: "Green & Gold crest",
+  },
+  {
+    id: "default",
+    name: "Default Academic Crest",
+    short: "Universal",
+    path: "/assets/education/default.svg",
+    desc: "Graduation cap seal",
+  },
+] as const;
+
+function InstitutionLogoField({
+  id,
+  field,
+  institution,
+  value,
+  onChange,
+}: {
+  id: string;
+  field: Field;
+  institution: string;
+  value: unknown;
+  onChange: (v: unknown) => void;
+}) {
+  const base =
+    "w-full rounded-xl border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary";
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const strValue = typeof value === "string" ? value.trim() : "";
+  const resolvedLogo = getEducationLogo({ institution, logo: strValue });
+
+  const activePreset = PRESET_LOGOS.find((p) => p.path === strValue);
+  const isAutoDetected = !strValue;
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      setUploadError("Logo file size should be less than 8MB.");
+      return;
+    }
+
+    setUploading(true);
+    setUploadError(null);
+    try {
+      // 1. Try Cloudinary first
+      const result = await uploadImageToCloudinaryStorage(file, "portfolio/education");
+      if (result.success && result.url) {
+        onChange(result.url);
+        setUploadError(null);
+      } else {
+        // 2. Graceful fallback: convert to base64 data URI so user is NEVER blocked
+        const dataUri = await fileToDataUri(file);
+        onChange(dataUri);
+        setUploadError(null);
+      }
+    } catch (err) {
+      // Even on network error, embed as data URI
+      try {
+        const dataUri = await fileToDataUri(file);
+        onChange(dataUri);
+        setUploadError(null);
+      } catch {
+        setUploadError(err instanceof Error ? err.message : "Failed to load logo file.");
+      }
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  return (
+    <div className="space-y-4 rounded-2xl border border-primary/20 bg-secondary/10 p-4 text-sm">
+      {/* Header */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <GraduationCap size={15} className="text-primary" />
+          <span className="font-mono text-xs font-semibold text-foreground">
+            {field.label}
+          </span>
+        </div>
+        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-primary/80">
+          <Sparkles size={11} /> Card Watermark Crest
+        </span>
+      </div>
+
+      {/* Active Logo Summary */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 rounded-xl border bg-card/60 p-3.5">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-primary/30 bg-secondary/50 p-1.5 shadow-sm flex items-center justify-center">
+            <img
+              src={resolvedLogo}
+              alt="Active crest"
+              className="h-full w-full object-contain filter contrast-125 drop-shadow"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = "/assets/education/default.svg";
+              }}
+            />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-medium text-foreground truncate">
+                {activePreset
+                  ? activePreset.name
+                  : isAutoDetected
+                  ? `Auto Preset (${institution || "Default"})`
+                  : "Custom Uploaded Crest"}
+              </span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-mono ${
+                  strValue
+                    ? "bg-primary/10 text-primary border border-primary/30"
+                    : "bg-muted text-muted-foreground border"
+                }`}
+              >
+                {strValue ? "Custom Selected" : "Auto Smart Preset"}
+              </span>
+            </div>
+            <p className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground">
+              {resolvedLogo}
+            </p>
+          </div>
+        </div>
+
+        {/* Actions for current logo */}
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href={resolvedLogo}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ExternalLink size={12} /> View vector
+          </a>
+          {strValue && (
+            <button
+              type="button"
+              onClick={() => onChange("")}
+              className="inline-flex items-center gap-1 rounded-lg border border-border/80 px-2.5 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground hover:border-primary transition-colors"
+              title="Reset to smart auto-matching by institution name"
+            >
+              <RotateCcw size={12} /> Reset to auto
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Preset Crests Grid */}
+      <div className="space-y-2">
+        <span className="block font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+          Quick Preset Logos (One-click apply):
+        </span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          {PRESET_LOGOS.map((preset) => {
+            const isSelected = strValue === preset.path;
+            const isAutoActive = !strValue && resolvedLogo === preset.path;
+
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => onChange(preset.path)}
+                className={`group flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition-all ${
+                  isSelected
+                    ? "border-primary bg-primary/10 ring-1 ring-primary/40 shadow-sm"
+                    : isAutoActive
+                    ? "border-primary/50 bg-accent/20"
+                    : "border-border/70 bg-card/40 hover:border-primary/40 hover:bg-accent/40"
+                }`}
+              >
+                <div className="h-9 w-9 shrink-0 overflow-hidden rounded-lg border border-border/50 bg-secondary/60 p-1 flex items-center justify-center">
+                  <img
+                    src={preset.path}
+                    alt={preset.name}
+                    className="h-full w-full object-contain filter contrast-125"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-mono text-xs font-medium text-foreground">
+                    {preset.short}
+                  </p>
+                  <p className="truncate text-[10px] text-muted-foreground">
+                    {isSelected ? "Active" : isAutoActive ? "Auto active" : preset.desc}
+                  </p>
+                </div>
+                {isSelected && <Check size={13} className="text-primary shrink-0" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Upload Custom Logo & Image URL */}
+      <div className="space-y-2 pt-1 border-t border-border/40">
+        <span className="block font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+          Upload Custom Crest or Paste Image URL:
+        </span>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            id={id}
+            className={`${base} flex-1 font-mono text-xs`}
+            placeholder="/assets/education/wusl.svg or https://res.cloudinary.com/..."
+            value={strValue}
+            onChange={(e) => onChange(e.target.value)}
+          />
+          <input
+            type="file"
+            accept="image/svg+xml,image/png,image/jpeg,image/webp"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <button
+            type="button"
+            disabled={uploading}
+            onClick={() => fileInputRef.current?.click()}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-primary/40 bg-accent/40 px-4 py-2.5 text-xs font-medium hover:bg-accent hover:border-primary disabled:opacity-50 shrink-0 transition-colors"
+          >
+            {uploading ? (
+              <>
+                <Loader2 size={13} className="animate-spin text-primary" /> Uploading...
+              </>
+            ) : (
+              <>
+                <Upload size={13} className="text-primary" /> Upload Logo File
+              </>
+            )}
+          </button>
+        </div>
+
+        {uploadError && (
+          <p className="font-mono text-xs text-destructive bg-destructive/10 p-2.5 rounded-lg border border-destructive/20">
+            ⚠️ {uploadError}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function FieldInput({
   id,
   field,
   value,
+  record,
   onChange,
   onSetCover,
 }: {
   id: string;
   field: Field;
   value: unknown;
+  record?: Record<string, unknown>;
   onChange: (v: unknown) => void;
   onSetCover?: (url: string) => void;
 }) {
@@ -587,6 +856,18 @@ function FieldInput({
         value={value}
         onChange={(urls) => onChange(urls)}
         onSetCover={onSetCover}
+      />
+    );
+  }
+
+  if (field.type === "logo" || field.key === "logo") {
+    return (
+      <InstitutionLogoField
+        id={id}
+        field={field}
+        institution={String(record?.["institution"] || "")}
+        value={value}
+        onChange={onChange}
       />
     );
   }
@@ -1030,6 +1311,18 @@ function CollectionEditor({
         </p>
       )}
 
+      {name === "education" && (
+        <div className="mb-6 flex items-start gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4 text-xs text-muted-foreground">
+          <GraduationCap className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <div className="space-y-1">
+            <strong className="text-foreground">Institution Crest Watermarks:</strong>
+            <p className="leading-relaxed">
+              Each academic card displays a soft, light, blurred watermark crest on the right. You can select one of the built-in official vector presets (WUSL, Ananda College, Rajasinghe Central College, Default Crest) or upload your own school/university badge for any entry below.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-5">
         {safeItems.map((row, i) => {
           const record = row as unknown as Record<string, unknown>;
@@ -1069,7 +1362,11 @@ function CollectionEditor({
                     <div
                       key={field.key}
                       className={
-                        field.type === "textarea" || field.type === "image" || field.type === "gallery"
+                        field.type === "textarea" ||
+                        field.type === "image" ||
+                        field.type === "gallery" ||
+                        field.type === "logo" ||
+                        field.key === "logo"
                           ? "sm:col-span-2"
                           : ""
                       }
@@ -1078,6 +1375,7 @@ function CollectionEditor({
                         id={`${name}-${i}-${field.key}`}
                         field={field}
                         value={fieldValue}
+                        record={record}
                         onChange={(value) => onChange(name, i, field.key, value)}
                         onSetCover={(url) => onChange(name, i, "image", url)}
                       />
