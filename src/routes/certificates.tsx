@@ -21,7 +21,11 @@ function CertificatesPage() {
         <div className="grid gap-5 py-12 pb-20 md:grid-cols-2">
           {certificates.map((c, i) => (
             <Reveal key={`${c.title}-${i}`}>
-              <div className="rounded-2xl border bg-card p-7">
+              <div
+                data-cursor-target
+                data-cursor-label={c.title}
+                className="cursor-target rounded-2xl border bg-card p-7 transition-colors hover:border-primary/40"
+              >
                 <Award className="mb-4 h-7 w-7 text-primary" />
                 <p className="font-mono text-xs text-primary">{c.year}</p>
                 <h2 className="mt-3 font-serif text-2xl">{c.title}</h2>

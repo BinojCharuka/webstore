@@ -23,7 +23,11 @@ function CreativeWorks() {
       <div className="grid gap-5 pb-20 md:grid-cols-2">
         {creative.map((work, i) => (
           <Reveal key={work.slug} delay={(i % 4) * 90}>
-            <div className="rounded-2xl border bg-card p-6">
+            <div
+              data-cursor-target
+              data-cursor-label={work.title}
+              className="cursor-target rounded-2xl border bg-card p-6 transition-colors hover:border-primary/40"
+            >
               <div className="mb-4 flex items-center justify-between gap-3">
                 <span className="font-mono text-xs text-primary">
                   {String(i + 1).padStart(2, "0")}

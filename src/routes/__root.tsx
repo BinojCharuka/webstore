@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { themeBootstrap } from "@/lib/theme";
+import TargetCursor from "@/components/ui/TargetCursor";
 
 function NotFoundComponent() {
   return (
@@ -126,6 +127,14 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
+        <TargetCursor
+          targetSelector="a, button, [role='button'], [role='radio'], input, textarea, select, .cursor-target, [data-cursor-target], [data-cursor-label], .spotlight, [data-card]"
+          spinDuration={2}
+          hideDefaultCursor
+          parallaxOn
+          cursorColor="#ffffff"
+          cursorColorOnTarget="#24dca5"
+        />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </ThemeProvider>

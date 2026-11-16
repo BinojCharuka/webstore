@@ -23,7 +23,8 @@ function EventsPage() {
           <Reveal key={event.slug} delay={(i % 5) * 80}>
             <a
               href={`/events/${encodeURIComponent(event.slug)}`}
-              className="group flex flex-col justify-between gap-4 rounded-2xl border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg sm:flex-row sm:items-center"
+              data-cursor-label={event.title}
+              className="cursor-target group flex flex-col justify-between gap-4 rounded-2xl border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg sm:flex-row sm:items-center"
             >
               <div className="flex items-start gap-4">
                 <CalendarDays className="mt-1 h-5 w-5 shrink-0 text-primary" />

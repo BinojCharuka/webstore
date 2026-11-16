@@ -170,7 +170,8 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               aria-label={link.label}
-              className="flex items-center gap-1.5 text-xs font-mono transition-colors hover:text-primary"
+              data-cursor-label={link.label}
+              className="cursor-target flex items-center gap-1.5 text-xs font-mono transition-colors hover:text-primary"
             >
               <link.icon className="h-4 w-4" />
               <span className="hidden md:inline">{link.label}</span>
@@ -193,8 +194,9 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
               const el = document.getElementById("about");
               el?.scrollIntoView({ behavior: "smooth", block: "start" });
             }}
-            className="group inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 font-mono text-xs font-medium text-primary shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-primary hover:bg-primary/20 hover:shadow-sm active:scale-95"
+            className="cursor-target group inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 font-mono text-xs font-medium text-primary shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-primary hover:bg-primary/20 hover:shadow-sm active:scale-95"
             aria-label="Scroll to explore portfolio sections"
+            data-cursor-label="Scroll"
           >
             <span className="relative flex h-3.5 w-2 items-start justify-center rounded-full border border-primary/70 p-0.5">
               <span className="h-1 w-1 rounded-full bg-primary animate-bob" />

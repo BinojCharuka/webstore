@@ -103,6 +103,10 @@
   will-change: opacity, transform;
 }
 
+.scroll-expand__title > * {
+  pointer-events: auto;
+}
+
 :is(.dark) .scroll-expand__title {
   color: #ffffff;
   text-shadow: 0 4px 32px rgba(0, 0, 0, 0.7);

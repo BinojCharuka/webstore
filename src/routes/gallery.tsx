@@ -5,6 +5,7 @@ import { Reveal } from "@/components/Reveal";
 import { PageIntro, SiteLayout } from "@/components/portfolio/SiteLayout";
 import { usePortfolio } from "@/data/use-portfolio";
 import { JellyRadio } from "@/components/ui/JellyRadio";
+import RefineFrame from "@/components/ui/RefineFrame";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({ meta: [{ title: "Gallery — Binoj Charuka" }] }),
@@ -53,13 +54,26 @@ function Gallery() {
         <div className="grid gap-5 py-8 pb-20 sm:grid-cols-2 lg:grid-cols-3">
           {filteredImages.map((item, i) => (
             <Reveal key={`${item.src}-${i}`} delay={(i % 3) * 100}>
-              <figure className="overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:shadow-lg hover:border-primary/40">
-                <img
-                  src={item.src}
-                  alt={item.title}
-                  loading="lazy"
-                  className="aspect-[4/5] w-full object-cover"
-                />
+              <figure
+                data-cursor-target
+                data-cursor-label={item.title}
+                className="cursor-target overflow-hidden rounded-2xl border bg-card transition-all duration-300 hover:shadow-lg hover:border-primary/40"
+              >
+                <RefineFrame
+                  aspectRatio="4 / 5"
+                  width="100%"
+                  radius={16}
+                  background="var(--color-card, #18181b)"
+                  color="var(--color-foreground, #f5f5f5)"
+                  className="w-full"
+                >
+                  <img
+                    src={item.src}
+                    alt={item.title}
+                    loading="lazy"
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                </RefineFrame>
                 <figcaption className="p-4 font-serif text-lg flex items-center justify-between">
                   <span>{item.title}</span>
                   <span className="font-mono text-xs text-muted-foreground">{item.category}</span>

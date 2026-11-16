@@ -176,8 +176,9 @@ export function SiteHeader({ hasHero = false }: { hasHero?: boolean }) {
               }
             }
           }}
-          className="flex shrink-0 items-center gap-2 font-serif text-base sm:text-lg tracking-tight"
+          className="cursor-target flex shrink-0 items-center gap-2 font-serif text-base sm:text-lg tracking-tight"
           aria-label="Portfolio home"
+          data-cursor-label="Home"
         >
           <span
             aria-hidden="true"
@@ -200,8 +201,9 @@ export function SiteHeader({ hasHero = false }: { hasHero?: boolean }) {
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
+                  data-cursor-label={item.label}
                   className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-mono tracking-wide transition-all duration-200",
+                    "cursor-target rounded-full px-3 py-1.5 text-xs font-mono tracking-wide transition-all duration-200",
                     isActive
                       ? "bg-primary/15 text-primary font-semibold shadow-xs"
                       : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
@@ -219,7 +221,8 @@ export function SiteHeader({ hasHero = false }: { hasHero?: boolean }) {
 
           <button
             type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border bg-card/80 text-foreground md:hidden transition-colors hover:border-primary/50"
+            className="cursor-target flex h-9 w-9 items-center justify-center rounded-full border bg-card/80 text-foreground md:hidden transition-colors hover:border-primary/50"
+            data-cursor-label="Menu"
             onClick={() => setMenuOpen((open) => !open)}
             aria-controls="mobile-nav"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -285,22 +288,22 @@ export function SiteFooter() {
           Built with curiosity.
         </p>
         <div className="flex flex-wrap gap-x-5 gap-y-2">
-          <a className="hover:text-primary" href="/projects">
+          <a className="cursor-target hover:text-primary" href="/projects" data-cursor-label="Projects">
             Projects
           </a>
-          <a className="hover:text-primary" href="/events">
+          <a className="cursor-target hover:text-primary" href="/events" data-cursor-label="Events">
             Events
           </a>
-          <a className="hover:text-primary" href="/creative-works">
+          <a className="cursor-target hover:text-primary" href="/creative-works" data-cursor-label="Creative">
             Creative works
           </a>
-          <a className="hover:text-primary" href="/certificates">
+          <a className="cursor-target hover:text-primary" href="/certificates" data-cursor-label="Certs">
             Certificates
           </a>
-          <a className="hover:text-primary" href="/gallery">
+          <a className="cursor-target hover:text-primary" href="/gallery" data-cursor-label="Gallery">
             Gallery
           </a>
-          <a className="hover:text-primary" href="/admin">
+          <a className="cursor-target hover:text-primary" href="/admin" data-cursor-label="Studio">
             Local studio
           </a>
         </div>
@@ -351,8 +354,9 @@ function BackToTop() {
           }
         }
       }}
+      data-cursor-label="Top"
       className={cn(
-        "fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-background/90 text-foreground shadow-lg backdrop-blur-md transition-all duration-500 hover:scale-105 hover:border-primary/60 hover:text-primary active:scale-95",
+        "cursor-target fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-background/90 text-foreground shadow-lg backdrop-blur-md transition-all duration-500 hover:scale-105 hover:border-primary/60 hover:text-primary active:scale-95",
         show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-5 opacity-0",
       )}
     >
@@ -475,7 +479,8 @@ export function SectionTitle({
       {action && (
         <a
           href={action.href}
-          className="group inline-flex items-center gap-2 font-mono text-xs text-primary hover:underline"
+          data-cursor-label={action.label}
+          className="cursor-target group inline-flex items-center gap-2 font-mono text-xs text-primary hover:underline"
         >
           {action.label}
           <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -503,7 +508,8 @@ export function PageIntro({
       <Reveal variant="none">
         <a
           href={backHref}
-          className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+          data-cursor-label="Back"
+          className="cursor-target inline-flex items-center gap-2 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft size={14} />
           {backLabel}
@@ -527,7 +533,7 @@ export function PageIntro({
 
 export function Tag({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full bg-accent px-3 py-1 font-mono text-[0.7rem] text-accent-foreground">
+    <span className="cursor-target inline-flex items-center rounded-full bg-accent px-3 py-1 font-mono text-[0.7rem] text-accent-foreground transition-colors hover:border-primary/50">
       {children}
     </span>
   );
@@ -547,8 +553,9 @@ export function ExternalAction({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      data-cursor-label="Open"
       className={cn(
-        "inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:-translate-y-0.5",
+        "cursor-target inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:-translate-y-0.5",
         primary ? "shine bg-primary text-primary-foreground" : "border hover:border-primary/50",
       )}
     >

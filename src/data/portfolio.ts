@@ -15,6 +15,8 @@ export type Project = {
   sourceUrl?: string;
   featured?: boolean;
   highlights: string[];
+  /** Two placeholder images used by PixelSwap – first is primary, second is secondary */
+  images?: [string, string];
 };
 export type EventEntry = {
   slug: string;
@@ -92,7 +94,7 @@ export const defaultPortfolio: PortfolioContent = {
     github: "https://github.com/BinojCharuka",
     linkedin: "",
     website: "https://charudesignstudio.us",
-    portrait: "/portrait-placeholder.svg",
+    portrait: "/profile.png",
   },
   education: [
     {
@@ -446,8 +448,9 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
         ["Live", "In progress", "Concept"].includes(String(v["status"])) &&
         listOfStrings(v["categories"]) &&
         listOfStrings(v["highlights"]) &&
-        optionalStrings(v, ["liveUrl", "sourceUrl"]) &&
-        (v["featured"] === undefined || typeof v["featured"] === "boolean"),
+        optionalStrings(v, ["liveUrl", "sourceUrl", "images"]) &&
+        (v["featured"] === undefined || typeof v["featured"] === "boolean") &&
+        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].length === 2 && v["images"].every((i) => typeof i === "string"))),
     ) &&
     arrayOf(
       value["events"],

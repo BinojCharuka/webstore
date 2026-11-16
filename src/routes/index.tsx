@@ -34,6 +34,8 @@ import { ProjectCard } from "@/components/portfolio/ProjectCard";
 import { ExternalAction, SectionTitle, SiteLayout, Tag } from "@/components/portfolio/SiteLayout";
 import { ScrollExpand } from "@/components/ui/ScrollExpand";
 import { MinimalistHero } from "@/components/ui/minimalist-hero";
+import RefineFrame from "@/components/ui/RefineFrame";
+import TechText from "@/components/ui/TechText";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -89,7 +91,33 @@ function Index() {
       <SiteLayout
         fullWidthTop={
           <ScrollExpand
-            title={data.profile.shortName || "Binoj Charuka"}
+            title={
+              <div className="relative w-full max-w-5xl h-[160px] sm:h-[220px] md:h-[280px] lg:h-[340px] flex items-center justify-center px-4">
+                <TechText
+                  text={data.profile.shortName || "Binoj Charuka"}
+                  fontFamily="'DM Sans', system-ui, sans-serif"
+                  fontWeight={900}
+                  fontSize={140}
+                  letterSpacing={-0.04}
+                  color="currentColor"
+                  accentColor="var(--color-primary, #24dca5)"
+                  reveal="letter"
+                  dashLength={4}
+                  dashGap={2}
+                  strokeWidth={1.75}
+                  specks={15}
+                  selection
+                  labels
+                  draggable
+                  bounce={0.4}
+                  clickKick
+                  sweep
+                  intro="assemble"
+                  introDuration={1.8}
+                  className="w-full h-full cursor-target"
+                />
+              </div>
+            }
             scrollHint="SCROLL TO DISCOVER"
             useWindowScroll
             scrollDistance={1.2}
@@ -197,7 +225,8 @@ function Hero() {
             e.preventDefault();
             document.getElementById("work")?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
-          className="shine inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
+          className="cursor-target shine inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
+          data-cursor-label="Work"
         >
           Explore my work <ArrowUpRight size={17} />
         </a>
@@ -209,7 +238,8 @@ function Hero() {
               .getElementById("contact")
               ?.scrollIntoView({ behavior: "smooth", block: "start" });
           }}
-          className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium hover:border-primary/50"
+          className="cursor-target inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-medium hover:border-primary/50"
+          data-cursor-label="Connect"
         >
           Let's connect
         </a>
@@ -261,15 +291,24 @@ function About() {
             />
             <div className="photo-frame p-[3px] shadow-sm">
               <div className="relative overflow-hidden rounded-[1.6rem] bg-secondary">
-                <img
-                  src={profile.portrait}
-                  alt={`Profile visual for ${profile.shortName}`}
-                  width="800"
-                  height="1000"
-                  loading="lazy"
-                  decoding="async"
-                  className="kenburns aspect-[4/5] w-full object-cover"
-                />
+                <RefineFrame
+                  aspectRatio="4 / 5"
+                  width="100%"
+                  radius={24}
+                  background="var(--color-secondary)"
+                  color="var(--color-foreground)"
+                  className="w-full"
+                >
+                  <img
+                    src={profile.portrait}
+                    alt={`Profile visual for ${profile.shortName}`}
+                    width="800"
+                    height="1000"
+                    loading="lazy"
+                    decoding="async"
+                    className="kenburns aspect-[4/5] w-full object-cover"
+                  />
+                </RefineFrame>
               </div>
             </div>
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 animate-float whitespace-nowrap rounded-full border bg-card px-4 py-1.5 font-mono text-xs text-muted-foreground shadow-sm">
@@ -287,7 +326,9 @@ function About() {
             {facts.map((fact) => (
               <div
                 key={fact.label}
-                className="group rounded-xl border bg-card p-4 transition-colors hover:border-primary/45"
+                data-cursor-target
+                data-cursor-label={fact.label}
+                className="cursor-target group rounded-xl border bg-card p-4 transition-colors hover:border-primary/45"
               >
                 <fact.icon className="h-4 w-4 text-primary" />
                 <dt className="mt-3 font-mono text-[0.65rem] uppercase tracking-widest text-muted-foreground">
@@ -357,7 +398,11 @@ function Education() {
       <div className="grid gap-6">
         {list.map((item, idx) => (
           <Reveal key={`${item.institution}-${idx}`} delay={idx * 120} variant="blur">
-            <SpotlightCard className="p-6 sm:p-8">
+            <SpotlightCard
+              data-cursor-target
+              data-cursor-label="Education"
+              className="cursor-target p-6 sm:p-8"
+            >
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
@@ -447,7 +492,11 @@ function Leadership() {
       <div className="grid gap-4 md:grid-cols-2">
         {roles.map((role, i) => (
           <Reveal key={`${role.title}-${role.group}`} variant="up" delay={(i % 4) * 90}>
-            <SpotlightCard className="h-full">
+            <SpotlightCard
+              data-cursor-target
+              data-cursor-label={role.title}
+              className="cursor-target h-full"
+            >
               <div className="flex items-center justify-between gap-3">
                 <span className="font-mono text-xs uppercase tracking-widest text-primary">
                   {role.title}
@@ -481,7 +530,8 @@ function Events() {
           <Reveal key={event.slug} delay={i * 70} variant="up">
             <a
               href={`/events/${encodeURIComponent(event.slug)}`}
-              className="group flex flex-col justify-between gap-4 py-6 transition-colors hover:text-primary sm:flex-row sm:items-center"
+              data-cursor-label={event.title}
+              className="cursor-target group flex flex-col justify-between gap-4 py-6 transition-colors hover:text-primary sm:flex-row sm:items-center"
             >
               <div className="flex items-start gap-4">
                 <span className="pt-1 font-mono text-xs text-primary">
@@ -566,8 +616,10 @@ function Journey() {
                 )}
               />
               <div
+                data-cursor-target
+                data-cursor-label={item.when}
                 className={cn(
-                  "rounded-2xl border p-5 sm:p-6 transition-all duration-500",
+                  "cursor-target rounded-2xl border p-5 sm:p-6 transition-all duration-500",
                   isReached
                     ? "border-primary/40 bg-card/90 shadow-[0_4px_24px_-8px_rgba(20,184,166,0.15)]"
                     : "border-border/40 bg-card/40 opacity-85 hover:border-primary/30 hover:opacity-100",
@@ -622,7 +674,11 @@ function Certificates() {
         <div className="grid gap-4 md:grid-cols-2">
           {certificates.slice(0, 2).map((c, i) => (
             <Reveal key={`${c.title}-${i}`}>
-              <SpotlightCard>
+              <SpotlightCard
+                data-cursor-target
+                data-cursor-label={c.title}
+                className="cursor-target"
+              >
                 <GraduationCap className="mb-4 h-6 w-6 text-primary" />
                 <h3 className="font-serif text-xl">{c.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -698,7 +754,8 @@ function Contact() {
           <button
             type="button"
             onClick={handleCopyEmail}
-            className="inline-flex items-center gap-2 rounded-full border border-ink-foreground/20 bg-ink-foreground/5 px-5 py-3 font-mono text-xs text-ink-foreground transition-all duration-300 hover:border-primary hover:text-primary active:scale-95"
+            data-cursor-label="Copy"
+            className="cursor-target inline-flex items-center gap-2 rounded-full border border-ink-foreground/20 bg-ink-foreground/5 px-5 py-3 font-mono text-xs text-ink-foreground transition-all duration-300 hover:border-primary hover:text-primary active:scale-95"
             aria-label={copied ? "Email address copied to clipboard" : "Copy email address to clipboard"}
           >
             {copied ? (

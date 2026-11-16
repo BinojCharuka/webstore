@@ -21,8 +21,9 @@ export function CreativeAccordion({ works }: { works: CreativeWork[] }) {
           type="button"
           onClick={() => setActive(index)}
           aria-pressed={active === index}
+          data-cursor-label={work.title}
           className={cn(
-            "creative-panel group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left transition-all duration-500 md:min-h-[340px]",
+            "cursor-target creative-panel group relative flex min-h-[170px] flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left transition-all duration-500 md:min-h-[340px]",
             active === index ? "active border-primary/50 md:flex-[2.35]" : "md:flex-1",
           )}
         >

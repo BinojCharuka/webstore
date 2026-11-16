@@ -84,6 +84,8 @@ const fields: Record<Collection, Field[]> = {
     { key: "sourceUrl", label: "Source URL" },
     { key: "highlights", label: "Highlights (comma separated)", type: "array" },
     { key: "featured", label: "Featured on home", type: "checkbox" },
+    { key: "images_0", label: "Primary image (card foreground)", type: "image" },
+    { key: "images_1", label: "Secondary image (card hover)", type: "image" },
   ],
   events: [
     { key: "slug", label: "URL slug" },
@@ -147,6 +149,7 @@ const emptyRows: Record<Collection, Record<string, unknown>> = {
     sourceUrl: "",
     highlights: [],
     featured: false,
+    images: ["", ""],
   },
   events: {
     slug: "new-event",
@@ -428,7 +431,17 @@ function Admin() {
   const editRow = (collection: Collection, index: number, key: string, value: unknown) => {
     setDraft((prev) => {
       const current = ((prev[collection] as unknown as Record<string, unknown>[]) ?? []);
-      const list = current.map((row, i) => (i === index ? { ...row, [key]: value } : row));
+      const list = current.map((row, i) => {
+        if (i !== index) return row;
+        // Handle virtual images_0 / images_1 keys → store in images tuple
+        if (key === "images_0" || key === "images_1") {
+          const slot = key === "images_0" ? 0 : 1;
+          const imgs = Array.isArray(row["images"]) ? [...row["images"]] : ["", ""];
+          imgs[slot] = value;
+          return { ...row, images: imgs as [string, string] };
+        }
+        return { ...row, [key]: value };
+      });
       return { ...prev, [collection]: list } as PortfolioContent;
     });
     setMessage("Unsaved changes");
@@ -775,16 +788,25 @@ function CollectionEditor({
                 </button>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                {fields[name].map((field) => (
-                  <div key={field.key} className={field.type === "textarea" ? "sm:col-span-2" : ""}>
-                    <FieldInput
-                      id={`${name}-${i}-${field.key}`}
-                      field={field}
-                      value={record[field.key]}
-                      onChange={(value) => onChange(name, i, field.key, value)}
-                    />
-                  </div>
-                ))}
+                {fields[name].map((field) => {
+                  // Resolve virtual images_0 / images_1 keys from the images tuple
+                  let fieldValue = record[field.key];
+                  if (field.key === "images_0") {
+                    fieldValue = Array.isArray(record["images"]) ? record["images"][0] : "";
+                  } else if (field.key === "images_1") {
+                    fieldValue = Array.isArray(record["images"]) ? record["images"][1] : "";
+                  }
+                  return (
+                    <div key={field.key} className={field.type === "textarea" || field.type === "image" ? "sm:col-span-2" : ""}>
+                      <FieldInput
+                        id={`${name}-${i}-${field.key}`}
+                        field={field}
+                        value={fieldValue}
+                        onChange={(value) => onChange(name, i, field.key, value)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );

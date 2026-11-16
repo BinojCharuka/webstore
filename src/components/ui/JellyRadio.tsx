@@ -294,7 +294,8 @@ export function JellyRadio({
           aria-checked={i === at}
           tabIndex={i === at ? 0 : -1}
           disabled={disabled || !!it.disabled}
-          className="jelly-radio__chip"
+          className="cursor-target jelly-radio__chip"
+          data-cursor-label={typeof it.label === "string" ? it.label : it.value}
           data-on={i === at ? "true" : "false"}
           onClick={(e) => commit(i, e.detail === 0)}
           onKeyDown={(e) => onKeyDown(e, i)}

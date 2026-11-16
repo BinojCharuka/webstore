@@ -12,7 +12,8 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={label}
       title={label}
-      className="shrink-0 rounded-full text-foreground"
+      data-cursor-label="Theme"
+      className="cursor-target shrink-0 rounded-full text-foreground"
     >
       {theme === "dark" ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
     </Button>
