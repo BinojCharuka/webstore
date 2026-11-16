@@ -26,6 +26,7 @@ export type EventEntry = {
   year: string;
   summary: string;
   highlights: string[];
+  images?: string[]; // Multiple flyers / event gallery photos
 };
 export type CreativeWork = {
   slug: string;
@@ -34,6 +35,7 @@ export type CreativeWork = {
   context: string;
   year: string;
   image?: string; // Add your own image file under public/ and use its /path here.
+  images?: string[]; // Multiple flyers / gallery photos for this event
 };
 export type Certificate = {
   title: string;
@@ -456,13 +458,15 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
       value["events"],
       (v) =>
         strings(v, ["slug", "title", "group", "role", "year", "summary"]) &&
-        listOfStrings(v["highlights"]),
+        listOfStrings(v["highlights"]) &&
+        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].every((i) => typeof i === "string"))),
     ) &&
     arrayOf(
       value["creative"],
       (v) =>
         strings(v, ["slug", "title", "category", "context", "year"]) &&
-        optionalStrings(v, ["image"]),
+        optionalStrings(v, ["image"]) &&
+        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].every((i) => typeof i === "string"))),
     ) &&
     arrayOf(
       value["certificates"],

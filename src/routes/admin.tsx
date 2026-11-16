@@ -8,11 +8,16 @@ import {
   Download,
   ExternalLink,
   FileJson,
+  Image as ImageIcon,
   Loader2,
+  Plus,
   RotateCcw,
   Save,
   ShieldAlert,
+  Star,
+  Trash2,
   Upload,
+  X,
 } from "lucide-react";
 import { SiteLayout } from "@/components/portfolio/SiteLayout";
 import { defaultPortfolio, isPortfolioContent, type PortfolioContent } from "@/data/portfolio";
@@ -50,7 +55,7 @@ type View = "profile" | Collection;
 type Field = {
   key: string;
   label: string;
-  type?: "textarea" | "array" | "checkbox" | "status" | "image";
+  type?: "textarea" | "array" | "checkbox" | "status" | "image" | "gallery";
 };
 const sections: { value: View; label: string }[] = [
   { value: "profile", label: "Profile" },
@@ -95,6 +100,7 @@ const fields: Record<Collection, Field[]> = {
     { key: "year", label: "Year" },
     { key: "summary", label: "Summary", type: "textarea" },
     { key: "highlights", label: "Highlights (comma separated)", type: "array" },
+    { key: "images", label: "Event flyers & photo gallery", type: "gallery" },
   ],
   creative: [
     { key: "slug", label: "Unique slug" },
@@ -102,7 +108,8 @@ const fields: Record<Collection, Field[]> = {
     { key: "category", label: "Category" },
     { key: "context", label: "Description", type: "textarea" },
     { key: "year", label: "Year" },
-    { key: "image", label: "Image URL or Cloudinary upload", type: "image" },
+    { key: "image", label: "Primary cover flyer (single preview)", type: "image" },
+    { key: "images", label: "Flyer collection / event photo gallery", type: "gallery" },
   ],
   certificates: [
     { key: "title", label: "Certificate title" },
@@ -159,6 +166,7 @@ const emptyRows: Record<Collection, Record<string, unknown>> = {
     year: "2026",
     summary: "",
     highlights: [],
+    images: [],
   },
   creative: {
     slug: "new-work",
@@ -167,6 +175,7 @@ const emptyRows: Record<Collection, Record<string, unknown>> = {
     context: "",
     year: "2026",
     image: "",
+    images: [],
   },
   certificates: { title: "", issuer: "", year: "2026", url: "", image: "" },
   skills: { group: "New skill group", items: [] },
@@ -315,19 +324,270 @@ function ImageUploadField({
   );
 }
 
+function GalleryUploadField({
+  id,
+  field,
+  value,
+  onChange,
+  onSetCover,
+}: {
+  id: string;
+  field: Field;
+  value: unknown;
+  onChange: (v: string[]) => void;
+  onSetCover?: ((url: string) => void) | undefined;
+}) {
+  const images = Array.isArray(value) ? (value as string[]).filter(Boolean) : [];
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [urlInput, setUrlInput] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleMultipleFiles = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+
+    const validFiles = files.filter((f) => f.size <= 15 * 1024 * 1024);
+    if (validFiles.length < files.length) {
+      setUploadError("Some files were skipped because they exceed 15MB.");
+    } else {
+      setUploadError(null);
+    }
+
+    setUploading(true);
+    const uploadedUrls: string[] = [];
+
+    for (let i = 0; i < validFiles.length; i++) {
+      const currentFile = validFiles[i];
+      if (!currentFile) continue;
+      setUploadProgress(`Uploading ${i + 1} of ${validFiles.length}...`);
+      try {
+        const res = await uploadImageToCloudinaryStorage(currentFile, "portfolio/media");
+        if (res.success && res.url) {
+          uploadedUrls.push(res.url);
+        }
+      } catch (err) {
+        console.error("Upload error:", err);
+      }
+    }
+
+    setUploading(false);
+    setUploadProgress("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+
+    if (uploadedUrls.length > 0) {
+      const nextImages = [...images, ...uploadedUrls];
+      onChange(nextImages);
+      if (onSetCover && images.length === 0 && uploadedUrls[0]) {
+        onSetCover(uploadedUrls[0]);
+      }
+    }
+  };
+
+  const addUrl = () => {
+    const trimmed = urlInput.trim();
+    if (!trimmed) return;
+    const nextImages = [...images, trimmed];
+    onChange(nextImages);
+    setUrlInput("");
+    if (onSetCover && images.length === 0) {
+      onSetCover(trimmed);
+    }
+  };
+
+  const removeImage = (indexToRemove: number) => {
+    onChange(images.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const clearAll = () => {
+    if (confirm("Remove all flyers/photos from this gallery?")) {
+      onChange([]);
+    }
+  };
+
+  return (
+    <div id={id} className="space-y-3 rounded-2xl border border-border/80 bg-background/50 p-4">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <ImageIcon size={14} className="text-primary" />
+          <span className="font-mono text-xs font-semibold text-foreground">{field.label}</span>
+          <span className="rounded-full bg-primary/10 border border-primary/20 px-2 py-0.2 font-mono text-[10px] text-primary">
+            {images.length} {images.length === 1 ? "flyer" : "flyers"}
+          </span>
+        </div>
+        <span className="font-mono text-[10px] text-primary/80 flex items-center gap-1">
+          <Cloud size={11} /> Cloudinary multi-upload
+        </span>
+      </div>
+
+      {/* Upload button and URL paste */}
+      <div className="flex flex-col sm:flex-row gap-2">
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={handleMultipleFiles}
+        />
+        <button
+          type="button"
+          disabled={uploading}
+          onClick={() => fileInputRef.current?.click()}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/50 bg-primary/10 px-4 py-2.5 text-xs font-semibold text-primary hover:bg-primary/20 hover:border-primary disabled:opacity-50 transition-all shrink-0 cursor-target"
+        >
+          {uploading ? (
+            <>
+              <Loader2 size={14} className="animate-spin text-primary" />
+              <span>{uploadProgress || "Uploading flyers..."}</span>
+            </>
+          ) : (
+            <>
+              <Upload size={14} />
+              <span>Upload Flyers / Photos</span>
+            </>
+          )}
+        </button>
+
+        <div className="flex flex-1 gap-1.5">
+          <input
+            value={urlInput}
+            onChange={(e) => setUrlInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                addUrl();
+              }
+            }}
+            placeholder="Or paste image URL (https://...)"
+            className="flex-1 rounded-xl border bg-background px-3 py-2 text-xs font-mono outline-none focus:border-primary"
+          />
+          <button
+            type="button"
+            onClick={addUrl}
+            disabled={!urlInput.trim()}
+            className="inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-xs font-medium hover:border-primary hover:text-primary disabled:opacity-40 transition-colors shrink-0"
+          >
+            <Plus size={13} />
+            <span className="hidden sm:inline">Add URL</span>
+          </button>
+        </div>
+      </div>
+
+      {uploadError && (
+        <p className="font-mono text-xs text-destructive bg-destructive/10 p-2.5 rounded-lg border border-destructive/20">
+          ⚠️ {uploadError}
+        </p>
+      )}
+
+      {/* Gallery Grid */}
+      {images.length > 0 ? (
+        <div className="space-y-2 pt-2">
+          <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+            <span>Flyers in this gallery (hover thumbnail to manage):</span>
+            <button
+              type="button"
+              onClick={clearAll}
+              className="text-destructive/80 hover:text-destructive hover:underline"
+            >
+              Clear all
+            </button>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {images.map((imgUrl, idx) => (
+              <div
+                key={`${imgUrl}-${idx}`}
+                className="group relative aspect-[3/4] rounded-xl overflow-hidden border border-border/80 bg-black/40 shadow-xs hover:border-primary/60 transition-all"
+              >
+                <img
+                  src={imgUrl}
+                  alt={`Flyer ${idx + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.opacity = "0.4";
+                  }}
+                />
+                {/* Index badge */}
+                <span className="absolute top-1.5 left-1.5 rounded-md bg-black/70 backdrop-blur-xs px-1.5 py-0.5 font-mono text-[10px] text-white/90">
+                  #{idx + 1}
+                </span>
+                {/* Overlay actions */}
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-2">
+                  <div className="flex justify-end gap-1">
+                    <a
+                      href={imgUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-lg bg-black/60 p-1.5 text-white/80 hover:text-white transition-colors"
+                      title="Open full size"
+                    >
+                      <ExternalLink size={12} />
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => removeImage(idx)}
+                      className="rounded-lg bg-red-500/80 p-1.5 text-white hover:bg-red-600 transition-colors"
+                      title="Delete flyer"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                  {onSetCover && (
+                    <button
+                      type="button"
+                      onClick={() => onSetCover(imgUrl)}
+                      className="w-full rounded-md bg-white/20 hover:bg-primary hover:text-primary-foreground backdrop-blur-xs py-1 text-[10px] font-mono font-medium text-white transition-colors text-center"
+                    >
+                      Set as cover
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border/70 p-6 text-center">
+          <p className="font-mono text-xs text-muted-foreground">
+            No flyers or photos added yet for this event.
+          </p>
+          <p className="text-[11px] text-muted-foreground/70 mt-1">
+            Click "Upload Flyers / Photos" to select all your flyers at once.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FieldInput({
   id,
   field,
   value,
   onChange,
+  onSetCover,
 }: {
   id: string;
   field: Field;
   value: unknown;
   onChange: (v: unknown) => void;
+  onSetCover?: (url: string) => void;
 }) {
   const base =
     "w-full rounded-xl border bg-background px-3 py-2.5 text-sm outline-none focus:border-primary";
+
+  if (field.type === "gallery") {
+    return (
+      <GalleryUploadField
+        id={id}
+        field={field}
+        value={value}
+        onChange={(urls) => onChange(urls)}
+        onSetCover={onSetCover}
+      />
+    );
+  }
 
   if (field.type === "image" || field.key === "image" || field.key === "portrait") {
     return <ImageUploadField id={id} field={field} value={value} onChange={onChange} />;
@@ -797,12 +1057,20 @@ function CollectionEditor({
                     fieldValue = Array.isArray(record["images"]) ? record["images"][1] : "";
                   }
                   return (
-                    <div key={field.key} className={field.type === "textarea" || field.type === "image" ? "sm:col-span-2" : ""}>
+                    <div
+                      key={field.key}
+                      className={
+                        field.type === "textarea" || field.type === "image" || field.type === "gallery"
+                          ? "sm:col-span-2"
+                          : ""
+                      }
+                    >
                       <FieldInput
                         id={`${name}-${i}-${field.key}`}
                         field={field}
                         value={fieldValue}
                         onChange={(value) => onChange(name, i, field.key, value)}
+                        onSetCover={(url) => onChange(name, i, "image", url)}
                       />
                     </div>
                   );

@@ -16,9 +16,14 @@ function Gallery() {
   const { creative, certificates } = usePortfolio();
   const [filter, setFilter] = useState("All");
 
-  const creativeItems = creative
-    .filter((v) => !!v.image)
-    .map((v) => ({ title: v.title, src: v.image!, category: "Creative Works" }));
+  const creativeItems = creative.flatMap((v) => {
+    const list = Array.isArray(v.images) && v.images.length > 0 ? v.images : v.image ? [v.image] : [];
+    return list.map((src, idx) => ({
+      title: list.length > 1 ? `${v.title} (${idx + 1}/${list.length})` : v.title,
+      src,
+      category: "Creative Works",
+    }));
+  });
   const certItems = certificates
     .filter((v) => !!v.image)
     .map((v) => ({ title: v.title, src: v.image!, category: "Certificates" }));
