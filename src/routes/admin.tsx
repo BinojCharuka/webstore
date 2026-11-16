@@ -20,7 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { SiteLayout } from "@/components/portfolio/SiteLayout";
-import { defaultPortfolio, isPortfolioContent, type PortfolioContent } from "@/data/portfolio";
+import { defaultPortfolio, isPortfolioContent, getPortfolioValidationErrors, type PortfolioContent } from "@/data/portfolio";
 import { JellyRadio } from "@/components/ui/JellyRadio";
 import {
   loadPortfolio,
@@ -737,8 +737,14 @@ function Admin() {
 
   const saveToDatabase = async () => {
     setIsSavingDb(true);
-    setMessage("Saving to Neon Database...");
+    setMessage("Validating and saving to Neon Database...");
     try {
+      const errors = getPortfolioValidationErrors(draft);
+      if (errors.length > 0) {
+        setMessage(`⚠️ Validation error before saving: ${errors[0]}`);
+        setIsSavingDb(false);
+        return;
+      }
       const res = await savePortfolioToRemote(draft);
       if (res.success) {
         setMessage("✅ Saved permanently to Neon PostgreSQL database! Live site updated.");
@@ -788,11 +794,12 @@ function Admin() {
     if (!file) return;
     try {
       const parsed: unknown = JSON.parse(await file.text());
-      if (!isPortfolioContent(parsed)) throw new Error("Invalid portfolio structure");
-      setDraft(parsed);
+      const errors = getPortfolioValidationErrors(parsed);
+      if (errors.length > 0) throw new Error(errors[0]);
+      setDraft(parsed as PortfolioContent);
       setMessage("Imported into the editor. Click 'Save to Neon Database' to apply.");
-    } catch {
-      setMessage("Import failed. Upload a valid exported portfolio JSON file.");
+    } catch (err) {
+      setMessage(`Import failed: ${err instanceof Error ? err.message : "Upload a valid exported portfolio JSON file."}`);
     }
     e.target.value = "";
   };

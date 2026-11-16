@@ -4,7 +4,7 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { getPortfolioFromDb, savePortfolioToDb, isDbConfigured } from "./server/db";
 import { uploadImageToCloudinary, isCloudinaryConfigured } from "./server/cloudinary";
-import { isPortfolioContent } from "./data/portfolio";
+import { isPortfolioContent, getPortfolioValidationErrors } from "./data/portfolio";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -59,9 +59,11 @@ export default {
         }
         if (request.method === "POST") {
           const body = await request.json();
-          if (!isPortfolioContent(body)) {
+          const errors = getPortfolioValidationErrors(body);
+          if (errors.length > 0) {
+            console.warn("Portfolio structure validation errors:", errors);
             return Response.json(
-              { success: false, error: "Invalid portfolio structure" },
+              { success: false, error: `Invalid portfolio structure: ${errors[0]}` },
               { status: 400 },
             );
           }

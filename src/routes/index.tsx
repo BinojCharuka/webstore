@@ -408,77 +408,74 @@ function Education() {
               <SpotlightCard
                 data-cursor-target
                 data-cursor-label={item.institution}
-                className="cursor-target p-6 sm:p-8"
+                className="cursor-target group relative overflow-hidden p-6 sm:p-8"
               >
-                <div className="flex flex-col sm:flex-row sm:items-start gap-5 sm:gap-6">
-                  {/* Institution Logo / Emblem Avatar */}
-                  <div className="shrink-0 flex items-center justify-start sm:justify-center">
-                    <div className="relative h-14 w-14 sm:h-16 sm:w-16 md:h-18 md:w-18 rounded-2xl border border-border/80 bg-secondary/60 dark:bg-black/50 p-2 sm:p-2.5 shadow-sm flex items-center justify-center overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-md">
-                      <img
-                        src={logoSrc}
-                        alt={`${item.institution} logo`}
-                        className="h-full w-full object-contain transition-transform duration-300 hover:scale-105"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).src = "/assets/education/default.svg";
-                        }}
-                      />
+                {/* Right side ambient watermark logo (light, blurred & subtle) */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none select-none absolute -right-6 -bottom-6 sm:-right-8 sm:-bottom-8 md:right-4 md:top-1/2 md:-translate-y-1/2 z-0 h-44 w-44 sm:h-52 sm:w-52 md:h-64 md:w-64 opacity-15 dark:opacity-20 blur-[1.5px] transition-all duration-700 ease-out group-hover:opacity-30 group-hover:blur-none group-hover:scale-105"
+                >
+                  <img
+                    src={logoSrc}
+                    alt=""
+                    className="h-full w-full object-contain filter contrast-125 drop-shadow-xl"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+
+                {/* Card Content on top */}
+                <div className="relative z-10 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs text-primary">
+                        <GraduationCap size={13} />
+                        {item.institution}
+                      </span>
+                      {item.field && (
+                        <span className="rounded-full border px-2.5 py-0.5 font-mono text-[11px] text-muted-foreground">
+                          {item.field}
+                        </span>
+                      )}
                     </div>
+                    <h3 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">
+                      {item.degree}
+                    </h3>
                   </div>
 
-                  {/* Details column */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-                      <div className="space-y-1.5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs text-primary">
-                            <GraduationCap size={13} />
-                            {item.institution}
-                          </span>
-                          {item.field && (
-                            <span className="rounded-full border px-2.5 py-0.5 font-mono text-[11px] text-muted-foreground">
-                              {item.field}
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">
-                          {item.degree}
-                        </h3>
-                      </div>
-
-                      <div className="shrink-0">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-muted-foreground">
-                          <Calendar size={13} />
-                          {item.period}
-                        </span>
-                      </div>
-                    </div>
-
-                    {item.description && (
-                      <p className="mt-4 text-sm sm:text-base leading-relaxed text-muted-foreground max-w-3xl">
-                        {item.description}
-                      </p>
-                    )}
-
-                    {item.highlights && item.highlights.length > 0 && (
-                      <div className="mt-6 border-t border-border/50 pt-5">
-                        <p className="font-mono text-xs uppercase tracking-wider text-primary mb-3">
-                          Highlights & Focus Areas
-                        </p>
-                        <ul className="grid gap-2.5 sm:grid-cols-2">
-                          {item.highlights.map((h, i) => (
-                            <li
-                              key={i}
-                              className="flex items-start gap-2.5 text-xs sm:text-sm text-muted-foreground"
-                            >
-                              <CheckCircle2 size={15} className="text-primary shrink-0 mt-0.5" />
-                              <span>{h}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                  <div className="shrink-0">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 font-mono text-xs text-muted-foreground">
+                      <Calendar size={13} />
+                      {item.period}
+                    </span>
                   </div>
                 </div>
+
+                {item.description && (
+                  <p className="relative z-10 mt-4 text-sm sm:text-base leading-relaxed text-muted-foreground max-w-3xl">
+                    {item.description}
+                  </p>
+                )}
+
+                {item.highlights && item.highlights.length > 0 && (
+                  <div className="relative z-10 mt-6 border-t border-border/50 pt-5">
+                    <p className="font-mono text-xs uppercase tracking-wider text-primary mb-3">
+                      Highlights & Focus Areas
+                    </p>
+                    <ul className="grid gap-2.5 sm:grid-cols-2">
+                      {item.highlights.map((h, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2.5 text-xs sm:text-sm text-muted-foreground"
+                        >
+                          <CheckCircle2 size={15} className="text-primary shrink-0 mt-0.5" />
+                          <span>{h}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </SpotlightCard>
             </Reveal>
           );

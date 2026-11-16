@@ -17,3 +17,4 @@ export function getEducationLogo(item: { institution?: string; logo?: string }):
   }
   return "/assets/education/default.svg";
 }
+

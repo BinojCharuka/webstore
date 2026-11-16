@@ -1,5 +1,5 @@
 import { neon } from "@neondatabase/serverless";
-import { defaultPortfolio, isPortfolioContent, type PortfolioContent } from "../data/portfolio";
+import { defaultPortfolio, isPortfolioContent, getPortfolioValidationErrors, type PortfolioContent } from "../data/portfolio";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -111,8 +111,9 @@ export async function savePortfolioToDb(
   if (!sql) {
     return { success: false, error: "DATABASE_URL is not configured" };
   }
-  if (!isPortfolioContent(content)) {
-    return { success: false, error: "Invalid portfolio data structure" };
+  const validationErrors = getPortfolioValidationErrors(content);
+  if (validationErrors.length > 0) {
+    return { success: false, error: `Invalid portfolio data: ${validationErrors[0]}` };
   }
   try {
     await initDb();

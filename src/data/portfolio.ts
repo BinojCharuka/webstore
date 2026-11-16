@@ -104,14 +104,41 @@ export const defaultPortfolio: PortfolioContent = {
       institution: "Wayamba University of Sri Lanka",
       degree: "B.Sc. (Hons) Undergraduate",
       field: "Department of Electronics, Faculty of Applied Sciences",
-      period: "2023 – Present",
+      period: "2025 – Present",
       description:
-        "Undergraduate studies focused on electronics engineering, embedded systems, software development, and modern web technologies.",
+        "Currently pursuing an undergraduate degree at the Faculty of Applied Sciences, Wayamba University of Sri Lanka. Developing knowledge and practical skills in computing, software development, and technology while actively engaging in academic projects, extracurricular activities, and student community initiatives.",
       highlights: [
         "Department of Electronics, Faculty of Applied Sciences",
         "Active student member in IEEE Student Branch WUSL",
         "Publicity and creative design lead for university initiatives",
       ],
+      logo: "/assets/education/wusl.svg",
+    },
+    {
+      institution: "Ananda College",
+      degree: "Secondary Education",
+      field: "Mathematics",
+      period: "2021 – 2024",
+      description:
+        "Completed my secondary education from Ananda College, successfully passing the G.C.E. Ordinary Level (O/L) examination and continuing my studies until the G.C.E. Advanced Level (A/L) examination. Followed the Physical Science stream, specializing in Combined Mathematics, Physics, and Information & Communication Technology (ICT).",
+      highlights: [
+        "Physical Science Stream (A/L)",
+        "Combined Mathematics, Physics & ICT",
+      ],
+      logo: "/assets/education/ananda.svg",
+    },
+    {
+      institution: "Rajasinghe Central College",
+      degree: "Primary Education",
+      field: "From Grade 6 – 11",
+      period: "2015 – 2021",
+      description:
+        "Completed secondary education from Grade 6 to Grade 11 at Rajasinghe Central College, building a strong academic foundation and developing essential skills in teamwork, communication, and personal development. Successfully completed the G.C.E. Ordinary Level (O/L) examination.",
+      highlights: [
+        "G.C.E. Ordinary Level (O/L) Examination",
+        "Foundational education and skills development",
+      ],
+      logo: "/assets/education/rajasinghe.svg",
     },
   ],
   skills: [
@@ -402,22 +429,20 @@ export const allProjectCategories = [
   "Electronics",
 ];
 
-/** Validate imported content before it becomes renderable. */
-export function isPortfolioContent(value: unknown): value is PortfolioContent {
-  const record = (v: unknown): v is Record<string, unknown> =>
-    v !== null && typeof v === "object" && !Array.isArray(v);
-  const strings = (v: Record<string, unknown>, keys: readonly string[]) =>
-    keys.every((k) => typeof v[k] === "string");
-  const optionalStrings = (v: Record<string, unknown>, keys: readonly string[]) =>
-    keys.every((k) => v[k] === undefined || typeof v[k] === "string");
-  const listOfStrings = (v: unknown): v is string[] =>
-    Array.isArray(v) && v.every((x) => typeof x === "string");
-  const arrayOf = (v: unknown, check: (x: Record<string, unknown>) => boolean) =>
-    Array.isArray(v) && v.every((item) => record(item) && check(item));
-  if (!record(value) || !record(value["profile"])) return false;
-  const p = value["profile"];
-  if (
-    !strings(p, [
+/** Detailed validation that returns a list of structural error descriptions */
+export function getPortfolioValidationErrors(value: unknown): string[] {
+  const errors: string[] = [];
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    return ["Payload must be a non-null object."];
+  }
+  const root = value as Record<string, unknown>;
+
+  // 1. Profile validation
+  if (!root["profile"] || typeof root["profile"] !== "object" || Array.isArray(root["profile"])) {
+    errors.push("Missing or invalid 'profile' object.");
+  } else {
+    const p = root["profile"] as Record<string, unknown>;
+    const requiredProfileKeys = [
       "name",
       "shortName",
       "headline",
@@ -432,52 +457,198 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
       "linkedin",
       "website",
       "portrait",
-    ])
-  )
-    return false;
-  return (
-    (value["education"] === undefined ||
-      arrayOf(
-        value["education"],
-        (v) =>
-          strings(v, ["institution", "degree", "period"]) &&
-          optionalStrings(v, ["field", "description", "logo"]) &&
-          (v["highlights"] === undefined || listOfStrings(v["highlights"])),
-      )) &&
-    arrayOf(
-      value["projects"],
-      (v) =>
-        strings(v, ["slug", "name", "tagline", "description", "year", "status"]) &&
-        ["Live", "In progress", "Concept"].includes(String(v["status"])) &&
-        listOfStrings(v["categories"]) &&
-        listOfStrings(v["highlights"]) &&
-        optionalStrings(v, ["liveUrl", "sourceUrl"]) &&
-        (v["featured"] === undefined || typeof v["featured"] === "boolean") &&
-        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].every((i) => typeof i === "string"))),
-    ) &&
-    arrayOf(
-      value["events"],
-      (v) =>
-        strings(v, ["slug", "title", "group", "role", "year", "summary"]) &&
-        listOfStrings(v["highlights"]) &&
-        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].every((i) => typeof i === "string"))),
-    ) &&
-    arrayOf(
-      value["creative"],
-      (v) =>
-        strings(v, ["slug", "title", "category", "context", "year"]) &&
-        optionalStrings(v, ["image"]) &&
-        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].every((i) => typeof i === "string"))),
-    ) &&
-    arrayOf(
-      value["certificates"],
-      (v) => strings(v, ["title", "issuer", "year"]) && optionalStrings(v, ["url", "image"]),
-    ) &&
-    arrayOf(value["skills"], (v) => strings(v, ["group"]) && listOfStrings(v["items"])) &&
-    arrayOf(value["roles"], (v) => strings(v, ["title", "group", "description", "year"])) &&
-    arrayOf(
-      value["journey"],
-      (v) => strings(v, ["when", "what", "where"]) && optionalStrings(v, ["detail"]),
-    )
-  );
+    ];
+    for (const key of requiredProfileKeys) {
+      if (typeof p[key] !== "string") {
+        errors.push(`profile.${key} must be a string.`);
+      }
+    }
+  }
+
+  const isStringOrNil = (v: unknown): boolean =>
+    v === undefined || v === null || typeof v === "string";
+
+  const isStringListOrNil = (v: unknown): boolean =>
+    v === undefined || v === null || (Array.isArray(v) && v.every((x) => typeof x === "string"));
+
+  // 2. Education validation (optional)
+  if (root["education"] !== undefined && root["education"] !== null) {
+    if (!Array.isArray(root["education"])) {
+      errors.push("'education' must be an array.");
+    } else {
+      root["education"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`education[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["institution"] !== "string") errors.push(`education[${idx}].institution must be a string.`);
+        if (typeof row["degree"] !== "string") errors.push(`education[${idx}].degree must be a string.`);
+        if (typeof row["period"] !== "string") errors.push(`education[${idx}].period must be a string.`);
+        if (!isStringOrNil(row["field"])) errors.push(`education[${idx}].field must be a string if provided.`);
+        if (!isStringOrNil(row["description"])) errors.push(`education[${idx}].description must be a string if provided.`);
+        if (!isStringOrNil(row["logo"])) errors.push(`education[${idx}].logo must be a string if provided.`);
+        if (!isStringListOrNil(row["highlights"])) errors.push(`education[${idx}].highlights must be a string array if provided.`);
+      });
+    }
+  }
+
+  // 3. Projects validation (optional array or empty)
+  if (root["projects"] !== undefined && root["projects"] !== null) {
+    if (!Array.isArray(root["projects"])) {
+      errors.push("'projects' must be an array.");
+    } else {
+      root["projects"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`projects[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["slug"] !== "string") errors.push(`projects[${idx}].slug must be a string.`);
+        if (typeof row["name"] !== "string") errors.push(`projects[${idx}].name must be a string.`);
+        if (!isStringOrNil(row["tagline"])) errors.push(`projects[${idx}].tagline must be a string if provided.`);
+        if (!isStringOrNil(row["description"])) errors.push(`projects[${idx}].description must be a string if provided.`);
+        if (!isStringOrNil(row["year"])) errors.push(`projects[${idx}].year must be a string if provided.`);
+        if (!isStringListOrNil(row["categories"])) errors.push(`projects[${idx}].categories must be a string array.`);
+        if (!isStringListOrNil(row["highlights"])) errors.push(`projects[${idx}].highlights must be a string array.`);
+        if (!isStringOrNil(row["liveUrl"])) errors.push(`projects[${idx}].liveUrl must be a string if provided.`);
+        if (!isStringOrNil(row["sourceUrl"])) errors.push(`projects[${idx}].sourceUrl must be a string if provided.`);
+        if (row["featured"] !== undefined && row["featured"] !== null && typeof row["featured"] !== "boolean") {
+          errors.push(`projects[${idx}].featured must be a boolean if provided.`);
+        }
+        if (!isStringListOrNil(row["images"])) {
+          errors.push(`projects[${idx}].images must be a string array if provided.`);
+        }
+      });
+    }
+  }
+
+  // 4. Events validation
+  if (root["events"] !== undefined && root["events"] !== null) {
+    if (!Array.isArray(root["events"])) {
+      errors.push("'events' must be an array.");
+    } else {
+      root["events"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`events[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["slug"] !== "string") errors.push(`events[${idx}].slug must be a string.`);
+        if (typeof row["title"] !== "string") errors.push(`events[${idx}].title must be a string.`);
+        if (typeof row["group"] !== "string") errors.push(`events[${idx}].group must be a string.`);
+        if (typeof row["role"] !== "string") errors.push(`events[${idx}].role must be a string.`);
+        if (typeof row["year"] !== "string") errors.push(`events[${idx}].year must be a string.`);
+        if (typeof row["summary"] !== "string") errors.push(`events[${idx}].summary must be a string.`);
+        if (!isStringListOrNil(row["highlights"])) errors.push(`events[${idx}].highlights must be a string array.`);
+        if (!isStringListOrNil(row["images"])) errors.push(`events[${idx}].images must be a string array if provided.`);
+      });
+    }
+  }
+
+  // 5. Creative works validation
+  if (root["creative"] !== undefined && root["creative"] !== null) {
+    if (!Array.isArray(root["creative"])) {
+      errors.push("'creative' must be an array.");
+    } else {
+      root["creative"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`creative[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["slug"] !== "string") errors.push(`creative[${idx}].slug must be a string.`);
+        if (typeof row["title"] !== "string") errors.push(`creative[${idx}].title must be a string.`);
+        if (typeof row["category"] !== "string") errors.push(`creative[${idx}].category must be a string.`);
+        if (typeof row["context"] !== "string" && typeof row["description"] !== "string") {
+          errors.push(`creative[${idx}].context must be a string.`);
+        }
+        if (typeof row["year"] !== "string") errors.push(`creative[${idx}].year must be a string.`);
+        if (!isStringOrNil(row["image"])) errors.push(`creative[${idx}].image must be a string if provided.`);
+        if (!isStringListOrNil(row["images"])) errors.push(`creative[${idx}].images must be a string array if provided.`);
+      });
+    }
+  }
+
+  // 6. Certificates validation (optional)
+  if (root["certificates"] !== undefined && root["certificates"] !== null) {
+    if (!Array.isArray(root["certificates"])) {
+      errors.push("'certificates' must be an array.");
+    } else {
+      root["certificates"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`certificates[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["title"] !== "string") errors.push(`certificates[${idx}].title must be a string.`);
+        if (typeof row["issuer"] !== "string") errors.push(`certificates[${idx}].issuer must be a string.`);
+        if (typeof row["year"] !== "string") errors.push(`certificates[${idx}].year must be a string.`);
+        if (!isStringOrNil(row["url"])) errors.push(`certificates[${idx}].url must be a string if provided.`);
+        if (!isStringOrNil(row["image"])) errors.push(`certificates[${idx}].image must be a string if provided.`);
+      });
+    }
+  }
+
+  // 7. Skills validation
+  if (root["skills"] !== undefined && root["skills"] !== null) {
+    if (!Array.isArray(root["skills"])) {
+      errors.push("'skills' must be an array.");
+    } else {
+      root["skills"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`skills[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["group"] !== "string") errors.push(`skills[${idx}].group must be a string.`);
+        if (!isStringListOrNil(row["items"])) errors.push(`skills[${idx}].items must be a string array.`);
+      });
+    }
+  }
+
+  // 8. Roles validation
+  if (root["roles"] !== undefined && root["roles"] !== null) {
+    if (!Array.isArray(root["roles"])) {
+      errors.push("'roles' must be an array.");
+    } else {
+      root["roles"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`roles[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["title"] !== "string") errors.push(`roles[${idx}].title must be a string.`);
+        if (typeof row["group"] !== "string") errors.push(`roles[${idx}].group must be a string.`);
+        if (typeof row["description"] !== "string") errors.push(`roles[${idx}].description must be a string.`);
+        if (typeof row["year"] !== "string") errors.push(`roles[${idx}].year must be a string.`);
+      });
+    }
+  }
+
+  // 9. Journey validation
+  if (root["journey"] !== undefined && root["journey"] !== null) {
+    if (!Array.isArray(root["journey"])) {
+      errors.push("'journey' must be an array.");
+    } else {
+      root["journey"].forEach((item, idx) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          errors.push(`journey[${idx}] must be an object.`);
+          return;
+        }
+        const row = item as Record<string, unknown>;
+        if (typeof row["when"] !== "string") errors.push(`journey[${idx}].when must be a string.`);
+        if (typeof row["what"] !== "string") errors.push(`journey[${idx}].what must be a string.`);
+        if (typeof row["where"] !== "string") errors.push(`journey[${idx}].where must be a string.`);
+        if (!isStringOrNil(row["detail"])) errors.push(`journey[${idx}].detail must be a string if provided.`);
+      });
+    }
+  }
+
+  return errors;
+}
+
+/** Validate imported content before it becomes renderable. */
+export function isPortfolioContent(value: unknown): value is PortfolioContent {
+  return getPortfolioValidationErrors(value).length === 0;
 }
