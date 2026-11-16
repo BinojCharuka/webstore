@@ -121,8 +121,9 @@ function Index() {
             }
             scrollHint="SCROLL TO DISCOVER"
             useWindowScroll
-            scrollDistance={1.2}
-            holdDistance={2.5}
+            scrollDistance={0.35}
+            holdDistance={0}
+            smoothing={0.05}
           >
             <MinimalistHero
               headlineLeft={{ line1: "Web &", line2: "UI/UX", line3: "Developer" }}
