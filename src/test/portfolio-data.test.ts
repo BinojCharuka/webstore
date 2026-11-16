@@ -15,4 +15,9 @@ describe("Portfolio content", () => {
     expect(isPortfolioContent(JSON.parse(JSON.stringify(defaultPortfolio)))).toBe(true);
     expect(isPortfolioContent({ projects: [] })).toBe(false);
   });
+  it("accepts projects with images array", () => {
+    const withImages = JSON.parse(JSON.stringify(defaultPortfolio));
+    withImages.projects[0].images = ["https://res.cloudinary.com/demo/image1.jpg", "https://res.cloudinary.com/demo/image2.jpg"];
+    expect(isPortfolioContent(withImages)).toBe(true);
+  });
 });

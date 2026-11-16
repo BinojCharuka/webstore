@@ -448,9 +448,9 @@ export function isPortfolioContent(value: unknown): value is PortfolioContent {
         ["Live", "In progress", "Concept"].includes(String(v["status"])) &&
         listOfStrings(v["categories"]) &&
         listOfStrings(v["highlights"]) &&
-        optionalStrings(v, ["liveUrl", "sourceUrl", "images"]) &&
+        optionalStrings(v, ["liveUrl", "sourceUrl"]) &&
         (v["featured"] === undefined || typeof v["featured"] === "boolean") &&
-        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].length === 2 && v["images"].every((i) => typeof i === "string"))),
+        (v["images"] === undefined || (Array.isArray(v["images"]) && v["images"].every((i) => typeof i === "string"))),
     ) &&
     arrayOf(
       value["events"],
