@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { usePortfolio } from "@/data/use-portfolio";
 import { defaultPortfolio } from "@/data/portfolio";
 import { CreativeAccordion } from "@/components/portfolio/CreativeAccordion";
+import { CaseStudyCard } from "@/components/portfolio/CaseStudyCard";
 import { ProjectCard } from "@/components/portfolio/ProjectCard";
 import { ExternalAction, SectionTitle, SiteLayout, Tag } from "@/components/portfolio/SiteLayout";
 import { ScrollExpand } from "@/components/ui/ScrollExpand";
@@ -472,28 +473,19 @@ function Work() {
         caption="Web applications and projects shaped by real student needs."
         action={{ label: "All projects", href: "/projects" }}
       />
-      <div className="w-full">
-        <ScrollStack
-          useWindowScroll
-          itemDistance={90}
-          itemStackDistance={24}
-          stackPosition="12%"
-          itemScale={0.04}
-          baseScale={0.88}
-          dimAmount={0.2}
-          tiltAmount={1.5}
-          holdDistance={180}
-          className="w-full"
-        >
-          {featured.map((p, i) => (
-            <ScrollStackItem
-              key={p.slug}
-              className="rounded-2xl overflow-hidden border-0 bg-transparent shadow-2xl !p-0"
-            >
-              <ProjectCard project={p} index={i} stacked />
-            </ScrollStackItem>
-          ))}
-        </ScrollStack>
+      <div className="relative mt-10 space-y-20 md:space-y-32 pb-20">
+        {featured.map((p, i) => (
+          <div
+            key={p.slug}
+            style={{
+              top: `calc(76px + ${i * 6}px)`,
+              zIndex: 10 + i,
+            }}
+            className="sticky rounded-2xl sm:rounded-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.8)]"
+          >
+            <CaseStudyCard project={p} index={i} total={featured.length} />
+          </div>
+        ))}
       </div>
     </section>
   );
