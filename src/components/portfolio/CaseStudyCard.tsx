@@ -99,7 +99,7 @@ export function CaseStudyCard({
       data-cursor-target
       data-cursor-label={project.name}
       className={cn(
-        "cursor-target relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-border/70 dark:border-white/10 bg-[#0d1014] dark:bg-[#0a0d11] p-6 sm:p-8 md:p-10 lg:p-12 text-foreground shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300",
+        "cursor-target relative w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-border/80 dark:border-white/10 bg-card text-card-foreground p-6 sm:p-8 md:p-10 lg:p-12 shadow-xl shadow-black/5 dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] transition-all duration-300",
         className
       )}
     >
@@ -108,12 +108,12 @@ export function CaseStudyCard({
         <div className="lg:col-span-6 flex flex-col justify-between space-y-6 sm:space-y-8">
           <div>
             {/* Top Micro Label */}
-            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground/80 flex flex-wrap items-center gap-2">
+            <div className="font-mono text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground flex flex-wrap items-center gap-2">
               <span className="text-primary font-semibold">
                 CASE STUDY {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
               </span>
-              <span className="text-muted-foreground/40">·</span>
-              <span className="text-muted-foreground/90">
+              <span className="text-muted-foreground/50">·</span>
+              <span className="text-muted-foreground">
                 {project.categories[0] ? `${project.categories[0].toUpperCase()} PROJECT` : "CLIENT PROJECT"}
               </span>
             </div>
@@ -129,10 +129,10 @@ export function CaseStudyCard({
             </p>
 
             {/* Specs metadata table with horizontal dividers */}
-            <div className="mt-6 sm:mt-8 border-t border-border/50 divide-y divide-border/40 font-mono text-xs">
+            <div className="mt-6 sm:mt-8 border-t border-border/70 dark:border-border/40 divide-y divide-border/60 dark:divide-border/30 font-mono text-xs">
               <div className="py-2.5 sm:py-3 grid grid-cols-[80px_1fr] sm:grid-cols-[100px_1fr] items-center gap-3">
-                <span className="uppercase tracking-wider text-muted-foreground/70 text-[11px]">ROLE</span>
-                <span className="font-sans text-xs sm:text-sm text-foreground/90 font-medium">
+                <span className="uppercase tracking-wider text-muted-foreground font-mono text-[11px]">ROLE</span>
+                <span className="font-sans text-xs sm:text-sm text-foreground font-medium">
                   {project.categories.includes("Web Tool") || project.categories.includes("Education")
                     ? "Creator & Full-stack Developer"
                     : project.categories.includes("IEEE")
@@ -142,10 +142,10 @@ export function CaseStudyCard({
               </div>
 
               <div className="py-2.5 sm:py-3 grid grid-cols-[80px_1fr] sm:grid-cols-[100px_1fr] items-center gap-3">
-                <span className="uppercase tracking-wider text-muted-foreground/70 text-[11px]">STATUS</span>
+                <span className="uppercase tracking-wider text-muted-foreground font-mono text-[11px]">STATUS</span>
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-xs bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-                    <span className="h-1.5 w-1.5 rounded-xs bg-emerald-400 animate-pulse" />
+                  <span className="inline-flex items-center gap-1.5 rounded-xs bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-xs bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
                     {project.status.toUpperCase()}
                   </span>
                   {project.liveUrl && (
@@ -162,15 +162,15 @@ export function CaseStudyCard({
               </div>
 
               <div className="py-2.5 sm:py-3 grid grid-cols-[80px_1fr] sm:grid-cols-[100px_1fr] items-center gap-3">
-                <span className="uppercase tracking-wider text-muted-foreground/70 text-[11px]">STACK</span>
-                <span className="font-sans text-xs sm:text-sm text-foreground/90">
+                <span className="uppercase tracking-wider text-muted-foreground font-mono text-[11px]">STACK</span>
+                <span className="font-sans text-xs sm:text-sm text-foreground font-medium">
                   {project.categories.join(" · ")}
                 </span>
               </div>
 
               {project.sourceUrl ? (
                 <div className="py-2.5 sm:py-3 grid grid-cols-[80px_1fr] sm:grid-cols-[100px_1fr] items-center gap-3">
-                  <span className="uppercase tracking-wider text-muted-foreground/70 text-[11px]">SOURCE</span>
+                  <span className="uppercase tracking-wider text-muted-foreground font-mono text-[11px]">SOURCE</span>
                   <a
                     href={project.sourceUrl}
                     target="_blank"
@@ -182,8 +182,8 @@ export function CaseStudyCard({
                 </div>
               ) : project.highlights?.[0] ? (
                 <div className="py-2.5 sm:py-3 grid grid-cols-[80px_1fr] sm:grid-cols-[100px_1fr] items-center gap-3">
-                  <span className="uppercase tracking-wider text-muted-foreground/70 text-[11px]">BUILT</span>
-                  <span className="font-sans text-xs sm:text-sm text-foreground/90 truncate">
+                  <span className="uppercase tracking-wider text-muted-foreground font-mono text-[11px]">BUILT</span>
+                  <span className="font-sans text-xs sm:text-sm text-foreground font-medium truncate">
                     {project.highlights[0]}
                   </span>
                 </div>
@@ -206,7 +206,7 @@ export function CaseStudyCard({
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="cursor-target inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-secondary/50 px-3.5 py-1.5 font-mono text-xs text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+                className="cursor-target inline-flex items-center gap-1.5 rounded-full border border-border bg-secondary/80 dark:bg-secondary/50 px-3.5 py-1.5 font-mono text-xs text-foreground/90 dark:text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors"
                 data-cursor-label="Live Site"
               >
                 <span>Visit live website</span>
@@ -223,15 +223,15 @@ export function CaseStudyCard({
             <span className="font-sans font-black text-6xl sm:text-7xl lg:text-8xl text-foreground tracking-tight leading-none shrink-0">
               {stat.number}
             </span>
-            <p className="text-xs sm:text-sm text-muted-foreground/90 font-sans leading-snug max-w-[260px]">
+            <p className="text-xs sm:text-sm text-muted-foreground font-sans leading-snug max-w-[260px]">
               {stat.text}
             </p>
           </div>
 
           {/* macOS Browser Mockup Frame */}
-          <div className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#090b0e] overflow-hidden shadow-2xl transition-all duration-300 group/mockup">
+          <div className="w-full rounded-xl sm:rounded-2xl border border-border dark:border-white/10 bg-slate-100 dark:bg-[#090b0e] overflow-hidden shadow-lg dark:shadow-2xl transition-all duration-300 group/mockup">
             {/* Window Chrome Header Bar */}
-            <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 sm:py-2.5 border-b border-white/10 bg-[#12161c]/90 backdrop-blur-md">
+            <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 sm:py-2.5 border-b border-border/80 dark:border-white/10 bg-slate-200/80 dark:bg-[#12161c]/90 backdrop-blur-md">
               {/* Traffic Light Dots */}
               <div className="flex items-center gap-1.5">
                 <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f56]" />
@@ -240,8 +240,8 @@ export function CaseStudyCard({
               </div>
 
               {/* Address bar pill */}
-              <div className="flex items-center gap-1.5 rounded-md border border-white/10 bg-black/40 px-3 py-0.5 text-[10px] sm:text-[11px] font-mono text-muted-foreground/90 max-w-[240px] sm:max-w-[280px] truncate">
-                <Lock size={10} className="text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-1.5 rounded-md border border-border dark:border-white/10 bg-white/90 dark:bg-black/40 px-3 py-0.5 text-[10px] sm:text-[11px] font-mono text-foreground/80 dark:text-muted-foreground/90 max-w-[240px] sm:max-w-[280px] truncate shadow-xs">
+                <Lock size={10} className="text-emerald-500 dark:text-emerald-400 shrink-0" />
                 <span className="truncate">
                   {project.liveUrl
                     ? project.liveUrl.replace(/^https?:\/\//, "")
@@ -253,7 +253,7 @@ export function CaseStudyCard({
             </div>
 
             {/* Mockup Screen Viewport with PixelSwap */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/90">
+            <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-950 dark:bg-black/90">
               <PixelSwap
                 firstContent={
                   <img
@@ -287,7 +287,7 @@ export function CaseStudyCard({
           </div>
 
           {/* Under-Mockup Caption */}
-          <div className="font-mono text-[10px] sm:text-[11px] tracking-widest text-muted-foreground/60 uppercase text-center sm:text-left">
+          <div className="font-mono text-[10px] sm:text-[11px] tracking-widest text-muted-foreground uppercase text-center sm:text-left">
             SCREENSHOT · {project.name.toUpperCase()}
           </div>
         </div>

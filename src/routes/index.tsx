@@ -506,7 +506,7 @@ function Work() {
               top: `calc(76px + ${i * 6}px)`,
               zIndex: 10 + i,
             }}
-            className="sticky rounded-2xl sm:rounded-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.8)]"
+            className="sticky rounded-2xl sm:rounded-3xl shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_25px_50px_-12px_rgba(0,0,0,0.12)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.5),0_25px_60px_-15px_rgba(0,0,0,0.8)]"
           >
             <CaseStudyCard project={p} index={i} total={featured.length} />
           </div>
