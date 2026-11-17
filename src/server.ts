@@ -4,7 +4,7 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { getPortfolioFromDb, savePortfolioToDb, isDbConfigured } from "./server/db";
 import { uploadImageToCloudinary, isCloudinaryConfigured } from "./server/cloudinary";
-import { isPortfolioContent, getPortfolioValidationErrors } from "./data/portfolio";
+import { isPortfolioContent, getPortfolioValidationErrors, normalizePortfolio } from "./data/portfolio";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -59,7 +59,8 @@ export default {
         }
         if (request.method === "POST") {
           const body = await request.json();
-          const errors = getPortfolioValidationErrors(body);
+          const normalized = normalizePortfolio(body);
+          const errors = getPortfolioValidationErrors(normalized);
           if (errors.length > 0) {
             console.warn("Portfolio structure validation errors:", errors);
             return Response.json(
@@ -67,7 +68,7 @@ export default {
               { status: 400 },
             );
           }
-          const result = await savePortfolioToDb(body);
+          const result = await savePortfolioToDb(normalized);
           return Response.json(result);
         }
       }

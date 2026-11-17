@@ -1,30 +1,23 @@
 .pixel-swap {
-  cursor: pointer;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  outline: none;
+}
+
+.pixel-swap:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 .pixel-swap__layer {
   position: absolute;
   inset: 0;
-  transition: opacity 0.05s;
-}
-
-.pixel-swap__layer > * {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
 }
 
-.pixel-swap__grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
+.pixel-swap__layer[data-visible='false'] {
+  visibility: hidden;
 }
-
-.pixel-swap__pixel {
-  position: absolute;
-  background: var(--background, #0a0a0a);
-  transition-property: transform, opacity;
-}
-

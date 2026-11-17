@@ -10,6 +10,25 @@ interface ProjectStat {
   text: string;
 }
 
+const PROJECT_PRESETS: Record<string, [string, string]> = {
+  "pdf-mithura": [
+    "/assets/projects/pdf-mithura-editor.jpg",
+    "/assets/projects/pdf-mithura-preview.jpg",
+  ],
+  "gpa-calculator": [
+    "/assets/projects/gpa-1.jpg",
+    "/assets/projects/gpa-2.jpg",
+  ],
+  "ieeextreme-region-10": [
+    "/assets/projects/xtreme-1.jpg",
+    "/assets/projects/xtreme-2.jpg",
+  ],
+  "charu-design-studio": [
+    "/assets/projects/studio-1.jpg",
+    "/assets/projects/studio-2.jpg",
+  ],
+};
+
 const PROJECT_STATS: Record<string, ProjectStat> = {
   "pdf-mithura": {
     number: "100%",
@@ -60,11 +79,20 @@ export function CaseStudyCard({
   className,
 }: CaseStudyCardProps) {
   const stat = getProjectStat(project, index);
-  const hasCustomImages =
-    Array.isArray(project.images) &&
-    project.images.length >= 2 &&
-    Boolean(project.images[0]) &&
-    Boolean(project.images[1]);
+  const preset = PROJECT_PRESETS[project.slug] || [
+    "/assets/demo/day-sky.webp",
+    "/assets/demo/night-sky.webp",
+  ];
+  const firstImg =
+    project.images && project.images[0] && project.images[0].trim().length > 0
+      ? project.images[0]
+      : preset[0];
+  const secondImg =
+    project.images && project.images[1] && project.images[1].trim().length > 0
+      ? project.images[1]
+      : project.images && project.images[0] && project.images[0].trim().length > 0
+      ? project.images[0]
+      : preset[1];
 
   return (
     <SpotlightCard
@@ -226,54 +254,35 @@ export function CaseStudyCard({
 
             {/* Mockup Screen Viewport with PixelSwap */}
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/90">
-              {hasCustomImages ? (
-                <PixelSwap
-                  firstContent={
-                    <img
-                      src={project.images![0]}
-                      alt={`${project.name} primary preview`}
-                      className="w-full h-full object-cover"
-                    />
-                  }
-                  secondContent={
-                    <img
-                      src={project.images![1] ?? project.images![0]}
-                      alt={`${project.name} secondary preview`}
-                      className="w-full h-full object-cover"
-                    />
-                  }
-                  pattern="random"
-                  pixelSize={32}
-                  duration={500}
-                  pixelDuration={300}
-                  trigger="hover"
-                />
-              ) : (
-                /* Elegant interactive fallback preview */
-                <div className="relative w-full h-full flex flex-col justify-between p-6 sm:p-8 bg-gradient-to-br from-[#121820] via-[#0c0f14] to-[#07090c] select-none">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-mono uppercase tracking-widest text-primary/80">
-                      {project.categories.slice(0, 2).join(" · ")}
-                    </span>
-                    <span className="text-[10px] font-mono text-muted-foreground/60">{project.year}</span>
-                  </div>
-                  <div className="space-y-2 text-center py-4">
-                    <h4 className="font-serif text-2xl sm:text-3xl text-foreground font-bold tracking-tight">
-                      {project.name}
-                    </h4>
-                    <p className="font-mono text-xs text-muted-foreground/80 max-w-sm mx-auto line-clamp-2">
-                      {project.tagline}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground/60 border-t border-white/5 pt-3">
-                    <span className="flex items-center gap-1.5">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      LIVE SYSTEM
-                    </span>
-                    <span className="text-primary hover:underline cursor-pointer">HOVER TO EXPLORE</span>
-                  </div>
-                </div>
-              )}
+              <PixelSwap
+                firstContent={
+                  <img
+                    src={firstImg}
+                    alt={`${project.name} primary preview`}
+                    className="w-full h-full object-cover select-none"
+                    loading="lazy"
+                  />
+                }
+                secondContent={
+                  <img
+                    src={secondImg}
+                    alt={`${project.name} secondary preview`}
+                    className="w-full h-full object-cover select-none"
+                    loading="lazy"
+                  />
+                }
+                pattern="pointer"
+                pixelSize={32}
+                pixelRadius={50}
+                duration={400}
+                pixelDuration={350}
+                randomness={0.3}
+                bounce={0.3}
+                trigger="hover"
+                gap={4}
+                aspectRatio="16 / 10"
+                className="w-full h-full"
+              />
             </div>
           </div>
 

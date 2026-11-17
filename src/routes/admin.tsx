@@ -22,7 +22,13 @@ import {
   X,
 } from "lucide-react";
 import { SiteLayout } from "@/components/portfolio/SiteLayout";
-import { defaultPortfolio, isPortfolioContent, getPortfolioValidationErrors, type PortfolioContent } from "@/data/portfolio";
+import {
+  defaultPortfolio,
+  isPortfolioContent,
+  getPortfolioValidationErrors,
+  normalizePortfolio,
+  type PortfolioContent,
+} from "@/data/portfolio";
 import { getEducationLogo } from "@/lib/education";
 import { JellyRadio } from "@/components/ui/JellyRadio";
 import {
@@ -1020,13 +1026,15 @@ function Admin() {
     setIsSavingDb(true);
     setMessage("Validating and saving to Neon Database...");
     try {
-      const errors = getPortfolioValidationErrors(draft);
+      const normalized = normalizePortfolio(draft);
+      setDraft(normalized);
+      const errors = getPortfolioValidationErrors(normalized);
       if (errors.length > 0) {
         setMessage(`⚠️ Validation error before saving: ${errors[0]}`);
         setIsSavingDb(false);
         return;
       }
-      const res = await savePortfolioToRemote(draft);
+      const res = await savePortfolioToRemote(normalized);
       if (res.success) {
         setMessage("✅ Saved permanently to Neon PostgreSQL database! Live site updated.");
       } else {
@@ -1041,7 +1049,9 @@ function Admin() {
 
   const saveLocalOnly = () => {
     try {
-      savePortfolio(draft);
+      const normalized = normalizePortfolio(draft);
+      setDraft(normalized);
+      savePortfolio(normalized);
       setMessage("Saved locally in this browser.");
     } catch {
       setMessage("Could not save to browser storage.");
@@ -1060,7 +1070,8 @@ function Admin() {
   };
 
   const exportJson = () => {
-    const blob = new Blob([JSON.stringify(draft, null, 2)], { type: "application/json" });
+    const normalized = normalizePortfolio(draft);
+    const blob = new Blob([JSON.stringify(normalized, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -1075,9 +1086,10 @@ function Admin() {
     if (!file) return;
     try {
       const parsed: unknown = JSON.parse(await file.text());
-      const errors = getPortfolioValidationErrors(parsed);
+      const normalized = normalizePortfolio(parsed);
+      const errors = getPortfolioValidationErrors(normalized);
       if (errors.length > 0) throw new Error(errors[0]);
-      setDraft(parsed as PortfolioContent);
+      setDraft(normalized);
       setMessage("Imported into the editor. Click 'Save to Neon Database' to apply.");
     } catch (err) {
       setMessage(`Import failed: ${err instanceof Error ? err.message : "Upload a valid exported portfolio JSON file."}`);

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { defaultPortfolio, isPortfolioContent, getPortfolioValidationErrors } from "@/data/portfolio";
+import {
+  defaultPortfolio,
+  isPortfolioContent,
+  getPortfolioValidationErrors,
+  normalizePortfolio,
+} from "@/data/portfolio";
 
 describe("Portfolio content", () => {
   it("has all planned main sections", () => {
@@ -36,5 +41,33 @@ describe("Portfolio content", () => {
     const errors = getPortfolioValidationErrors({ profile: {} });
     expect(errors.length).toBeGreaterThan(0);
     expect(errors[0]).toContain("profile.name");
+  });
+  it("normalizes malformed or incomplete data into valid PortfolioContent", () => {
+    const malformed = {
+      profile: { name: "Custom Name" },
+      creative: [
+        {
+          slug: "test-slug",
+          title: "Test Work",
+          category: "Design",
+          description: "Description instead of context",
+          year: "2026",
+          images: ["https://example.com/image.jpg"],
+        },
+      ],
+      education: [
+        {
+          institution: "Test College",
+          degree: "Degree",
+          period: "2020",
+        },
+      ],
+    };
+    const normalized = normalizePortfolio(malformed);
+    expect(normalized.profile.name).toBe("Custom Name");
+    expect(normalized.profile.shortName).toBe(defaultPortfolio.profile.shortName);
+    expect(normalized.creative[0]?.context).toBe("Description instead of context");
+    expect(getPortfolioValidationErrors(normalized)).toEqual([]);
+    expect(isPortfolioContent(normalized)).toBe(true);
   });
 });

@@ -184,6 +184,10 @@ export const defaultPortfolio: PortfolioContent = {
         "Merge, split and compression options",
         "Browser-focused workflow",
       ],
+      images: [
+        "/assets/projects/pdf-mithura-editor.jpg",
+        "/assets/projects/pdf-mithura-preview.jpg",
+      ],
     },
     {
       slug: "gpa-calculator",
@@ -200,6 +204,10 @@ export const defaultPortfolio: PortfolioContent = {
         "Student-focused workflow",
         "Clear input and results",
         "Responsive web experience",
+      ],
+      images: [
+        "/assets/projects/gpa-1.jpg",
+        "/assets/projects/gpa-2.jpg",
       ],
     },
     {
@@ -218,6 +226,10 @@ export const defaultPortfolio: PortfolioContent = {
         "Interactive regional map",
         "Event registration navigation",
       ],
+      images: [
+        "/assets/projects/xtreme-1.jpg",
+        "/assets/projects/xtreme-2.jpg",
+      ],
     },
     {
       slug: "charu-design-studio",
@@ -231,6 +243,10 @@ export const defaultPortfolio: PortfolioContent = {
       featured: true,
       liveUrl: "https://charudesignstudio.us",
       highlights: ["Digital project showcase", "Personal brand", "Connected web utilities"],
+      images: [
+        "/assets/projects/studio-1.jpg",
+        "/assets/projects/studio-2.jpg",
+      ],
     },
     {
       slug: "lab-graph-helper",
@@ -646,6 +662,184 @@ export function getPortfolioValidationErrors(value: unknown): string[] {
   }
 
   return errors;
+}
+
+/**
+ * Normalizes any partial, legacy, or loosely structured portfolio payload
+ * into a complete and strictly valid PortfolioContent object.
+ * Guarantees zero validation errors while preserving all user edits.
+ */
+export function normalizePortfolio(value: unknown): PortfolioContent {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    return defaultPortfolio;
+  }
+  const root = value as Record<string, unknown>;
+  const rawProfile =
+    root["profile"] && typeof root["profile"] === "object" && !Array.isArray(root["profile"])
+      ? (root["profile"] as Record<string, unknown>)
+      : {};
+
+  const cleanString = (v: unknown, fallback = ""): string =>
+    typeof v === "string" ? v : fallback;
+
+  const cleanStringList = (v: unknown): string[] =>
+    Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+
+  const profile: PortfolioContent["profile"] = {
+    name: cleanString(rawProfile["name"], defaultPortfolio.profile.name),
+    shortName: cleanString(rawProfile["shortName"], defaultPortfolio.profile.shortName),
+    headline: cleanString(rawProfile["headline"], defaultPortfolio.profile.headline),
+    intro: cleanString(rawProfile["intro"], defaultPortfolio.profile.intro),
+    bio: cleanString(rawProfile["bio"], defaultPortfolio.profile.bio),
+    location: cleanString(rawProfile["location"], defaultPortfolio.profile.location),
+    university: cleanString(rawProfile["university"], defaultPortfolio.profile.university),
+    focus: cleanString(rawProfile["focus"], defaultPortfolio.profile.focus),
+    availability: cleanString(rawProfile["availability"], defaultPortfolio.profile.availability),
+    email: cleanString(rawProfile["email"], defaultPortfolio.profile.email),
+    github: cleanString(rawProfile["github"], defaultPortfolio.profile.github),
+    linkedin: cleanString(rawProfile["linkedin"], defaultPortfolio.profile.linkedin),
+    website: cleanString(rawProfile["website"], defaultPortfolio.profile.website),
+    portrait: cleanString(rawProfile["portrait"], defaultPortfolio.profile.portrait),
+  };
+
+  const education: EducationEntry[] = Array.isArray(root["education"])
+    ? root["education"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const entry: EducationEntry = {
+          institution: cleanString(row["institution"], "Institution"),
+          degree: cleanString(row["degree"], "Degree"),
+          period: cleanString(row["period"], "2024 – Present"),
+          highlights: cleanStringList(row["highlights"]),
+          ...(typeof row["field"] === "string" ? { field: row["field"] } : {}),
+          ...(typeof row["description"] === "string" ? { description: row["description"] } : {}),
+          ...(typeof row["logo"] === "string" ? { logo: row["logo"] } : {}),
+        };
+        return entry;
+      })
+    : (defaultPortfolio.education ?? []);
+
+  const projects: Project[] = Array.isArray(root["projects"])
+    ? root["projects"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const imagesRaw = cleanStringList(row["images"]);
+        const p: Project = {
+          slug: cleanString(row["slug"], "project"),
+          name: cleanString(row["name"], "Project"),
+          tagline: cleanString(row["tagline"], ""),
+          description: cleanString(row["description"], ""),
+          categories: cleanStringList(row["categories"]),
+          year: cleanString(row["year"], "2026"),
+          status: (["Live", "In progress", "Concept"].includes(String(row["status"]))
+            ? row["status"]
+            : "Live") as Project["status"],
+          highlights: cleanStringList(row["highlights"]),
+          ...(typeof row["liveUrl"] === "string" ? { liveUrl: row["liveUrl"] } : {}),
+          ...(typeof row["sourceUrl"] === "string" ? { sourceUrl: row["sourceUrl"] } : {}),
+          ...(typeof row["featured"] === "boolean" ? { featured: row["featured"] } : { featured: true }),
+          ...(imagesRaw.length >= 2 && typeof imagesRaw[0] === "string" && typeof imagesRaw[1] === "string"
+            ? { images: [imagesRaw[0], imagesRaw[1]] as [string, string] }
+            : imagesRaw.length === 1 && typeof imagesRaw[0] === "string"
+            ? { images: [imagesRaw[0], imagesRaw[0]] as [string, string] }
+            : {}),
+        };
+        return p;
+      })
+    : defaultPortfolio.projects;
+
+  const events: EventEntry[] = Array.isArray(root["events"])
+    ? root["events"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const ev: EventEntry = {
+          slug: cleanString(row["slug"], "event"),
+          title: cleanString(row["title"], "Event"),
+          group: cleanString(row["group"], "Community"),
+          role: cleanString(row["role"], "Role"),
+          year: cleanString(row["year"], "2026"),
+          summary: cleanString(row["summary"], ""),
+          highlights: cleanStringList(row["highlights"]),
+          images: cleanStringList(row["images"]),
+        };
+        return ev;
+      })
+    : defaultPortfolio.events;
+
+  const creative: CreativeWork[] = Array.isArray(root["creative"])
+    ? root["creative"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const contextText = cleanString(row["context"] ?? row["description"], "");
+        const cw: CreativeWork = {
+          slug: cleanString(row["slug"], "creative-work"),
+          title: cleanString(row["title"], "Work"),
+          category: cleanString(row["category"], "Design"),
+          context: contextText,
+          year: cleanString(row["year"], "2026"),
+          images: cleanStringList(row["images"]),
+          ...(typeof row["image"] === "string" ? { image: row["image"] } : {}),
+        };
+        return cw;
+      })
+    : defaultPortfolio.creative;
+
+  const certificates: Certificate[] = Array.isArray(root["certificates"])
+    ? root["certificates"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const cert: Certificate = {
+          title: cleanString(row["title"], "Certificate"),
+          issuer: cleanString(row["issuer"], "Issuer"),
+          year: cleanString(row["year"], "2026"),
+          ...(typeof row["url"] === "string" ? { url: row["url"] } : {}),
+          ...(typeof row["image"] === "string" ? { image: row["image"] } : {}),
+        };
+        return cert;
+      })
+    : defaultPortfolio.certificates;
+
+  const skills = Array.isArray(root["skills"])
+    ? root["skills"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        return {
+          group: cleanString(row["group"], "Skill Group"),
+          items: cleanStringList(row["items"]),
+        };
+      })
+    : defaultPortfolio.skills;
+
+  const roles = Array.isArray(root["roles"])
+    ? root["roles"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        return {
+          title: cleanString(row["title"], "Role"),
+          group: cleanString(row["group"], "Group"),
+          description: cleanString(row["description"], ""),
+          year: cleanString(row["year"], "2026"),
+        };
+      })
+    : defaultPortfolio.roles;
+
+  const journey: Milestone[] = Array.isArray(root["journey"])
+    ? root["journey"].map((item) => {
+        const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const m: Milestone = {
+          when: cleanString(row["when"], "2026"),
+          what: cleanString(row["what"], "Milestone"),
+          where: cleanString(row["where"], "Place"),
+          ...(typeof row["detail"] === "string" ? { detail: row["detail"] } : {}),
+        };
+        return m;
+      })
+    : defaultPortfolio.journey;
+
+  return {
+    profile,
+    education,
+    skills,
+    projects,
+    roles,
+    events,
+    creative,
+    journey,
+    certificates,
+  };
 }
 
 /** Validate imported content before it becomes renderable. */
