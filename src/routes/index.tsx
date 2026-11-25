@@ -248,14 +248,6 @@ function Hero() {
           Let's connect
         </a>
       </Reveal>
-      <Reveal
-        delay={620}
-        variant="none"
-        className="mt-7 flex items-center gap-2 font-mono text-xs text-muted-foreground"
-      >
-        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-        {profile.availability}
-      </Reveal>
       <a
         href="#about"
         onClick={(e) => {
@@ -315,10 +307,6 @@ function About() {
                 </RefineFrame>
               </div>
             </div>
-            <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 animate-float whitespace-nowrap rounded-full border bg-card px-4 py-1.5 font-mono text-xs text-muted-foreground shadow-sm">
-              <span className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary align-middle" />
-              {profile.availability}
-            </span>
           </div>
         </Reveal>
         <Reveal variant="right" delay={140}>
