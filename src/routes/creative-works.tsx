@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Images, Eye, Sparkles } from "lucide-react";
+import { Images, Eye, Sparkles, ArrowUpRight } from "lucide-react";
 import { CreativeAccordion } from "@/components/portfolio/CreativeAccordion";
 import { PageIntro, SiteLayout, Tag } from "@/components/portfolio/SiteLayout";
 import { Reveal } from "@/components/Reveal";
@@ -79,15 +79,27 @@ function CreativeWorks() {
                     </span>
                   </div>
 
-                  <h2 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">
-                    {work.title}
-                  </h2>
+                  <a
+                    href={`/creative-works/${encodeURIComponent(work.slug)}`}
+                    className="group/title block focus:outline-hidden"
+                  >
+                    <h2 className="font-serif text-2xl sm:text-3xl text-foreground font-bold transition-colors group-hover/title:text-primary">
+                      {work.title}
+                    </h2>
+                  </a>
                   <p className="my-3 text-sm leading-relaxed text-muted-foreground">
                     {work.context}
                   </p>
 
-                  <div className="mb-5 flex flex-wrap gap-2">
+                  <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
                     <Tag>{work.category}</Tag>
+                    <a
+                      href={`/creative-works/${encodeURIComponent(work.slug)}`}
+                      className="font-mono text-xs text-primary transition-colors hover:underline inline-flex items-center gap-1"
+                    >
+                      <span>Campaign story & details</span>
+                      <ArrowUpRight size={13} />
+                    </a>
                   </div>
                 </div>
 
