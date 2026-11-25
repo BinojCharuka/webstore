@@ -796,7 +796,7 @@ function Contact() {
           >
             {copied ? (
               <>
-                <Check size={14} className="text-primary animate-bounce" />
+                <Check size={14} className="text-primary transition-transform duration-200 scale-110" />
                 <span className="text-primary font-semibold">Email copied!</span>
               </>
             ) : (
