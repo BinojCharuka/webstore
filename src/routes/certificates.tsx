@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Award, ArrowUpRight } from "lucide-react";
+import { Award } from "lucide-react";
 import { Reveal } from "@/components/Reveal";
 import { PageIntro, SiteLayout } from "@/components/portfolio/SiteLayout";
+import { CertificateCard } from "@/components/portfolio/CertificateCard";
 import { usePortfolio } from "@/data/use-portfolio";
 
 export const Route = createFileRoute("/certificates")({
-  head: () => ({ meta: [{ title: "Certificates — Binoj Charuka" }] }),
+  head: () => ({ meta: [{ title: "Certificates & Achievements — Binoj Charuka" }] }),
   component: CertificatesPage,
 });
 function CertificatesPage() {
@@ -15,33 +16,15 @@ function CertificatesPage() {
       <PageIntro
         eyebrow="04 / milestones"
         title="Certificates & achievements"
-        description="Documenting learning, recognition and experiences — only with confirmed entries."
+        description="Documenting learning, recognition and verified technical milestones."
+        backHref="/#certificates"
+        backLabel="Home"
       />
       {certificates.length ? (
-        <div className="grid gap-5 py-12 pb-20 md:grid-cols-2">
+        <div className="grid gap-6 py-12 pb-20 sm:grid-cols-2 lg:grid-cols-3">
           {certificates.map((c, i) => (
-            <Reveal key={`${c.title}-${i}`}>
-              <div
-                data-cursor-target
-                data-cursor-label={c.title}
-                className="cursor-target rounded-2xl border bg-card p-7 transition-colors hover:border-primary/40"
-              >
-                <Award className="mb-4 h-7 w-7 text-primary" />
-                <p className="font-mono text-xs text-primary">{c.year}</p>
-                <h2 className="mt-3 font-serif text-2xl">{c.title}</h2>
-                <p className="mt-2 text-muted-foreground">{c.issuer}</p>
-                {c.url && (
-                  <a
-                    href={c.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-6 inline-flex items-center gap-2 text-sm text-primary"
-                  >
-                    View credential
-                    <ArrowUpRight size={15} />
-                  </a>
-                )}
-              </div>
+            <Reveal key={`${c.title}-${i}`} delay={(i % 3) * 80}>
+              <CertificateCard certificate={c} />
             </Reveal>
           ))}
         </div>

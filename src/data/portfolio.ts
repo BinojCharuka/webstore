@@ -38,11 +38,17 @@ export type CreativeWork = {
   images?: string[]; // Multiple flyers / gallery photos for this event
 };
 export type Certificate = {
+  slug?: string | undefined;
   title: string;
   issuer: string;
   year: string;
-  url?: string;
-  image?: string;
+  description?: string | undefined;
+  details?: string | undefined;
+  highlights?: string[] | undefined;
+  skills?: string[] | undefined;
+  url?: string | undefined;
+  image?: string | undefined;
+  credentialId?: string | undefined;
 };
 export type EducationEntry = {
   institution: string;
@@ -489,8 +495,60 @@ export const defaultPortfolio: PortfolioContent = {
       detail: "Electronics, software and applied problem-solving.",
     },
   ],
-  // Add confirmed certificates through the content file or local Content Studio.
-  certificates: [],
+  certificates: [
+    {
+      slug: "web-design-fundamentals",
+      title: "Web Design & Frontend Development",
+      issuer: "University of Moratuwa / Open Learning",
+      year: "2026",
+      image: "https://res.cloudinary.com/zeotuhzt/image/upload/v1794213634/portfolio/media/nvoozpzk19ar1ckagpxr.png",
+      description:
+        "Comprehensive certification verifying core principles of user interface design, modern web typography, responsiveness, and frontend architecture.",
+      details:
+        "Completed coursework and applied practical assessments covering HTML5 semantic structure, modern CSS responsive frameworks, interactive clientside JavaScript, and user-centric design principles.",
+      skills: ["UI/UX Design", "Responsive Layouts", "HTML5 & CSS3", "Frontend Architecture", "Web Standards"],
+      highlights: [
+        "Practical design assessments in responsive web applications",
+        "Comprehensive coverage of UX heuristics and modern design systems",
+        "Demonstrated proficiency in frontend best practices and accessibility",
+      ],
+      credentialId: "UOM-WEB-2026-BC",
+    },
+    {
+      slug: "ieee-leadership-volunteering",
+      title: "IEEE Volunteer Leadership & Community Service",
+      issuer: "IEEE Sri Lanka Section",
+      year: "2026",
+      description:
+        "Recognition for outstanding commitment and proactive leadership across student branch activities, publicity campaigns, and technical event coordination.",
+      details:
+        "Awarded in recognition of dedicated service and leadership within the IEEE Student Branch and organizing committees, driving successful community initiatives and visual communication campaigns.",
+      skills: ["Community Leadership", "Event Coordination", "Publicity Strategy", "Team Collaboration"],
+      highlights: [
+        "Led publicity and visual communications for regional IEEE initiatives",
+        "Coordinated technical sessions and student development workshops",
+        "Demonstrated exemplary volunteer leadership and cross-branch collaboration",
+      ],
+      credentialId: "IEEE-SL-VOL-2026",
+    },
+    {
+      slug: "applied-electronics-computing",
+      title: "Applied Electronics & Computing",
+      issuer: "Wayamba University of Sri Lanka",
+      year: "2025",
+      description:
+        "Academic milestone verifying core competency in electronic circuits, microcontroller interfacing, embedded systems, and algorithmic problem-solving.",
+      details:
+        "Recognized for academic achievement and laboratory project work combining hardware electronics with software computational analysis.",
+      skills: ["Circuit Design", "Embedded Systems", "Hardware-Software Interfacing", "Technical Problem Solving"],
+      highlights: [
+        "Laboratory experimentation and hardware circuit validation",
+        "Interfacing sensors, controllers, and computational software",
+        "Applied project execution with documented technical reports",
+      ],
+      credentialId: "WUSL-ELEC-2025",
+    },
+  ],
 };
 
 export const allProjectCategories = [
@@ -658,6 +716,14 @@ export function getPortfolioValidationErrors(value: unknown): string[] {
         if (typeof row["title"] !== "string") errors.push(`certificates[${idx}].title must be a string.`);
         if (typeof row["issuer"] !== "string") errors.push(`certificates[${idx}].issuer must be a string.`);
         if (typeof row["year"] !== "string") errors.push(`certificates[${idx}].year must be a string.`);
+        if (!isStringOrNil(row["slug"])) errors.push(`certificates[${idx}].slug must be a string if provided.`);
+        if (!isStringOrNil(row["description"])) errors.push(`certificates[${idx}].description must be a string if provided.`);
+        if (!isStringOrNil(row["details"])) errors.push(`certificates[${idx}].details must be a string if provided.`);
+        if (!isStringListOrNil(row["skills"])) errors.push(`certificates[${idx}].skills must be a string array if provided.`);
+        if (!isStringListOrNil(row["highlights"])) errors.push(`certificates[${idx}].highlights must be a string array if provided.`);
+        if (!isStringOrNil(row["url"])) errors.push(`certificates[${idx}].url must be a string if provided.`);
+        if (!isStringOrNil(row["image"])) errors.push(`certificates[${idx}].image must be a string if provided.`);
+        if (!isStringOrNil(row["credentialId"])) errors.push(`certificates[${idx}].credentialId must be a string if provided.`);
         if (!isStringOrNil(row["url"])) errors.push(`certificates[${idx}].url must be a string if provided.`);
         if (!isStringOrNil(row["image"])) errors.push(`certificates[${idx}].image must be a string if provided.`);
       });
@@ -847,13 +913,22 @@ export function normalizePortfolio(value: unknown): PortfolioContent {
   const certificates: Certificate[] = Array.isArray(root["certificates"])
     ? root["certificates"].map((item) => {
         const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
+        const title = cleanString(row["title"], "Certificate");
+        const autoSlug =
+          title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "certificate";
         const cert: Certificate = {
-          title: cleanString(row["title"], "Certificate"),
-          issuer: cleanString(row["issuer"], "Issuer"),
+          slug: cleanString(row["slug"], autoSlug),
+          title,
+          issuer: cleanString(row["issuer"], "Verified Institution"),
           year: cleanString(row["year"], "2026"),
-          ...(typeof row["url"] === "string" ? { url: row["url"] } : {}),
-          ...(typeof row["image"] === "string" ? { image: row["image"] } : {}),
         };
+        if (typeof row["description"] === "string") cert.description = row["description"];
+        if (typeof row["details"] === "string") cert.details = row["details"];
+        if (Array.isArray(row["skills"])) cert.skills = cleanStringList(row["skills"]);
+        if (Array.isArray(row["highlights"])) cert.highlights = cleanStringList(row["highlights"]);
+        if (typeof row["url"] === "string") cert.url = row["url"];
+        if (typeof row["image"] === "string") cert.image = row["image"];
+        if (typeof row["credentialId"] === "string") cert.credentialId = row["credentialId"];
         return cert;
       })
     : defaultPortfolio.certificates;

@@ -32,6 +32,7 @@ import { usePortfolio } from "@/data/use-portfolio";
 import { defaultPortfolio } from "@/data/portfolio";
 import { getEducationLogo } from "@/lib/education";
 import { CreativeAccordion } from "@/components/portfolio/CreativeAccordion";
+import { CertificateCard } from "@/components/portfolio/CertificateCard";
 import { CaseStudyCard } from "@/components/portfolio/CaseStudyCard";
 import { ProjectCard } from "@/components/portfolio/ProjectCard";
 import { ExternalAction, SectionTitle, SiteLayout, Tag } from "@/components/portfolio/SiteLayout";
@@ -715,28 +716,18 @@ function Journey() {
 function Certificates() {
   const { certificates } = usePortfolio();
   return (
-    <section id="certificates" className="py-16">
+    <section id="certificates" className="py-16 scroll-mt-24">
       <SectionTitle
         n="09"
         title="Certificates & achievements"
         caption="A growing collection of verified learning milestones."
-        action={{ label: "Certificates page", href: "/certificates" }}
+        action={{ label: "All certificates", href: "/certificates" }}
       />
       {certificates.length ? (
-        <div className="grid gap-4 md:grid-cols-2">
-          {certificates.slice(0, 2).map((c, i) => (
-            <Reveal key={`${c.title}-${i}`}>
-              <SpotlightCard
-                data-cursor-target
-                data-cursor-label={c.title}
-                className="cursor-target"
-              >
-                <GraduationCap className="mb-4 h-6 w-6 text-primary" />
-                <h3 className="font-serif text-xl">{c.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {c.issuer} · {c.year}
-                </p>
-              </SpotlightCard>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {certificates.slice(0, 3).map((c, i) => (
+            <Reveal key={`${c.title}-${i}`} delay={(i % 3) * 90}>
+              <CertificateCard certificate={c} />
             </Reveal>
           ))}
         </div>

@@ -15,7 +15,7 @@ describe("Portfolio content", () => {
     expect(defaultPortfolio.creative.length).toBeGreaterThan(0);
     expect(defaultPortfolio.journey.length).toBeGreaterThan(0);
     expect(defaultPortfolio.education?.length).toBe(3);
-    expect(defaultPortfolio.certificates).toEqual([]);
+    expect(defaultPortfolio.certificates.length).toBeGreaterThan(0);
   });
   it("accepts the bundled export shape", () => {
     expect(isPortfolioContent(JSON.parse(JSON.stringify(defaultPortfolio)))).toBe(true);

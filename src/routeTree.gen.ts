@@ -17,6 +17,7 @@ import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LeadershipRouteImport } from './routes/leadership'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as CertificatesSlugRouteImport } from './routes/certificates_.$slug'
 import { Route as CreativeWorksSlugRouteImport } from './routes/creative-works_.$slug'
 import { Route as EventsSlugRouteImport } from './routes/events_.$slug'
 import { Route as LeadershipSlugRouteImport } from './routes/leadership_.$slug'
@@ -62,6 +63,11 @@ const ProjectsRoute = ProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CertificatesSlugRoute = CertificatesSlugRouteImport.update({
+  id: '/certificates_/$slug',
+  path: '/certificates/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CreativeWorksSlugRoute = CreativeWorksSlugRouteImport.update({
   id: '/creative-works_/$slug',
   path: '/creative-works/$slug',
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/leadership': typeof LeadershipRoute
   '/projects': typeof ProjectsRoute
+  '/certificates/$slug': typeof CertificatesSlugRoute
   '/creative-works/$slug': typeof CreativeWorksSlugRoute
   '/events/$slug': typeof EventsSlugRoute
   '/leadership/$slug': typeof LeadershipSlugRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/leadership': typeof LeadershipRoute
   '/projects': typeof ProjectsRoute
+  '/certificates/$slug': typeof CertificatesSlugRoute
   '/creative-works/$slug': typeof CreativeWorksSlugRoute
   '/events/$slug': typeof EventsSlugRoute
   '/leadership/$slug': typeof LeadershipSlugRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/leadership': typeof LeadershipRoute
   '/projects': typeof ProjectsRoute
+  '/certificates_/$slug': typeof CertificatesSlugRoute
   '/creative-works_/$slug': typeof CreativeWorksSlugRoute
   '/events_/$slug': typeof EventsSlugRoute
   '/leadership_/$slug': typeof LeadershipSlugRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/leadership'
     | '/projects'
+    | '/certificates/$slug'
     | '/creative-works/$slug'
     | '/events/$slug'
     | '/leadership/$slug'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/leadership'
     | '/projects'
+    | '/certificates/$slug'
     | '/creative-works/$slug'
     | '/events/$slug'
     | '/leadership/$slug'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/leadership'
     | '/projects'
+    | '/certificates_/$slug'
     | '/creative-works_/$slug'
     | '/events_/$slug'
     | '/leadership_/$slug'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LeadershipRoute: typeof LeadershipRoute
   ProjectsRoute: typeof ProjectsRoute
+  CertificatesSlugRoute: typeof CertificatesSlugRoute
   CreativeWorksSlugRoute: typeof CreativeWorksSlugRoute
   EventsSlugRoute: typeof EventsSlugRoute
   LeadershipSlugRoute: typeof LeadershipSlugRoute
@@ -244,6 +257,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/certificates_/$slug': {
+      id: '/certificates_/$slug'
+      path: '/certificates/$slug'
+      fullPath: '/certificates/$slug'
+      preLoaderRoute: typeof CertificatesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/creative-works_/$slug': {
       id: '/creative-works_/$slug'
       path: '/creative-works/$slug'
@@ -284,6 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LeadershipRoute: LeadershipRoute,
   ProjectsRoute: ProjectsRoute,
+  CertificatesSlugRoute: CertificatesSlugRoute,
   CreativeWorksSlugRoute: CreativeWorksSlugRoute,
   EventsSlugRoute: EventsSlugRoute,
   LeadershipSlugRoute: LeadershipSlugRoute,
