@@ -22,11 +22,14 @@ import {
   X,
 } from "lucide-react";
 import { SiteLayout } from "@/components/portfolio/SiteLayout";
+import { AdminCvSettingsPanel } from "@/components/cv/AdminCvSettingsPanel";
 import {
+  defaultCvSettings,
   defaultPortfolio,
   isPortfolioContent,
   getPortfolioValidationErrors,
   normalizePortfolio,
+  type CvSettings,
   type PortfolioContent,
 } from "@/data/portfolio";
 import { getEducationLogo } from "@/lib/education";
@@ -61,7 +64,7 @@ type Collection =
   | "skills"
   | "roles"
   | "journey";
-type View = "profile" | Collection;
+type View = "profile" | "cv" | Collection;
 type Field = {
   key: string;
   label: string;
@@ -69,6 +72,7 @@ type Field = {
 };
 const sections: { value: View; label: string }[] = [
   { value: "profile", label: "Profile" },
+  { value: "cv", label: "CV Generator" },
   { value: "education", label: "Education" },
   { value: "projects", label: "Projects" },
   { value: "events", label: "Events" },
@@ -987,6 +991,11 @@ function Admin() {
     setMessage("Unsaved changes");
   };
 
+  const updateCvSettings = (nextSettings: CvSettings) => {
+    setDraft((prev) => ({ ...prev, cvSettings: nextSettings }));
+    setMessage("Unsaved changes — click 'Save to Neon Database' to publish CV settings.");
+  };
+
   const editRow = (collection: Collection, index: number, key: string, value: unknown) => {
     setDraft((prev) => {
       const current = ((prev[collection] as unknown as Record<string, unknown>[]) ?? []);
@@ -1278,6 +1287,12 @@ function Admin() {
                 ))}
               </div>
             </div>
+          ) : view === "cv" ? (
+            <AdminCvSettingsPanel
+              content={draft}
+              onChangeSettings={updateCvSettings}
+              onResetDefaults={() => updateCvSettings(defaultCvSettings)}
+            />
           ) : (
             <CollectionEditor
               name={view}

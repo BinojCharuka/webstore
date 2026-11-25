@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { defaultPortfolio, isPortfolioContent, type PortfolioContent } from "./portfolio";
+import {
+  defaultPortfolio,
+  isPortfolioContent,
+  normalizePortfolio,
+  type PortfolioContent,
+} from "./portfolio";
 
 const storageKey = "student-work-atlas-content-v1";
 const eventKey = "student-work-atlas-updated";
@@ -10,7 +15,7 @@ export function loadPortfolio(): PortfolioContent {
     const raw = window.localStorage.getItem(storageKey);
     if (!raw) return defaultPortfolio;
     const parsed: unknown = JSON.parse(raw);
-    if (isPortfolioContent(parsed)) return parsed;
+    if (isPortfolioContent(parsed)) return normalizePortfolio(parsed);
   } catch {
     /* Use defaults when storage is unavailable or invalid. */
   }
@@ -38,8 +43,9 @@ export async function syncPortfolioFromRemote(): Promise<PortfolioContent> {
     if (!res.ok) return loadPortfolio();
     const data = await res.json();
     if (data?.content && isPortfolioContent(data.content)) {
-      savePortfolio(data.content);
-      return data.content;
+      const normalized = normalizePortfolio(data.content);
+      savePortfolio(normalized);
+      return normalized;
     }
   } catch {
     // If offline or during local testing, keep local content

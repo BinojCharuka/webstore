@@ -72,6 +72,98 @@ export interface Role {
   link?: string | undefined;
   images?: string[] | undefined;
 }
+export const CV_SECTION_KEYS = [
+  "summary",
+  "education",
+  "skills",
+  "projects",
+  "leadership",
+  "creative",
+  "languages",
+  "events",
+  "journey",
+  "certificates",
+] as const;
+
+export type CvSectionKey = (typeof CV_SECTION_KEYS)[number];
+
+export type CvLanguageEntry = {
+  name: string;
+  proficiency: string;
+};
+
+export type CvSettings = {
+  enabled: boolean;
+  buttonLabel: string;
+  fileName: string;
+  paperSize: "a4" | "letter";
+  fontStyle: "sans" | "serif";
+  briefMode: boolean;
+  compactMode: boolean;
+  includeLinks: boolean;
+  includeProjectLinks: boolean;
+  includeProjectHighlights: boolean;
+  includeCertificatesDetails: boolean;
+  headlineOverride: string;
+  summaryOverride: string;
+  phone: string;
+  languages: CvLanguageEntry[];
+  sectionOrder: CvSectionKey[];
+  sections: Record<CvSectionKey, boolean>;
+  limits: {
+    projects: number;
+    roles: number;
+    events: number;
+    creative: number;
+    certificates: number;
+    journey: number;
+  };
+  featuredProjectsOnly: boolean;
+};
+
+export const defaultCvSettings: CvSettings = {
+  enabled: true,
+  buttonLabel: "Download CV",
+  fileName: "Binoj_Charuka_CV",
+  paperSize: "a4",
+  fontStyle: "sans",
+  briefMode: true,
+  compactMode: false,
+  includeLinks: true,
+  includeProjectLinks: false,
+  includeProjectHighlights: false,
+  includeCertificatesDetails: false,
+  headlineOverride: "",
+  summaryOverride: "",
+  phone: "",
+  languages: [
+    { name: "English", proficiency: "Professional Working Proficiency" },
+    { name: "Sinhala", proficiency: "Native Proficiency" },
+  ],
+  sectionOrder: [...CV_SECTION_KEYS],
+  sections: {
+    summary: true,
+    education: true,
+    skills: true,
+    projects: true,
+    leadership: true,
+    creative: true,
+    languages: true,
+    events: false,
+    journey: false,
+    certificates: false,
+  },
+  limits: {
+    projects: 6,
+    roles: 6,
+    events: 4,
+    creative: 5,
+    certificates: 5,
+    journey: 6,
+  },
+  featuredProjectsOnly: false,
+};
+
 export type PortfolioContent = {
   profile: {
     name: string;
@@ -97,6 +189,7 @@ export type PortfolioContent = {
   creative: CreativeWork[];
   journey: Milestone[];
   certificates: Certificate[];
+  cvSettings?: CvSettings | undefined;
 };
 
 export const defaultPortfolio: PortfolioContent = {
@@ -549,6 +642,7 @@ export const defaultPortfolio: PortfolioContent = {
       credentialId: "WUSL-ELEC-2025",
     },
   ],
+  cvSettings: defaultCvSettings,
 };
 
 export const allProjectCategories = [
@@ -791,7 +885,195 @@ export function getPortfolioValidationErrors(value: unknown): string[] {
     }
   }
 
+  // 10. CV settings validation (optional object for backward compatibility with older records)
+  if (root["cvSettings"] !== undefined && root["cvSettings"] !== null) {
+    if (typeof root["cvSettings"] !== "object" || Array.isArray(root["cvSettings"])) {
+      errors.push("'cvSettings' must be an object.");
+    } else {
+      const cv = root["cvSettings"] as Record<string, unknown>;
+      const boolKeys = [
+        "enabled",
+        "briefMode",
+        "compactMode",
+        "includeLinks",
+        "includeProjectLinks",
+        "includeProjectHighlights",
+        "includeCertificatesDetails",
+        "featuredProjectsOnly",
+      ];
+      for (const k of boolKeys) {
+        if (cv[k] !== undefined && cv[k] !== null && typeof cv[k] !== "boolean") {
+          errors.push(`cvSettings.${k} must be a boolean.`);
+        }
+      }
+      const strKeys = ["buttonLabel", "fileName", "headlineOverride", "summaryOverride", "phone"];
+      for (const k of strKeys) {
+        if (!isStringOrNil(cv[k])) {
+          errors.push(`cvSettings.${k} must be a string if provided.`);
+        }
+      }
+      if (
+        cv["paperSize"] !== undefined &&
+        cv["paperSize"] !== null &&
+        cv["paperSize"] !== "a4" &&
+        cv["paperSize"] !== "letter"
+      ) {
+        errors.push("cvSettings.paperSize must be 'a4' or 'letter'.");
+      }
+      if (
+        cv["fontStyle"] !== undefined &&
+        cv["fontStyle"] !== null &&
+        cv["fontStyle"] !== "sans" &&
+        cv["fontStyle"] !== "serif"
+      ) {
+        errors.push("cvSettings.fontStyle must be 'sans' or 'serif'.");
+      }
+      if (cv["languages"] !== undefined && cv["languages"] !== null) {
+        if (!Array.isArray(cv["languages"])) {
+          errors.push("cvSettings.languages must be an array.");
+        } else {
+          cv["languages"].forEach((item, idx) => {
+            if (!item || typeof item !== "object" || Array.isArray(item)) {
+              errors.push(`cvSettings.languages[${idx}] must be an object.`);
+              return;
+            }
+            const lang = item as Record<string, unknown>;
+            if (typeof lang["name"] !== "string") {
+              errors.push(`cvSettings.languages[${idx}].name must be a string.`);
+            }
+            if (!isStringOrNil(lang["proficiency"])) {
+              errors.push(`cvSettings.languages[${idx}].proficiency must be a string.`);
+            }
+          });
+        }
+      }
+      if (!isStringListOrNil(cv["sectionOrder"])) {
+        errors.push("cvSettings.sectionOrder must be a string array.");
+      }
+      if (cv["sections"] !== undefined && cv["sections"] !== null) {
+        if (typeof cv["sections"] !== "object" || Array.isArray(cv["sections"])) {
+          errors.push("cvSettings.sections must be an object.");
+        } else {
+          const secs = cv["sections"] as Record<string, unknown>;
+          for (const key of CV_SECTION_KEYS) {
+            if (secs[key] !== undefined && secs[key] !== null && typeof secs[key] !== "boolean") {
+              errors.push(`cvSettings.sections.${key} must be a boolean.`);
+            }
+          }
+        }
+      }
+      if (cv["limits"] !== undefined && cv["limits"] !== null) {
+        if (typeof cv["limits"] !== "object" || Array.isArray(cv["limits"])) {
+          errors.push("cvSettings.limits must be an object.");
+        } else {
+          const lim = cv["limits"] as Record<string, unknown>;
+          for (const key of ["projects", "roles", "events", "creative", "certificates", "journey"]) {
+            if (
+              lim[key] !== undefined &&
+              lim[key] !== null &&
+              (typeof lim[key] !== "number" || !Number.isFinite(lim[key]) || lim[key] < 0)
+            ) {
+              errors.push(`cvSettings.limits.${key} must be a non-negative number.`);
+            }
+          }
+        }
+      }
+    }
+  }
+
   return errors;
+}
+
+/** Resolve any partial or omitted CV settings object into a complete configuration. */
+export function resolveCvSettings(value?: unknown): CvSettings {
+  const raw =
+    value && typeof value === "object" && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : {};
+
+  const str = (key: keyof CvSettings, fallback: string) =>
+    typeof raw[key] === "string" ? (raw[key] as string) : fallback;
+  const bool = (key: keyof CvSettings, fallback: boolean) =>
+    typeof raw[key] === "boolean" ? (raw[key] as boolean) : fallback;
+
+  const rawPaper = raw["paperSize"];
+  const paperSize: CvSettings["paperSize"] = rawPaper === "letter" ? "letter" : "a4";
+  const rawFont = raw["fontStyle"];
+  const fontStyle: CvSettings["fontStyle"] = rawFont === "serif" ? "serif" : "sans";
+
+  const rawLanguages = Array.isArray(raw["languages"])
+    ? raw["languages"]
+        .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+        .map((item) => ({
+          name: typeof item["name"] === "string" ? item["name"] : "",
+          proficiency: typeof item["proficiency"] === "string" ? item["proficiency"] : "",
+        }))
+    : defaultCvSettings.languages.map((entry) => ({ ...entry }));
+
+  const validKeys = new Set<string>(CV_SECTION_KEYS);
+  const incomingOrder = Array.isArray(raw["sectionOrder"])
+    ? raw["sectionOrder"].filter((k): k is CvSectionKey => typeof k === "string" && validKeys.has(k))
+    : [];
+  const sectionOrder: CvSectionKey[] = [];
+  for (const key of incomingOrder) {
+    if (!sectionOrder.includes(key)) sectionOrder.push(key);
+  }
+  for (const key of CV_SECTION_KEYS) {
+    if (!sectionOrder.includes(key)) sectionOrder.push(key);
+  }
+
+  const rawSections =
+    raw["sections"] && typeof raw["sections"] === "object" && !Array.isArray(raw["sections"])
+      ? (raw["sections"] as Record<string, unknown>)
+      : {};
+  const sections: Record<CvSectionKey, boolean> = { ...defaultCvSettings.sections };
+  for (const key of CV_SECTION_KEYS) {
+    if (typeof rawSections[key] === "boolean") {
+      sections[key] = rawSections[key] as boolean;
+    }
+  }
+
+  const rawLimits =
+    raw["limits"] && typeof raw["limits"] === "object" && !Array.isArray(raw["limits"])
+      ? (raw["limits"] as Record<string, unknown>)
+      : {};
+  const clampLimit = (v: unknown, fallback: number): number =>
+    typeof v === "number" && Number.isFinite(v) ? Math.max(0, Math.min(50, Math.round(v))) : fallback;
+
+  return {
+    enabled: bool("enabled", defaultCvSettings.enabled),
+    buttonLabel: str("buttonLabel", defaultCvSettings.buttonLabel),
+    fileName: str("fileName", defaultCvSettings.fileName),
+    paperSize,
+    fontStyle,
+    briefMode: bool("briefMode", defaultCvSettings.briefMode),
+    compactMode: bool("compactMode", defaultCvSettings.compactMode),
+    includeLinks: bool("includeLinks", defaultCvSettings.includeLinks),
+    includeProjectLinks: bool("includeProjectLinks", defaultCvSettings.includeProjectLinks),
+    includeProjectHighlights: bool(
+      "includeProjectHighlights",
+      defaultCvSettings.includeProjectHighlights,
+    ),
+    includeCertificatesDetails: bool(
+      "includeCertificatesDetails",
+      defaultCvSettings.includeCertificatesDetails,
+    ),
+    headlineOverride: str("headlineOverride", defaultCvSettings.headlineOverride),
+    summaryOverride: str("summaryOverride", defaultCvSettings.summaryOverride),
+    phone: str("phone", defaultCvSettings.phone),
+    languages: rawLanguages,
+    sectionOrder,
+    sections,
+    limits: {
+      projects: clampLimit(rawLimits["projects"], defaultCvSettings.limits.projects),
+      roles: clampLimit(rawLimits["roles"], defaultCvSettings.limits.roles),
+      events: clampLimit(rawLimits["events"], defaultCvSettings.limits.events),
+      creative: clampLimit(rawLimits["creative"], defaultCvSettings.limits.creative),
+      certificates: clampLimit(rawLimits["certificates"], defaultCvSettings.limits.certificates),
+      journey: clampLimit(rawLimits["journey"], defaultCvSettings.limits.journey),
+    },
+    featuredProjectsOnly: bool("featuredProjectsOnly", defaultCvSettings.featuredProjectsOnly),
+  };
 }
 
 /**
@@ -979,6 +1261,8 @@ export function normalizePortfolio(value: unknown): PortfolioContent {
       })
     : defaultPortfolio.journey;
 
+  const cvSettings = resolveCvSettings(root["cvSettings"]);
+
   return {
     profile,
     education,
@@ -989,6 +1273,7 @@ export function normalizePortfolio(value: unknown): PortfolioContent {
     creative,
     journey,
     certificates,
+    cvSettings,
   };
 }
 

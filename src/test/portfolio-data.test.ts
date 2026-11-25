@@ -67,7 +67,21 @@ describe("Portfolio content", () => {
     expect(normalized.profile.name).toBe("Custom Name");
     expect(normalized.profile.shortName).toBe(defaultPortfolio.profile.shortName);
     expect(normalized.creative[0]?.context).toBe("Description instead of context");
+    expect(normalized.cvSettings?.enabled).toBe(true);
+    expect(normalized.cvSettings?.paperSize).toBe("a4");
     expect(getPortfolioValidationErrors(normalized)).toEqual([]);
     expect(isPortfolioContent(normalized)).toBe(true);
+  });
+
+  it("validates cvSettings fields when provided and accepts legacy payloads without it", () => {
+    const legacy = JSON.parse(JSON.stringify(defaultPortfolio));
+    delete legacy.cvSettings;
+    expect(getPortfolioValidationErrors(legacy)).toEqual([]);
+    expect(isPortfolioContent(legacy)).toBe(true);
+
+    const invalidCv = JSON.parse(JSON.stringify(defaultPortfolio));
+    invalidCv.cvSettings.paperSize = "tabloid";
+    const errors = getPortfolioValidationErrors(invalidCv);
+    expect(errors.some((e) => e.includes("cvSettings.paperSize"))).toBe(true);
   });
 });

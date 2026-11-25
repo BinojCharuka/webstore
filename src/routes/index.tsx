@@ -9,11 +9,13 @@ import {
   CheckCircle2,
   Code2,
   Copy,
+  FileDown,
   Github,
   Globe,
   GraduationCap,
   HeartHandshake,
   Linkedin,
+  Loader2,
   Mail,
   MapPin,
   Sparkles,
@@ -29,7 +31,7 @@ import { useScrollProgress } from "@/hooks/use-scroll-progress";
 import { varStyle } from "@/lib/anim";
 import { cn } from "@/lib/utils";
 import { usePortfolio } from "@/data/use-portfolio";
-import { defaultPortfolio } from "@/data/portfolio";
+import { defaultPortfolio, resolveCvSettings } from "@/data/portfolio";
 import { getEducationLogo } from "@/lib/education";
 import { CreativeAccordion } from "@/components/portfolio/CreativeAccordion";
 import { CertificateCard } from "@/components/portfolio/CertificateCard";
@@ -755,8 +757,12 @@ function Certificates() {
 }
 
 function Contact() {
-  const { profile } = usePortfolio();
+  const portfolio = usePortfolio();
+  const { profile } = portfolio;
+  const cvSettings = resolveCvSettings(portfolio.cvSettings);
   const [copied, setCopied] = useState(false);
+  const [cvStatus, setCvStatus] = useState<"idle" | "generating" | "done" | "error">("idle");
+  const [cvError, setCvError] = useState<string | null>(null);
   const emailToCopy = profile.email || "charudesignstudio@gmail.com";
 
   const handleCopyEmail = async () => {
@@ -764,8 +770,27 @@ function Contact() {
       await navigator.clipboard.writeText(emailToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
-    } catch {}
+    } catch { }
   };
+
+  const handleDownloadCv = async () => {
+    if (cvStatus === "generating") return;
+    setCvStatus("generating");
+    setCvError(null);
+    try {
+      const { downloadCvPdf } = await import("@/lib/cv-pdf");
+      await downloadCvPdf(portfolio, cvSettings);
+      setCvStatus("done");
+      window.setTimeout(() => {
+        setCvStatus((prev) => (prev === "done" ? "idle" : prev));
+      }, 2600);
+    } catch (error) {
+      setCvStatus("error");
+      setCvError(error instanceof Error ? error.message : "Could not generate CV PDF.");
+    }
+  };
+
+  const buttonLabel = cvSettings.buttonLabel.trim() || "Download CV";
 
   return (
     <section id="contact" className="py-16 scroll-mt-24">
@@ -798,17 +823,17 @@ function Contact() {
             type="button"
             onClick={handleCopyEmail}
             data-cursor-label="Copy"
-            className="cursor-target inline-flex items-center gap-2 rounded-full border border-ink-foreground/20 bg-ink-foreground/5 px-5 py-3 font-mono text-xs text-ink-foreground transition-all duration-300 hover:border-primary hover:text-primary active:scale-95"
+            className="cursor-target inline-flex min-h-[44px] items-center gap-2 rounded-full border border-ink-foreground/20 bg-ink-foreground/5 px-5 py-3 font-mono text-xs text-ink-foreground transition-all duration-300 hover:border-primary hover:text-primary active:scale-95"
             aria-label={copied ? "Email address copied to clipboard" : "Copy email address to clipboard"}
           >
             {copied ? (
               <>
-                <Check size={14} className="text-primary transition-transform duration-200 scale-110" />
+                <Check size={14} className="text-primary transition-transform duration-200 scale-110" aria-hidden="true" />
                 <span className="text-primary font-semibold">Email copied!</span>
               </>
             ) : (
               <>
-                <Copy size={14} />
+                <Copy size={14} aria-hidden="true" />
                 <span>Copy email</span>
               </>
             )}
@@ -820,7 +845,44 @@ function Contact() {
           )}
           {profile.linkedin && <ExternalAction href={profile.linkedin}>LinkedIn</ExternalAction>}
           {profile.website && <ExternalAction href={profile.website}>My website</ExternalAction>}
+          {cvSettings.enabled && (
+            <button
+              type="button"
+              onClick={handleDownloadCv}
+              disabled={cvStatus === "generating"}
+              data-cursor-label="CV PDF"
+              aria-label={`${buttonLabel} as formatted PDF`}
+              className="cursor-target inline-flex min-h-[44px] items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-5 py-3 font-mono text-xs text-ink-foreground transition-all duration-300 hover:border-primary hover:bg-primary/20 hover:text-primary active:scale-95 disabled:opacity-60"
+            >
+              {cvStatus === "generating" ? (
+                <>
+                  <Loader2 size={14} className="animate-spin text-primary" aria-hidden="true" />
+                  <span>Generating CV...</span>
+                </>
+              ) : cvStatus === "done" ? (
+                <>
+                  <Check size={14} className="text-primary" aria-hidden="true" />
+                  <span className="text-primary font-semibold">CV downloaded!</span>
+                </>
+              ) : (
+                <>
+                  <FileDown size={14} className="text-primary" aria-hidden="true" />
+                  <span>{buttonLabel}</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
+        {cvStatus === "done" && (
+          <p role="status" aria-live="polite" className="relative mt-3 font-mono text-xs text-primary">
+            Generated plain CV PDF from current portfolio content.
+          </p>
+        )}
+        {cvStatus === "error" && cvError && (
+          <p role="alert" className="relative mt-3 font-mono text-xs text-destructive">
+            {cvError}
+          </p>
+        )}
         <div className="relative mt-10 flex flex-wrap gap-5 border-t border-ink-foreground/10 pt-6 font-mono text-xs opacity-70">
           <span className="inline-flex items-center gap-2">
             <Code2 size={15} /> Development
