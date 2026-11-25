@@ -1,5 +1,4 @@
 import React from "react";
-import { ArrowDown, ArrowUpRight, Github, Globe, Linkedin, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { InteractiveConstellation } from "./InteractiveConstellation";
 
@@ -68,13 +67,8 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
           <span className="text-muted-foreground text-xs hidden sm:inline">Portfolio</span>
         </div>
 
-        <div className="flex items-center gap-3 sm:gap-4">
-          <span className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/60 px-3 py-1 text-xs">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-foreground/90">{availability}</span>
-          </span>
-          <span className="text-muted-foreground/40 hidden md:inline">✦</span>
-          <span className="hidden md:inline text-xs text-muted-foreground">{locationText}</span>
+        <div className="flex items-center text-xs font-mono text-muted-foreground">
+          <span>{locationText}</span>
         </div>
       </header>
 
@@ -161,8 +155,8 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
       </div>
 
       {/* Bottom Footer Bar */}
-      <footer className="z-30 flex w-full max-w-7xl flex-col items-center justify-between gap-4 border-t border-border/40 pt-4 text-muted-foreground sm:flex-row">
-        <div className="flex items-center space-x-5">
+      <footer className="relative z-30 flex w-full max-w-7xl items-center justify-between border-t border-border/40 pt-4 text-muted-foreground">
+        <div className="flex items-center space-x-4 sm:space-x-5">
           {socialLinks.map((link) => (
             <a
               key={link.label}
@@ -179,31 +173,25 @@ export const MinimalistHero: React.FC<MinimalistHeroProps> = ({
           ))}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs font-mono">
-          <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            <span className="text-foreground/90">{availability}</span>
+        {/* Centered Mouse Scroll Indicator */}
+        <a
+          href="#about"
+          onClick={(e) => {
+            e.preventDefault();
+            const el = document.getElementById("about");
+            el?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+          className="cursor-target group absolute left-1/2 -translate-x-1/2 flex items-center justify-center p-2 text-muted-foreground transition-transform hover:scale-110 active:scale-95"
+          aria-label="Scroll down to content"
+          data-cursor-label="Scroll"
+        >
+          <span className="relative flex h-6 w-3.5 items-start justify-center rounded-full border border-primary/50 p-0.5 transition-colors group-hover:border-primary shadow-xs">
+            <span className="h-1.5 w-1 rounded-full bg-primary animate-bob" />
           </span>
-          <span className="text-muted-foreground/40">+</span>
-          <span className="text-muted-foreground">{locationText}</span>
-          <span className="text-muted-foreground/40">+</span>
-          <a
-            href="#about"
-            onClick={(e) => {
-              e.preventDefault();
-              const el = document.getElementById("about");
-              el?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-            className="cursor-target group inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1.5 font-mono text-xs font-medium text-primary shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-primary hover:bg-primary/20 hover:shadow-sm active:scale-95"
-            aria-label="Scroll to explore portfolio sections"
-            data-cursor-label="Scroll"
-          >
-            <span className="relative flex h-3.5 w-2 items-start justify-center rounded-full border border-primary/70 p-0.5">
-              <span className="h-1 w-1 rounded-full bg-primary animate-bob" />
-            </span>
-            <span>Scroll to explore</span>
-            <ArrowDown size={12} className="transition-transform duration-300 group-hover:translate-y-0.5" />
-          </a>
+        </a>
+
+        <div className="flex items-center text-xs font-mono text-muted-foreground">
+          <span>{locationText}</span>
         </div>
       </footer>
     </div>
