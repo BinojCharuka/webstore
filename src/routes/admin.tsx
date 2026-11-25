@@ -134,9 +134,13 @@ const fields: Record<Collection, Field[]> = {
     { key: "items", label: "Skills (comma separated)", type: "array" },
   ],
   roles: [
-    { key: "title", label: "Role" },
+    { key: "slug", label: "Unique slug (optional)" },
+    { key: "title", label: "Role title" },
     { key: "group", label: "Group / event" },
-    { key: "description", label: "Description", type: "textarea" },
+    { key: "organization", label: "Organization / University" },
+    { key: "description", label: "Short description", type: "textarea" },
+    { key: "details", label: "Detailed description", type: "textarea" },
+    { key: "highlights", label: "Key highlights / impact (comma separated)", type: "array" },
     { key: "year", label: "Year" },
   ],
   journey: [
@@ -191,7 +195,7 @@ const emptyRows: Record<Collection, Record<string, unknown>> = {
   },
   certificates: { title: "", issuer: "", year: "2026", url: "", image: "" },
   skills: { group: "New skill group", items: [] },
-  roles: { title: "", group: "", description: "", year: "2026" },
+  roles: { slug: "", title: "", group: "", organization: "", description: "", details: "", highlights: [], year: "2026" },
   journey: { when: "", what: "", where: "", detail: "" },
 };
 const profileFields: Field[] = [

@@ -15,8 +15,10 @@ import { Route as CertificatesRouteImport } from './routes/certificates'
 import { Route as CreativeWorksRouteImport } from './routes/creative-works'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as LeadershipRouteImport } from './routes/leadership'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as EventsSlugRouteImport } from './routes/events_.$slug'
+import { Route as LeadershipSlugRouteImport } from './routes/leadership_.$slug'
 import { Route as ProjectsSlugRouteImport } from './routes/projects_.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -49,6 +51,11 @@ const GalleryRoute = GalleryRouteImport.update({
   path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LeadershipRoute = LeadershipRouteImport.update({
+  id: '/leadership',
+  path: '/leadership',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -57,6 +64,11 @@ const ProjectsRoute = ProjectsRouteImport.update({
 const EventsSlugRoute = EventsSlugRouteImport.update({
   id: '/events_/$slug',
   path: '/events/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadershipSlugRoute = LeadershipSlugRouteImport.update({
+  id: '/leadership_/$slug',
+  path: '/leadership/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
@@ -72,8 +84,10 @@ export interface FileRoutesByFullPath {
   '/creative-works': typeof CreativeWorksRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/leadership': typeof LeadershipRoute
   '/projects': typeof ProjectsRoute
   '/events/$slug': typeof EventsSlugRoute
+  '/leadership/$slug': typeof LeadershipSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
 }
 export interface FileRoutesByTo {
@@ -83,8 +97,10 @@ export interface FileRoutesByTo {
   '/creative-works': typeof CreativeWorksRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/leadership': typeof LeadershipRoute
   '/projects': typeof ProjectsRoute
   '/events/$slug': typeof EventsSlugRoute
+  '/leadership/$slug': typeof LeadershipSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
 }
 export interface FileRoutesById {
@@ -95,8 +111,10 @@ export interface FileRoutesById {
   '/creative-works': typeof CreativeWorksRoute
   '/events': typeof EventsRoute
   '/gallery': typeof GalleryRoute
+  '/leadership': typeof LeadershipRoute
   '/projects': typeof ProjectsRoute
   '/events_/$slug': typeof EventsSlugRoute
+  '/leadership_/$slug': typeof LeadershipSlugRoute
   '/projects_/$slug': typeof ProjectsSlugRoute
 }
 export interface FileRouteTypes {
@@ -108,8 +126,10 @@ export interface FileRouteTypes {
     | '/creative-works'
     | '/events'
     | '/gallery'
+    | '/leadership'
     | '/projects'
     | '/events/$slug'
+    | '/leadership/$slug'
     | '/projects/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,8 +139,10 @@ export interface FileRouteTypes {
     | '/creative-works'
     | '/events'
     | '/gallery'
+    | '/leadership'
     | '/projects'
     | '/events/$slug'
+    | '/leadership/$slug'
     | '/projects/$slug'
   id:
     | '__root__'
@@ -130,8 +152,10 @@ export interface FileRouteTypes {
     | '/creative-works'
     | '/events'
     | '/gallery'
+    | '/leadership'
     | '/projects'
     | '/events_/$slug'
+    | '/leadership_/$slug'
     | '/projects_/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -142,8 +166,10 @@ export interface RootRouteChildren {
   CreativeWorksRoute: typeof CreativeWorksRoute
   EventsRoute: typeof EventsRoute
   GalleryRoute: typeof GalleryRoute
+  LeadershipRoute: typeof LeadershipRoute
   ProjectsRoute: typeof ProjectsRoute
   EventsSlugRoute: typeof EventsSlugRoute
+  LeadershipSlugRoute: typeof LeadershipSlugRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
 }
 
@@ -191,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/leadership': {
+      id: '/leadership'
+      path: '/leadership'
+      fullPath: '/leadership'
+      preLoaderRoute: typeof LeadershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects': {
       id: '/projects'
       path: '/projects'
@@ -203,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: '/events/$slug'
       fullPath: '/events/$slug'
       preLoaderRoute: typeof EventsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leadership_/$slug': {
+      id: '/leadership_/$slug'
+      path: '/leadership/$slug'
+      fullPath: '/leadership/$slug'
+      preLoaderRoute: typeof LeadershipSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects_/$slug': {
@@ -222,8 +262,10 @@ const rootRouteChildren: RootRouteChildren = {
   CreativeWorksRoute: CreativeWorksRoute,
   EventsRoute: EventsRoute,
   GalleryRoute: GalleryRoute,
+  LeadershipRoute: LeadershipRoute,
   ProjectsRoute: ProjectsRoute,
   EventsSlugRoute: EventsSlugRoute,
+  LeadershipSlugRoute: LeadershipSlugRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
 }
 export const routeTree = rootRouteImport

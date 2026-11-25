@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowDown,
+  ArrowRight,
   ArrowUpRight,
   Calendar,
   Check,
@@ -512,28 +513,55 @@ function Leadership() {
         n="05"
         title="Leadership & volunteering"
         caption="Building communities, supporting teams and making things happen together."
+        action={{ label: "All leadership", href: "/leadership" }}
       />
       <div className="grid gap-4 md:grid-cols-2">
-        {roles.map((role, i) => (
-          <Reveal key={`${role.title}-${role.group}`} variant="up" delay={(i % 4) * 90}>
-            <SpotlightCard
-              data-cursor-target
-              data-cursor-label={role.title}
-              className="cursor-target h-full"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <span className="font-mono text-xs uppercase tracking-widest text-primary">
-                  {role.title}
-                </span>
-                <span className="font-mono text-xs text-muted-foreground">{role.year}</span>
-              </div>
-              <h3 className="mt-4 font-serif text-xl">{role.group}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {role.description}
-              </p>
-            </SpotlightCard>
-          </Reveal>
-        ))}
+        {roles.map((role, i) => {
+          const slug =
+            role.slug ||
+            role.group
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/(^-|-$)/g, "");
+          return (
+            <Reveal key={`${role.title}-${role.group}`} variant="up" delay={(i % 4) * 90}>
+              <a
+                href={`/leadership/${encodeURIComponent(slug)}`}
+                data-cursor-label="View role"
+                className="group block h-full focus:outline-hidden"
+              >
+                <SpotlightCard
+                  data-cursor-target
+                  data-cursor-label="View role"
+                  className="cursor-target h-full transition-all duration-300 group-hover:border-primary/50 group-hover:shadow-md"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-mono text-xs uppercase tracking-widest text-primary transition-colors group-hover:text-primary">
+                      {role.title}
+                    </span>
+                    <span className="font-mono text-xs text-muted-foreground">{role.year}</span>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between gap-2">
+                    <h3 className="font-serif text-xl transition-colors group-hover:text-primary">
+                      {role.group}
+                    </h3>
+                    <ArrowUpRight
+                      size={16}
+                      className="shrink-0 text-muted-foreground/50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
+                    />
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {role.description}
+                  </p>
+                  <div className="mt-4 flex items-center gap-1.5 font-mono text-xs text-primary/80 transition-colors group-hover:text-primary">
+                    <span>Read role details</span>
+                    <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
+                </SpotlightCard>
+              </a>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );

@@ -54,6 +54,18 @@ export type EducationEntry = {
   logo?: string; // Institution logo (Cloudinary URL or /path)
 };
 export type Milestone = { when: string; what: string; where: string; detail?: string };
+export interface Role {
+  slug?: string | undefined;
+  title: string;
+  group: string;
+  description: string;
+  year: string;
+  details?: string | undefined;
+  highlights?: string[] | undefined;
+  organization?: string | undefined;
+  link?: string | undefined;
+  images?: string[] | undefined;
+}
 export type PortfolioContent = {
   profile: {
     name: string;
@@ -74,7 +86,7 @@ export type PortfolioContent = {
   education?: EducationEntry[];
   skills: { group: string; items: string[] }[];
   projects: Project[];
-  roles: { title: string; group: string; description: string; year: string }[];
+  roles: Role[];
   events: EventEntry[];
   creative: CreativeWork[];
   journey: Milestone[];
@@ -281,34 +293,80 @@ export const defaultPortfolio: PortfolioContent = {
   ],
   roles: [
     {
+      slug: "ieee-day-2026",
       title: "PV Lead OC",
       group: "IEEE Day 2026",
-      description: "Leading publicity and visual communications work for the organizing committee.",
       year: "2026",
+      organization: "IEEE Student Branch — WUSL",
+      description: "Leading publicity and visual communications work for the organizing committee.",
+      details:
+        "As the Publicity & Visuals (PV) Lead for IEEE Day 2026, spearheaded end-to-end creative campaign direction, promotional asset design, and strategic digital outreach. Orchestrated volunteer designers to execute high-impact countdown visuals, event collateral, and community announcements that amplified student branch engagement across regional networks.",
+      highlights: [
+        "Led creative direction and visual identity for all IEEE Day 2026 promotions",
+        "Managed a team of volunteer designers across countdowns, posters, and social campaigns",
+        "Coordinated closely with branch executive committee on communications strategy",
+        "Drove cross-platform student engagement and event visibility across university channels",
+      ],
     },
     {
+      slug: "ieee-student-branch-wusl",
       title: "PC OC Member",
       group: "IEEE Student Branch — WUSL",
-      description: "Contributing to student branch activities and coordination.",
       year: "2026",
+      organization: "Wayamba University of Sri Lanka",
+      description: "Contributing to student branch activities and coordination.",
+      details:
+        "Serving as an active Program Coordination (PC) Organizing Committee member within the IEEE Student Branch at Wayamba University of Sri Lanka. Actively supporting technical sessions, workshop scheduling, speaker coordination, and cross-team synchronization to deliver impactful community programs.",
+      highlights: [
+        "Assisted in structuring program agendas and event timelines for student workshops",
+        "Coordinated with guest speakers, session hosts, and student attendees",
+        "Facilitated logistical workflows and member support during branch technical events",
+      ],
     },
     {
+      slug: "futurequest-sl-inspire",
       title: "PV OC",
       group: "FutureQuest — SL Inspire",
-      description: "Supporting event publicity and organizing work.",
       year: "2026",
+      organization: "SL Inspire",
+      description: "Supporting event publicity and organizing work.",
+      details:
+        "Contributed to the Publicity and Visuals Organizing Committee for FutureQuest by SL Inspire. Conceptualized and crafted digital promotional banners, social media marketing designs, and community flyers to inspire and engage young leaders and student innovators.",
+      highlights: [
+        "Crafted cohesive visual media for social promotion and outreach",
+        "Collaborated with the central organizing team on messaging and event branding",
+        "Supported live event coverage and participant communications",
+      ],
     },
     {
+      slug: "sgd-sprint",
       title: "PV OC",
       group: "SGD Sprint",
-      description: "Contributing to promotional and creative event work.",
       year: "2026",
+      organization: "Student Developer Community",
+      description: "Contributing to promotional and creative event work.",
+      details:
+        "Member of the Publicity & Visuals Organizing Committee for the SGD Sprint developer competition. Designed promotional flyers, rule infographics, and announcement artworks that conveyed competition tracks clearly and energized student teams.",
+      highlights: [
+        "Designed competition promotional graphics and track announcement collateral",
+        "Maintained consistent brand guidelines across social posts and digital banners",
+        "Contributed to participant communications and engagement materials",
+      ],
     },
     {
+      slug: "jamborieee",
       title: "PV OC",
       group: "JAMBORIEEE",
-      description: "Supporting event communications as an organizing committee member.",
       year: "2025",
+      organization: "IEEE Sri Lanka Section / Student Branches",
+      description: "Supporting event communications as an organizing committee member.",
+      details:
+        "Contributed to the Organizing Committee for JAMBORIEEE 2025, a landmark gathering of IEEE student members. Spearheaded promotional graphic rollouts, schedule infographics, and attendee communication assets that fostered enthusiasm and unified team representation.",
+      highlights: [
+        "Coordinated and produced event countdowns, schedule cards, and banners",
+        "Supported cross-branch volunteer communications and media coordination",
+        "Helped drive active participation through clear, compelling promotional visuals",
+      ],
     },
   ],
   events: [
@@ -638,6 +696,12 @@ export function getPortfolioValidationErrors(value: unknown): string[] {
         if (typeof row["group"] !== "string") errors.push(`roles[${idx}].group must be a string.`);
         if (typeof row["description"] !== "string") errors.push(`roles[${idx}].description must be a string.`);
         if (typeof row["year"] !== "string") errors.push(`roles[${idx}].year must be a string.`);
+        if (!isStringOrNil(row["slug"])) errors.push(`roles[${idx}].slug must be a string if provided.`);
+        if (!isStringOrNil(row["details"])) errors.push(`roles[${idx}].details must be a string if provided.`);
+        if (!isStringListOrNil(row["highlights"])) errors.push(`roles[${idx}].highlights must be a string array if provided.`);
+        if (!isStringOrNil(row["organization"])) errors.push(`roles[${idx}].organization must be a string if provided.`);
+        if (!isStringOrNil(row["link"])) errors.push(`roles[${idx}].link must be a string if provided.`);
+        if (!isStringListOrNil(row["images"])) errors.push(`roles[${idx}].images must be a string array if provided.`);
       });
     }
   }
@@ -804,15 +868,26 @@ export function normalizePortfolio(value: unknown): PortfolioContent {
       })
     : defaultPortfolio.skills;
 
-  const roles = Array.isArray(root["roles"])
+  const roles: Role[] = Array.isArray(root["roles"])
     ? root["roles"].map((item) => {
         const row = item && typeof item === "object" ? (item as Record<string, unknown>) : {};
-        return {
-          title: cleanString(row["title"], "Role"),
-          group: cleanString(row["group"], "Group"),
+        const group = cleanString(row["group"], "Group");
+        const title = cleanString(row["title"], "Role");
+        const autoSlug =
+          group.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "role";
+        const roleObj: Role = {
+          slug: cleanString(row["slug"], autoSlug),
+          title,
+          group,
           description: cleanString(row["description"], ""),
           year: cleanString(row["year"], "2026"),
         };
+        if (typeof row["details"] === "string") roleObj.details = row["details"];
+        if (Array.isArray(row["highlights"])) roleObj.highlights = cleanStringList(row["highlights"]);
+        if (typeof row["organization"] === "string") roleObj.organization = row["organization"];
+        if (typeof row["link"] === "string") roleObj.link = row["link"];
+        if (Array.isArray(row["images"])) roleObj.images = cleanStringList(row["images"]);
+        return roleObj;
       })
     : defaultPortfolio.roles;
 
