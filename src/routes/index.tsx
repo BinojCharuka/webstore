@@ -645,7 +645,7 @@ function Journey() {
       <ol ref={ref} className="relative border-l border-border/60 pl-8 space-y-6">
         <span
           aria-hidden="true"
-          className="absolute -left-px top-0 h-full w-[2px] origin-top bg-gradient-to-b from-primary via-primary-glow to-primary shadow-[0_0_8px_var(--color-primary-glow)] transition-transform duration-100 ease-out"
+          className="absolute -left-px top-0 h-full w-[2px] origin-top bg-primary transition-transform duration-100 ease-out"
           style={varStyle({ transform: `scaleY(${progress})` })}
         />
         {journey.map((item, i) => {
@@ -664,7 +664,7 @@ function Journey() {
                 className={cn(
                   "absolute -left-[41px] top-4.5 h-4 w-4 rounded-full border-2 transition-all duration-500",
                   isReached
-                    ? "border-primary bg-primary shadow-[0_0_12px_2px_var(--color-primary)] ring-4 ring-primary/20 scale-110"
+                    ? "border-primary bg-primary scale-110"
                     : "border-border/80 bg-background scale-90",
                 )}
               />
